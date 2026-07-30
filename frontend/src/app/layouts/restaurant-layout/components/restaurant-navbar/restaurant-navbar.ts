@@ -4,6 +4,5 @@ import { Component } from '@angular/core';
   selector: 'app-restaurant-navbar',
   imports: [],
   templateUrl: './restaurant-navbar.html',
-  styleUrl: './restaurant-navbar.scss',
 })
 export class RestaurantNavbar {}

@@ -4,6 +4,5 @@ import { Component } from '@angular/core';
   selector: 'app-admin-navbar',
   imports: [],
   templateUrl: './admin-navbar.html',
-  styleUrl: './admin-navbar.scss',
 })
 export class AdminNavbar {}

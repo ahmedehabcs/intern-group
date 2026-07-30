@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/layouts/customer-layout/customer-layout.css"],
+  "sourcesContent": ["/* Customer layout shell. */\nmain {\n  min-height: 100vh;\r\n}\r\n"],
+  "mappings": ";AACA;AACE,cAAA;AACF;",
+  "names": []
+}

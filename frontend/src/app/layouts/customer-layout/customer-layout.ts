@@ -7,6 +7,6 @@ import { Navbar } from './components/navbar/navbar';
   selector: 'app-customer-layout',
   imports: [Navbar, RouterOutlet],
   templateUrl: './customer-layout.html',
-  styleUrl: './customer-layout.scss',
+  styleUrl: './customer-layout.css',
 })
 export class CustomerLayout {}
