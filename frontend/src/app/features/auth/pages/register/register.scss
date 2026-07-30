@@ -1,0 +1,266 @@
+.register-page {
+  height: 100dvh;
+  min-height: 620px;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+.register-shell {
+  width: min(1040px, 100%);
+  height: min(680px, calc(100dvh - 48px));
+  min-height: 570px;
+  display: grid;
+  grid-template-columns: 36% 64%;
+  overflow: hidden;
+  border-radius: 28px;
+  background: var(--surface);
+  box-shadow: var(--shadow-lg);
+}
+
+.register-story {
+  position: relative;
+  padding: 38px;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--brand) 94%, #4d1b00), var(--brand));
+  color: #fff;
+}
+
+.story-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: 'Playfair Display', serif;
+  font-size: 23px;
+  font-weight: 700;
+}
+
+.story-logo {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: #fff;
+  color: var(--brand);
+  font-family: 'Playfair Display', serif;
+  font-size: 21px;
+}
+
+.story-message {
+  position: absolute;
+  top: 50%;
+  right: 38px;
+  left: 38px;
+  transform: translateY(-50%);
+}
+
+.register-story h2 {
+  max-width: 270px;
+  margin: 0 0 14px;
+  font-size: clamp(30px, 3.2vw, 40px);
+  line-height: 1.12;
+  letter-spacing: -0.04em;
+}
+
+.register-story > p {
+  max-width: 340px;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 17px;
+  line-height: 1.55;
+}
+
+.story-message p {
+  max-width: 280px;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.story-note {
+  position: absolute;
+  bottom: 34px;
+  left: 38px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.register-form-area {
+  display: grid;
+  place-items: center;
+  padding: 32px 48px;
+}
+
+.register-form-inner {
+  width: min(100%, 420px);
+}
+
+.register-form-inner .auth-heading {
+  margin-top: 7px;
+  font-size: 30px;
+}
+
+.register-form {
+  margin-top: 24px;
+  display: grid;
+  gap: 14px;
+}
+
+.password-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.terms {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: var(--text-soft);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.terms input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--brand);
+}
+
+.terms a {
+  color: var(--brand);
+}
+
+.create-btn {
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.create-btn span {
+  font-size: 20px;
+}
+
+.or {
+  margin: 22px 0;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 18px;
+  color: var(--text-soft);
+}
+
+.or span {
+  height: 1px;
+  background: var(--border);
+}
+
+.or b {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+}
+
+.google-button {
+  width: 100%;
+}
+
+.google-button b {
+  color: #4285f4;
+  font-size: 18px;
+}
+
+.google-g {
+  font-size: 20px;
+  font-weight: 800;
+  background: conic-gradient(from -45deg, #4285f4, #34a853, #fbbc05, #ea4335, #4285f4);
+  background-clip: text;
+  color: transparent;
+}
+
+.auth-switch {
+  margin: 24px 0 0;
+  color: var(--text-soft);
+  text-align: center;
+}
+
+.auth-switch a {
+  color: var(--brand);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+@media (max-width: 850px) {
+  .register-page {
+    height: auto;
+    min-height: 100dvh;
+    padding: 70px 18px 30px;
+    overflow: visible;
+  }
+
+  .register-shell {
+    height: auto;
+    min-height: auto;
+    grid-template-columns: 1fr;
+  }
+
+  .register-story {
+    display: none;
+  }
+
+  .register-form-area {
+    padding: 42px 28px;
+  }
+}
+
+@media (max-width: 520px) {
+  .register-form-area {
+    padding: 38px 20px 30px;
+  }
+
+  .password-row {
+    grid-template-columns: 1fr;
+  }
+
+  .auth-switch {
+    margin-top: 34px;
+  }
+}
+
+@media (min-width: 851px) and (max-height: 720px) {
+  .register-shell {
+    height: calc(100dvh - 32px);
+  }
+
+  .register-page {
+    padding: 16px;
+  }
+
+  .register-form {
+    margin-top: 16px;
+    gap: 10px;
+  }
+
+  .input-shell {
+    height: 48px;
+  }
+
+  .primary-btn,
+  .social-btn {
+    min-height: 46px;
+  }
+
+  .or {
+    margin: 14px 0;
+  }
+
+  .auth-switch {
+    margin-top: 14px;
+  }
+}
