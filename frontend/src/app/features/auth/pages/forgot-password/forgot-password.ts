@@ -6,7 +6,7 @@ import { Router, RouterLink } from '@angular/router';
   selector: 'app-forgot-password',
   imports: [FormsModule, RouterLink],
   templateUrl: './forgot-password.html',
-  styleUrl: './forgot-password.scss',
+  styleUrl: './forgot-password.css',
 })
 export class ForgotPassword {
   email = '';

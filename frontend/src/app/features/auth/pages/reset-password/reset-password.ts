@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
   selector: 'app-reset-password',
   imports: [FormsModule],
   templateUrl: './reset-password.html',
-  styleUrl: './reset-password.scss',
+  styleUrl: './reset-password.css',
 })
 export class ResetPassword {
   password = '';

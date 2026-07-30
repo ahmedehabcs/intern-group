@@ -1,63 +1,149 @@
-<div class="login-page">
-  <section class="login-visual" aria-label="Premium dining experience">
-    <div class="visual-brand"><span>T</span> Talabaty</div>
-    <div class="delivery-badge">
-      <span>↯</span>
-      <div><small>Average Delivery</small><strong>24 Mins</strong></div>
+<main class="grid min-h-dvh w-full bg-(--surface) lg:grid-cols-[minmax(0,1.15fr)_minmax(420px,0.85fr)]">
+  <section class="flex min-h-dvh flex-col px-5 py-7 sm:px-10 lg:px-[clamp(3rem,7vw,8rem)] lg:py-10">
+    <div class="flex items-center gap-3 text-(--brand)">
+      <span class="grid h-11 w-11 place-items-center rounded-2xl bg-(--brand) text-lg font-black text-white shadow-(--shadow-sm)">
+        T
+      </span>
+      <span class="font-['Playfair_Display'] text-2xl font-bold">Talabaty</span>
     </div>
-    <div class="visual-copy">
-      <span class="premium-chip">Fast local delivery</span>
-      <h2>Good food,<br /><em>right on time.</em></h2>
-      <p>Order from restaurants you know and love.</p>
-    </div>
-  </section>
 
-  <section class="login-content">
-    <div class="login-inner">
-      <div class="login-title">
-        <span class="mobile-brand"><b>T</b> Talabaty</span>
-        <h1 class="auth-heading">Welcome back</h1>
-        <p class="auth-copy">Sign in to order your favourites.</p>
-      </div>
+    <div class="flex flex-1 items-center py-10">
+      <div class="w-full max-w-2xl">
+        <span class="text-xs font-bold uppercase tracking-[0.24em] text-(--brand)">Welcome back</span>
+        <h1 class="mt-4 max-w-xl font-['Playfair_Display'] text-4xl font-bold leading-tight tracking-[-0.04em] text-(--text) sm:text-5xl">
+          Your next favourite meal is waiting.
+        </h1>
+        <p class="mt-4 text-base leading-7 text-(--text-soft)">
+          Sign in with your username and password to continue.
+        </p>
 
-      <form class="login-card" (ngSubmit)="submit()">
-        <div class="field">
-          <label for="login-email">Email Address</label>
-          <div class="input-shell">
-            <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="m3 7 9 6 9-6"></path></svg>
-            <input id="login-email" type="email" name="email" [(ngModel)]="email" placeholder="name@example.com" required />
+        <form class="mt-10 grid gap-6" (submit)="onSubmit($event)" novalidate>
+          <div>
+            <label for="login-username" class="mb-2 block text-sm font-bold text-(--text)">Username</label>
+            <div
+              class="flex h-14 items-center gap-3 rounded-2xl border border-(--border) bg-(--surface-2) px-4 text-(--muted) transition focus-within:border-(--brand) focus-within:bg-(--surface) focus-within:ring-4 focus-within:ring-(--brand-soft)">
+              <input
+                id="login-username"
+                class="h-full min-w-0 flex-1 border-0 bg-transparent text-(--text) outline-none placeholder:text-(--muted)"
+                type="text"
+                [formField]="loginForm.username"
+                placeholder="Enter your username"
+              />
+            </div>
+            @if (loginForm.username().touched() && loginForm.username().invalid()) {
+              <p class="mt-2 text-sm font-medium text-red-600" role="alert">
+                {{ loginForm.username().errors()[0]?.message }}
+              </p>
+            }
           </div>
+
+          <div>
+            <div class="mb-2 flex items-center justify-between gap-4">
+              <label for="login-password" class="text-sm font-bold text-(--text)">Password</label>
+              <span class="text-xs font-bold text-(--brand)">
+                Forgot password?
+              </span>
+            </div>
+            <div
+              class="flex h-14 items-center gap-3 rounded-2xl border border-(--border) bg-(--surface-2) px-4 text-(--muted) transition focus-within:border-(--brand) focus-within:bg-(--surface) focus-within:ring-4 focus-within:ring-(--brand-soft)">
+              <input
+                id="login-password"
+                class="h-full min-w-0 flex-1 border-0 bg-transparent text-(--text) outline-none placeholder:text-(--muted)"
+                type="password"
+                [formField]="loginForm.password"
+                placeholder="Enter your password"
+              />
+            </div>
+            @if (loginForm.password().touched() && loginForm.password().invalid()) {
+              <p class="mt-2 text-sm font-medium text-red-600" role="alert">
+                {{ loginForm.password().errors()[0]?.message }}
+              </p>
+            }
+          </div>
+
+          @if (requestError()) {
+            <div
+            class="rounded-xl border border-red-300 bg-red-50 px-4 py-3 text-sm font-medium text-red-700 dark:border-red-900 dark:bg-red-950/40 dark:text-red-300"
+            role="alert">
+            {{ requestError() }}
+          </div>
+          }
+
+          <button
+            class="flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-(--brand) px-6 font-bold text-white shadow-[0_12px_24px_color-mix(in_srgb,var(--brand)_22%,transparent)] transition hover:-translate-y-0.5 hover:bg-(--brand-hover) focus:outline-none focus:ring-4 focus:ring-(--brand-soft)"
+            type="submit"
+            [disabled]="loginForm().submitting()"
+          >
+            @if (loginForm().submitting()) {
+              <span class="h-5 w-5 animate-spin rounded-full border-2 border-white/35 border-t-white"></span>
+              <span>Signing in...</span>
+            } @else {
+              <span>Sign in</span>
+              <span aria-hidden="true">→</span>
+            }
+          </button>
+        </form>
+
+        <div class="my-7 flex items-center gap-4">
+          <span class="h-px flex-1 bg-(--line)"></span>
+          <span class="text-xs font-bold uppercase tracking-[0.18em] text-(--muted)">Or</span>
+          <span class="h-px flex-1 bg-(--line)"></span>
         </div>
 
-        <div class="field">
-          <div class="password-label">
-            <label for="login-password">Password</label>
-            <a routerLink="/auth/forgot-password">Forgot Password?</a>
-          </div>
-          <div class="input-shell">
-            <svg viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="11" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path><circle cx="12" cy="15" r="1"></circle></svg>
-            <input id="login-password" [type]="showPassword ? 'text' : 'password'" name="password" [(ngModel)]="password" placeholder="••••••••" required />
-            <button class="show-password" type="button" (click)="showPassword = !showPassword" aria-label="Toggle password visibility">
-              <svg viewBox="0 0 24 24"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"></path><circle cx="12" cy="12" r="2.5"></circle></svg>
-            </button>
-          </div>
-        </div>
-
-        <button class="primary-btn" type="submit">Sign In</button>
-
-        <div class="or"><span></span><b>OR</b><span></span></div>
-
-        <button class="social-btn" type="button">
-          <span class="google-g">G</span>
+        <button
+          class="flex h-14 w-full items-center justify-center gap-3 rounded-2xl border border-(--border) bg-(--surface) font-bold text-(--text) transition hover:border-(--brand) hover:bg-(--brand-soft) focus:outline-none focus:ring-4 focus:ring-(--brand-soft)"
+          type="button"
+        >
+          <span class="text-xl font-black text-[#4285f4]">G</span>
           Continue with Google
         </button>
-        <a class="social-btn email-button" routerLink="/auth/register">
-          <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="m3 7 9 6 9-6"></path></svg>
-          Continue with Email
-        </a>
-      </form>
 
-      <p class="auth-switch">Don't have an account? <a routerLink="/auth/register">Register Now</a></p>
+        <p class="mt-8 text-sm text-(--text-soft)">
+          New to Talabaty?
+          <span class="ml-1 font-bold text-(--brand)">Create an account</span>
+        </p>
+      </div>
     </div>
   </section>
-</div>
+
+  <aside class="relative hidden min-h-dvh overflow-hidden bg-[#20150f] p-[clamp(2.5rem,5vw,5rem)] text-white lg:flex lg:flex-col lg:justify-between">
+    <div class="absolute -right-24 -top-20 h-80 w-80 rounded-full bg-(--brand)/30 blur-2xl"></div>
+    <div class="absolute -bottom-32 -left-20 h-96 w-96 rounded-full bg-[#ff9a4d]/15 blur-3xl"></div>
+
+    <div class="relative z-10 flex items-center justify-between">
+      <span class="rounded-full border border-white/15 bg-white/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.18em] text-white/75">
+        Dinner, simplified
+      </span>
+    </div>
+
+    <div class="relative z-10">
+      <div class="ml-auto max-w-sm rotate-2 rounded-4xl border border-white/15 bg-white/10 p-5 shadow-2xl backdrop-blur-xl">
+        <div class="flex items-center gap-4">
+          <div class="h-20 w-20 rounded-2xl bg-[url('/assets/images/talabaty-food-table.png')] bg-cover bg-center"></div>
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-[#ffad70]">On the way</span>
+            <h2 class="mt-1 text-xl font-bold">Your order is cooking</h2>
+            <p class="mt-1 text-sm text-white/60">Arriving in 24 minutes</p>
+          </div>
+        </div>
+        <div class="mt-5 h-2 overflow-hidden rounded-full bg-white/10">
+          <div class="h-full w-2/3 rounded-full bg-(--brand)"></div>
+        </div>
+        <div class="mt-3 flex justify-between text-[11px] font-bold uppercase tracking-wider text-white/45">
+          <span>Confirmed</span>
+          <span>Cooking</span>
+          <span>Delivered</span>
+        </div>
+      </div>
+
+      <div class="-mt-3 max-w-xs -rotate-3 rounded-3xl bg-(--brand) p-6 shadow-2xl">
+        <p class="text-sm text-white/75">Tonight's reward</p>
+        <p class="mt-2 font-['Playfair_Display'] text-3xl font-bold leading-tight">No cooking. No cleanup.</p>
+      </div>
+    </div>
+
+    <p class="relative z-10 max-w-md text-sm leading-6 text-white/55">
+      One login away from local favourites, live delivery updates, and easy reordering.
+    </p>
+  </aside>
+</main>

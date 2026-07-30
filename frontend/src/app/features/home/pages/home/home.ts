@@ -33,7 +33,7 @@ interface Product {
   selector: 'app-home',
   imports: [CommonModule, RouterLink],
   templateUrl: './home.html',
-  styleUrl: './home.scss',
+  styleUrl: './home.css',
 })
 export class Home {
   selectedCategory = 'food';

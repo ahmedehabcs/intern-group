@@ -7,7 +7,7 @@ import { ActivatedRoute, Router } from '@angular/router';
   selector: 'app-otp-verification',
   imports: [CommonModule, FormsModule],
   templateUrl: './otp-verification.html',
-  styleUrl: './otp-verification.scss',
+  styleUrl: './otp-verification.css',
 })
 export class OtpVerification {
   @ViewChildren('otpInput') inputs!: QueryList<ElementRef<HTMLInputElement>>;

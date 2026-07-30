@@ -9,6 +9,5 @@ import { AdminSidebar } from './components/admin-sidebar/admin-sidebar';
   selector: 'app-admin-layout',
   imports: [AdminNavbar, AdminSidebar, AdminBreadcrumbs, RouterOutlet],
   templateUrl: './admin-layout.html',
-  styleUrl: './admin-layout.scss',
 })
 export class AdminLayout {}
