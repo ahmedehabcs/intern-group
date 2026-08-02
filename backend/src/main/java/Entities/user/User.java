@@ -15,10 +15,15 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    // --- كود العلاقة (One-to-One) العكسية ---
-    // mappedBy بتقول لسبرينج: "ماتعملش عمود هنا، العلاقة دي بتدار من هناك"
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role;
+
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private CustomerProfile customerProfile;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private DeliveryProfile deliveryProfile;
 
     // Getters and Setters...
 }

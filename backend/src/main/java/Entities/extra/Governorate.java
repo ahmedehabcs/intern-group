@@ -11,12 +11,9 @@ public class Governorate {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // اسم المحافظة (مينفعش يتكرر)
     @Column(nullable = false, unique = true)
     private String name;
 
-    // ممكن مستقبلاً تضيف أعمدة زي:
-    // private BigDecimal baseDeliveryFee;
 
     public Governorate() {
     }
