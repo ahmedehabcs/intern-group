@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import Entities.order.Order;
 
 @Entity
-@Table(name = "customer_profiles")
+@Table(name = "customers")
 public class CustomerProfile {
 
     @Id
@@ -19,7 +19,7 @@ public class CustomerProfile {
     // Foreign key to the associated User
     @OneToOne
     @MapsId
-    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "id")
     private User user;
 
     // Foreign key to the associated User

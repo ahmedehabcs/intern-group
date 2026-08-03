@@ -41,4 +41,92 @@ public class MenuItem {
 
     public MenuItem() {}
     // Getters and Setters...
+
+    public MenuItem(String name, String description, Double basePrice, String imageUrl, Boolean isAvailable, MenuSection category, List<AddonGroup> addonGroups) {
+        this.name = name;
+        this.description = description;
+        this.basePrice = basePrice;
+        this.imageUrl = imageUrl;
+        this.isAvailable = isAvailable;
+        this.category = category;
+        this.addonGroups = addonGroups;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Double getBasePrice() {
+        return basePrice;
+    }
+
+    public void setBasePrice(Double basePrice) {
+        this.basePrice = basePrice;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public Boolean getAvailable() {
+        return isAvailable;
+    }
+
+    public void setAvailable(Boolean available) {
+        isAvailable = available;
+    }
+
+    public MenuSection getCategory() {
+        return category;
+    }
+
+    public void setCategory(MenuSection category) {
+        this.category = category;
+    }
+
+    public List<AddonGroup> getAddonGroups() {
+        return addonGroups;
+    }
+
+    public void setAddonGroups(List<AddonGroup> addonGroups) {
+        this.addonGroups = addonGroups;
+    }
+
+    @Override
+    public String toString() {
+        return "MenuItem{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", basePrice=" + basePrice +
+                ", imageUrl='" + imageUrl + '\'' +
+                ", isAvailable=" + isAvailable +
+                ", category=" + category +
+                ", addonGroups=" + addonGroups +
+                '}';
+    }
 }

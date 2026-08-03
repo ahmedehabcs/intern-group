@@ -7,7 +7,7 @@ import Entities.order.Order;
 
 
 @Entity
-@Table(name = "driver_profiles")
+@Table(name = "drivers")
 public class DeliveryProfile {
 
     @Id

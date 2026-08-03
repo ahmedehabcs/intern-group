@@ -11,17 +11,17 @@ public class CartItemAddon {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // الكمية لو مسموح يزود من نفس الإضافة (الافتراضي 1)
+
     private Integer quantity = 1;
 
-    // السعر وقت الإضافة (عشان لو المطعم غير سعر الإضافة والعميل في السلة، السعر ميتغيرش فجأة)
+
     private Double priceAtAddition = 0.0;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cart_item_id", nullable = false)
     private CartItem cartItem;
 
-    // الإضافة اللي العميل اختارها (اللي كان متسجل فيها السنجل والدبل أو الموتزاريلا)
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_item_addon_id", nullable = false)
     private MenuItemAddon menuItemAddon;

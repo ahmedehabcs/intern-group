@@ -50,4 +50,14 @@ public class HistoricalOrderItemAddon {
     public void setAddonPrice(Double addonPrice) {
         this.addonPrice = addonPrice;
     }
+
+    @Override
+    public String toString() {
+        return "HistoricalOrderItemAddon{" +
+                "id=" + id +
+                ", orderItem=" + orderItem +
+                ", addonName='" + addonName + '\'' +
+                ", addonPrice=" + addonPrice +
+                '}';
+    }
 }

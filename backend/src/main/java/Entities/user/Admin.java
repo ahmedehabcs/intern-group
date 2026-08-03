@@ -3,7 +3,7 @@ package Entities.user;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "admin_profiles")
+@Table(name = "admins")
 public class Admin{
 
     @Id
