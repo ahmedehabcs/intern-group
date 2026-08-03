@@ -25,5 +25,68 @@ public class User {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private DeliveryProfile deliveryProfile;
 
-    // Getters and Setters...
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Admin adminProfile;
+
+    public User() {}
+
+    public User(String email, String password, Role role) {
+        this.email = email;
+        this.password = password;
+        this.role = role;
+    }
+
+// Getters and Setters...
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public CustomerProfile getCustomerProfile() {
+        return customerProfile;
+    }
+
+    public void setCustomerProfile(CustomerProfile customerProfile) {
+        this.customerProfile = customerProfile;
+    }
+
+    public DeliveryProfile getDeliveryProfile() {
+        return deliveryProfile;
+    }
+
+    public void setDeliveryProfile(DeliveryProfile deliveryProfile) {
+        this.deliveryProfile = deliveryProfile;
+    }
+
+    public Admin getAdminProfile() {
+        return adminProfile;
+    }
+
+    public void setAdminProfile(Admin adminProfile) {
+        this.adminProfile = adminProfile;
+    }
 }
