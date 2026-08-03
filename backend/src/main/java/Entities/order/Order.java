@@ -8,6 +8,8 @@ import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "orders")
@@ -51,9 +53,15 @@ public class Order {
     @Column(name = "total_price", nullable = false)
     private BigDecimal totalPrice;
 
-    @Column(name = "updated_at", nullable = false)
+    @Column(name = "updated_at", nullable = false) //Order.updatedAt is nullable = false but nothing ever sets it!!!!
     private LocalDateTime updatedAt;
 
+    @OneToMany(
+            mappedBy = "order",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<OrderItem> orderItems = new ArrayList<>();
     public Order() {
     }
 
@@ -133,5 +141,29 @@ public class Order {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public List<OrderItem> getOrderItems() {
+        return orderItems;
+    }
+
+    public void setOrderItems(List<OrderItem> orderItems) {
+        this.orderItems = orderItems;
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "id=" + id +
+                ", customer=" + customer +
+                ", restaurant=" + restaurant +
+                ", rider=" + rider +
+                ", address=" + address +
+                ", status=" + status +
+                ", paymentMethod=" + paymentMethod +
+                ", deliveryFee=" + deliveryFee +
+                ", totalPrice=" + totalPrice +
+                ", updatedAt=" + updatedAt +
+                '}';
     }
 }
