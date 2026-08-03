@@ -19,7 +19,11 @@ public class CustomerProfile {
     // Foreign key to the associated User
     @OneToOne
     @MapsId
+<<<<<<< HEAD
     @JoinColumn(name = "id")
+=======
+    @JoinColumn(name = "id", referencedColumnName = "id", nullable = false)
+>>>>>>> 03340259db378854334250b75342b939bf4591e1
     private User user;
 
     // Foreign key to the associated User
