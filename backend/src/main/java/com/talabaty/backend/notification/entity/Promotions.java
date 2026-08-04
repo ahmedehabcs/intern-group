@@ -1,6 +1,6 @@
 package com.talabaty.backend.notification.entity;
 
-import com.talabaty.backend.Entities.catalog.Restaurant;
+import com.talabaty.backend.menu.entity.Restaurant;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 

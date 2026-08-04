@@ -1,6 +1,6 @@
 package com.talabaty.backend.address.entity;
 
-import com.talabaty.backend.Entities.user.CustomerProfile;
+import com.talabaty.backend.user.entity.CustomerProfile;
 import jakarta.persistence.*;
 
 @Entity

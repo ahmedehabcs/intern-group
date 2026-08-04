@@ -1,5 +1,5 @@
 package com.talabaty.backend.payment.entity;
-import com.talabaty.backend.Entities.user.User;
+import com.talabaty.backend.user.entity.User;
 import jakarta.persistence.*;
 
 @Entity

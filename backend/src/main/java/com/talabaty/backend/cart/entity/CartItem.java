@@ -1,6 +1,6 @@
 package com.talabaty.backend.cart.entity;
 
-import com.talabaty.backend.Entities.catalog.MenuItem;
+import com.talabaty.backend.menu.entity.MenuItem;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;

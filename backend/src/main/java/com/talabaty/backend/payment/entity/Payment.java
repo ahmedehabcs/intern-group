@@ -1,5 +1,5 @@
 package com.talabaty.backend.payment.entity;
-import com.talabaty.backend.Entities.order.Order;
+import com.talabaty.backend.order.entity.Order;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;

@@ -3,7 +3,7 @@ package com.talabaty.backend.user.entity;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-import com.talabaty.backend.Entities.order.Order;
+import com.talabaty.backend.order.entity.Order;
 
 
 @Entity

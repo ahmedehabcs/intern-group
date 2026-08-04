@@ -1,7 +1,7 @@
 package com.talabaty.backend.restaurant.entity;
 
 
-import com.talabaty.backend.Entities.extra.Governorate;
+import com.talabaty.backend.address.entity.Governorate;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;

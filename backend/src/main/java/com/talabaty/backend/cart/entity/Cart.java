@@ -1,7 +1,7 @@
 package com.talabaty.backend.cart.entity;
 
-import com.talabaty.backend.Entities.user.CustomerProfile;
-import com.talabaty.backend.Entities.catalog.Restaurant;
+import com.talabaty.backend.user.entity.CustomerProfile;
+import com.talabaty.backend.menu.entity.Restaurant;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;

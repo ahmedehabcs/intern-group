@@ -1,9 +1,9 @@
 package com.talabaty.backend.order.entity;
 
-import com.talabaty.backend.Entities.extra.Address;
-import com.talabaty.backend.Entities.catalog.Restaurant;
-import com.talabaty.backend.Entities.user.CustomerProfile;
-import com.talabaty.backend.Entities.user.DeliveryProfile;
+import com.talabaty.backend.address.entity.Address;
+import com.talabaty.backend.menu.entity.Restaurant;
+import com.talabaty.backend.user.entity.CustomerProfile;
+import com.talabaty.backend.user.entity.DeliveryProfile;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;

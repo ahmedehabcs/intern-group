@@ -1,6 +1,6 @@
 package com.talabaty.backend.user.entity;
-import com.talabaty.backend.Entities.extra.Address;
-import com.talabaty.backend.Entities.order.Order;
+import com.talabaty.backend.address.entity.Address;
+import com.talabaty.backend.order.entity.Order;
 import jakarta.persistence.*;
 import java.util.List;
 import java.util.ArrayList;

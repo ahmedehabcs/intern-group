@@ -1,6 +1,6 @@
 package com.talabaty.backend.cart.entity;
 
-import com.talabaty.backend.Entities.catalog.MenuItemAddon;
+import com.talabaty.backend.menu.entity.MenuItemAddon;
 import jakarta.persistence.*;
 
 @Entity
