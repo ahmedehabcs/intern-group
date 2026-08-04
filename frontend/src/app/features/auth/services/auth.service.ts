@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { RegisterRequest } from '../models/register.model';
 import { LoginForm } from '../models/login.model';
+import { ResetPasswordRequest } from '../models/reset.model';
 
 @Injectable({
     providedIn: 'root',
@@ -18,5 +19,9 @@ export class AuthService {
 
     login(data: LoginForm): Observable<LoginForm> {
         return this.http.post<LoginForm>(`${this.baseUrl}/login`, data);
+    }
+
+    reset(data: ResetPasswordRequest): Observable<ResetPasswordRequest>{
+        return this.http.post<ResetPasswordRequest>(`${this.baseUrl}/reset`, data);
     }
 }
