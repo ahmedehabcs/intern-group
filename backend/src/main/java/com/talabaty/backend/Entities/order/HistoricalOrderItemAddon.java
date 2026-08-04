@@ -1,4 +1,4 @@
-package com.talabaty.backend.Entities.order;
+package com.talabaty.backend.order;
 
 import jakarta.persistence.*;
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="talabaty_db@localhost" uuid="c2e4ccef-cffd-49a5-a9ed-5d20886b6227">
+    <data-source source="LOCAL" name="talabaty_db@localhost" uuid="276bc08a-2406-4fad-afe1-18a94b4f0350">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
       <imported>true</imported>
