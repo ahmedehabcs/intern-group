@@ -65,6 +65,12 @@ public class Order {
     public Order() {
     }
 
+    @PrePersist
+    @PreUpdate
+    private void syncUpdatedAt() {
+        this.updatedAt = LocalDateTime.now();
+    }
+
     // Getters & Setters
 
     public Long getId() {

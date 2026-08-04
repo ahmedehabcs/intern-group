@@ -4,8 +4,8 @@ package Entities.catalog;
 import Entities.extra.Governorate;
 import jakarta.persistence.*;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "restaurants")
@@ -40,11 +40,8 @@ public class Restaurant {
     @Column(nullable = false, columnDefinition = "boolean default true")
     private Boolean isActive = true;
 
-    @ManyToMany
-    @JoinTable(name = "restaurant_categories", joinColumns = @JoinColumn(name = "restaurant_id"),
-            inverseJoinColumns = @JoinColumn(name = "category_id")
-    )
-    private Set<Categories> categories = new HashSet<>();
+    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MenuSection> categories = new ArrayList<>();
 
     // Constructors, Getters, and Setters
 
@@ -124,11 +121,11 @@ public class Restaurant {
         isActive = active;
     }
 
-    public Set<Categories> getCategories() {
+    public List<MenuSection> getCategories() {
         return categories;
     }
 
-    public void setCategories(Set<Categories> categories) {
+    public void setCategories(List<MenuSection> categories) {
         this.categories = categories;
     }
 
@@ -148,7 +145,6 @@ public class Restaurant {
                 '}';
     }
 }
-
 
 
 
