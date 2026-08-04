@@ -1,5 +1,7 @@
 package com.talabaty.backend.menu.entity;
 
+import com.talabaty.backend.restaurant.entity.Restaurant;
+
 
 import jakarta.persistence.*;
 import java.util.ArrayList;
