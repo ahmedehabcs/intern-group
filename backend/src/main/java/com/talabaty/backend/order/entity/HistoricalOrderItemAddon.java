@@ -1,10 +1,10 @@
-package com.talabaty.backend.order;
+package com.talabaty.backend.order.entity;
 
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "historical_order_item_addons")
-public class HistoricalOrderItemAddon {
+public class Historicalcom.talabaty.backend.order.entity.OrderItemAddon {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -12,7 +12,7 @@ public class HistoricalOrderItemAddon {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_item_id", nullable = false)
-    private OrderItem orderItem;
+    private com.talabaty.backend.order.entity.OrderItem com.talabaty.backend.order.entity.OrderItem;
 
     @Column(nullable = false)
     private String addonName;
@@ -20,19 +20,19 @@ public class HistoricalOrderItemAddon {
     @Column(nullable = false)
     private Double addonPrice;
 
-    public HistoricalOrderItemAddon() {
+    public Historicalcom.talabaty.backend.order.entity.OrderItemAddon() {
     }
 
     public Long getId() {
         return id;
     }
 
-    public OrderItem getOrderItem() {
-        return orderItem;
+    public com.talabaty.backend.order.entity.OrderItem getcom.talabaty.backend.order.entity.OrderItem() {
+        return com.talabaty.backend.order.entity.OrderItem;
     }
 
-    public void setOrderItem(OrderItem orderItem) {
-        this.orderItem = orderItem;
+    public void setcom.talabaty.backend.order.entity.OrderItem(com.talabaty.backend.order.entity.OrderItem com.talabaty.backend.order.entity.OrderItem) {
+        this.com.talabaty.backend.order.entity.OrderItem = com.talabaty.backend.order.entity.OrderItem;
     }
 
     public String getAddonName() {
@@ -53,9 +53,9 @@ public class HistoricalOrderItemAddon {
 
     @Override
     public String toString() {
-        return "HistoricalOrderItemAddon{" +
+        return "Historicalcom.talabaty.backend.order.entity.OrderItemAddon{" +
                 "id=" + id +
-                ", orderItem=" + orderItem +
+                ", com.talabaty.backend.order.entity.OrderItem=" + com.talabaty.backend.order.entity.OrderItem +
                 ", addonName='" + addonName + '\'' +
                 ", addonPrice=" + addonPrice +
                 '}';

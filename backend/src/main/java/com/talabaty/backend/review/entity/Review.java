@@ -1,7 +1,7 @@
 package com.talabaty.backend.review.entity;
 
 import com.talabaty.backend.order.entity.Order;
-import com.talabaty.backend.menu.entity.Restaurant;
+import com.talabaty.backend.restaurant.entity.Restaurant;
 import com.talabaty.backend.user.entity.CustomerProfile;
 import jakarta.persistence.*;
 
