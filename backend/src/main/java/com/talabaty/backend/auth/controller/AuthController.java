@@ -1,10 +1,11 @@
 package com.talabaty.backend.auth.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.talabaty.backend.user.service.AuthService;
-import com.talabaty.backend.user.dto.request.SignupRequest;
+import com.talabaty.backend.auth.service.impl.AuthService;
+import com.talabaty.backend.auth.dto.request.SignupRequest;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -15,7 +16,7 @@ public class AuthController {
     private AuthService authService;
 
     @PostMapping("/signup")
-    public ResponseEntity<?> register(@RequestBody SignupRequest request) {
+    public ResponseEntity<?> register(@Valid @RequestBody SignupRequest request) {
         String result = authService.registerUser(request);
 
         if (result.startsWith("Error")) {

@@ -1,6 +1,6 @@
-package com.talabaty.backend.user.service.impl;
+package com.talabaty.backend.auth.service.impl;
 
-import com.talabaty.backend.user.dto.request.SignupRequest;
+import com.talabaty.backend.auth.dto.request.SignupRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,13 +17,16 @@ public class AuthService {
 
     @Transactional
     public String registerUser(SignupRequest request) {
-        if (userRepository.existsByEmail(request.getEmail())) {
+
+        String normalizedEmail = request.getEmail().toLowerCase();
+
+        if (userRepository.existsByEmail(normalizedEmail)) {
             return "Error: Email is already taken!";
         }
 
         // 1. إنشاء وحفظ الـ User الأساسي
         User user = new User();
-        user.setEmail(request.getEmail());
+        user.setEmail(normalizedEmail);
         user.setPassword(request.getPassword()); // لازم يتشفر لاحقاً
         user.setRole(Role.valueOf(request.getRole().toUpperCase()));
         user.setEmailVerified(false);
