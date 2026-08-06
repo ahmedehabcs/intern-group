@@ -7,5 +7,6 @@ import com.talabaty.backend.auth.dto.response.RegisterResponse;
 
 public interface AuthService {
     RegisterResponse register(RegisterRequest request);
-    LoginResponse login(LoginRequest request);
+    // Client IP is used to apply the in-memory login rate limit.
+    LoginResponse login(LoginRequest request, String clientIp);
 }

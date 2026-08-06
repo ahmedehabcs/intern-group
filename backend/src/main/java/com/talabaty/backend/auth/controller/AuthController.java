@@ -1,26 +1,70 @@
 package com.talabaty.backend.auth.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.talabaty.backend.auth.dto.request.LoginRequest;
+import com.talabaty.backend.auth.dto.request.RegisterRequest;
+import com.talabaty.backend.auth.dto.response.LoginResponse;
+import com.talabaty.backend.auth.dto.response.RegisterResponse;
+import com.talabaty.backend.auth.service.AuthService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import com.talabaty.backend.user.service.AuthService;
-import com.talabaty.backend.user.dto.request.SignupRequest;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+
+import jakarta.servlet.http.HttpServletRequest;
+@Tag(
+        name = "Authentication",
+        description = "User sign-up and access-token login"
+)
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "*") // عشان الفرونت إند يعرف يكلم الباك إند
+@CrossOrigin(origins = "*")
 public class AuthController {
 
-    @Autowired
-    private AuthService authService;
+
+
+    private final AuthService authService;
+
+
+
+    public AuthController(AuthService authService) {
+        this.authService = authService;
+    }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> register(@RequestBody SignupRequest request) {
-        String result = authService.registerUser(request);
+    public ResponseEntity<RegisterResponse> register(
+            @RequestBody RegisterRequest request
+    ) {
+        return ResponseEntity.ok(authService.register(request));
+    }
+    @Operation(
+            summary = "Log in",
+            description = "Authenticates with email and password. "
+                    + "Returns an access JWT only when the email is verified."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Login successful"),
+            @ApiResponse(responseCode = "400", description = "Email or password is missing"),
+            @ApiResponse(responseCode = "401", description = "Invalid email or password"),
+            @ApiResponse(responseCode = "403", description = "Email is not verified"),
+            @ApiResponse(responseCode = "500", description = "Unexpected authentication error")
+    })
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(
+            @Valid @RequestBody LoginRequest request,
+            HttpServletRequest httpRequest
+    ) {
+        // Uses the direct caller IP for the in-memory rate-limit key.
+        String clientIp = httpRequest.getRemoteAddr();
 
-        if (result.startsWith("Error")) {
-            return ResponseEntity.badRequest().body(result);
-        }
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(authService.login(request, clientIp));
     }
 }
