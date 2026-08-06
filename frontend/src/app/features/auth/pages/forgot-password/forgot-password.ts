@@ -10,7 +10,6 @@ import { ForgotPasswordRequest } from '../../models/forgot-password.model';
   selector: 'app-forgot-password',
   imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './forgot-password.html',
-  styleUrl: './forgot-password.css',
 })
 export class ForgotPassword {
   email = '';
