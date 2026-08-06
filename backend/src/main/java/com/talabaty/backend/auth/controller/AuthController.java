@@ -1,10 +1,10 @@
 package com.talabaty.backend.auth.controller;
 
 import com.talabaty.backend.auth.dto.request.LoginRequest;
-import com.talabaty.backend.auth.dto.request.RegisterRequest;
 import com.talabaty.backend.auth.dto.response.LoginResponse;
 import com.talabaty.backend.auth.dto.response.RegisterResponse;
 import com.talabaty.backend.auth.service.AuthService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.talabaty.backend.auth.dto.request.SignupRequest;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 
 import jakarta.servlet.http.HttpServletRequest;
 @Tag(
@@ -29,22 +29,18 @@ import jakarta.servlet.http.HttpServletRequest;
 @CrossOrigin(origins = "*")
 public class AuthController {
 
-
-
     private final AuthService authService;
-
-
 
     public AuthController(AuthService authService) {
         this.authService = authService;
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<RegisterResponse> register(
-            @RequestBody RegisterRequest request
-    ) {
-        return ResponseEntity.ok(authService.register(request));
+    public ResponseEntity<RegisterResponse> register(@Valid @RequestBody SignupRequest request) {
+        RegisterResponse result = authService.registerUser(request);
+        return ResponseEntity.ok(result);
     }
+
     @Operation(
             summary = "Log in",
             description = "Authenticates with email and password. "

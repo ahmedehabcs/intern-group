@@ -1,7 +1,7 @@
 package com.talabaty.backend.auth.service.impl;
+import com.talabaty.backend.auth.dto.request.SignupRequest;
 import com.talabaty.backend.auth.service.LoginRateLimitService;
 import com.talabaty.backend.auth.dto.request.LoginRequest;
-import com.talabaty.backend.auth.dto.request.RegisterRequest;
 import com.talabaty.backend.auth.dto.response.LoginResponse;
 import com.talabaty.backend.auth.dto.response.RegisterResponse;
 import com.talabaty.backend.auth.service.AuthService;
@@ -34,7 +34,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public RegisterResponse register(RegisterRequest request) {
+    public RegisterResponse registerUser(SignupRequest request) {
         // TODO: implement registration logic
         throw new UnsupportedOperationException("register not implemented");
     }
