@@ -1,6 +1,8 @@
 /* Tailwind-compatible OTP page component styles. */
 .otp-page {
   height: 100dvh;
+  display: grid;
+  place-items: center;
   min-height: 580px;
   overflow: hidden;
   background:

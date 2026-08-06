@@ -1,5 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { FormField, form, minLength, required, submit } from '@angular/forms/signals';
 import { firstValueFrom } from 'rxjs';
 import { LoginForm } from '../../models/login.model';
@@ -7,7 +8,7 @@ import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
-  imports: [FormField],
+  imports: [FormField, RouterLink],
   templateUrl: './login.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

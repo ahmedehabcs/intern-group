@@ -40,9 +40,12 @@
           <div>
             <div class="mb-2 flex items-center justify-between gap-4">
               <label for="login-password" class="text-sm font-bold text-(--text)">Password</label>
-              <span class="text-xs font-bold text-(--brand)">
+              <a
+                class="text-xs font-bold text-(--brand) hover:underline"
+                routerLink="/auth/forgot-password"
+              >
                 Forgot password?
-              </span>
+              </a>
             </div>
             <div
               class="flex h-14 items-center gap-3 rounded-2xl border border-(--border) bg-(--surface-2) px-4 text-(--muted) transition focus-within:border-(--brand) focus-within:bg-(--surface) focus-within:ring-4 focus-within:ring-(--brand-soft)">
