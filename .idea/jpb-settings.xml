@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="DatabaseMigrationSettings" lastSelectedDirectory="resources" />
+  <component name="DatabaseMigrationSettings" lastSelectedDirectory="migration" />
+  <component name="JpaLiquibaseChangesConfig">
+    <exclude-change idName="fk_revchanges_on_default_tracking_modified_entities_changelog" tagName="addForeignKeyConstraint" />
+    <exclude-change idName="orders#delivery_fee" tagName="modifyDataType" />
+    <exclude-change idName="orders#total_price" tagName="modifyDataType" />
+    <exclude-change idName="revinfo_seq" tagName="createSequence" />
+    <exclude-change idName="revinfo" tagName="createTable" />
+    <exclude-change idName="revchanges" tagName="createTable" />
+  </component>
 </project>

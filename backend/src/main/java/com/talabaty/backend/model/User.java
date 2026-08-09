@@ -1,5 +1,6 @@
 package com.talabaty.backend.model;
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "users")
@@ -21,6 +22,12 @@ public class User {
 
     @Column(nullable = false)
     private boolean emailVerified;
+
+    private String otp;
+    private LocalDateTime otpExpiration;
+
+    private String passwordResetToken;
+    private LocalDateTime passwordResetTokenExpiration;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private CustomerProfile customerProfile;
@@ -73,6 +80,38 @@ public class User {
 
     public void setEmailVerified(boolean emailVerified) {
         this.emailVerified = emailVerified;
+    }
+
+    public String getOtp() {
+        return otp;
+    }
+
+    public void setOtp(String otp) {
+        this.otp = otp;
+    }
+
+    public LocalDateTime getOtpExpiration() {
+        return otpExpiration;
+    }
+
+    public void setOtpExpiration(LocalDateTime otpExpiration) {
+        this.otpExpiration = otpExpiration;
+    }
+
+    public String getPasswordResetToken() {
+        return passwordResetToken;
+    }
+
+    public void setPasswordResetToken(String passwordResetToken) {
+        this.passwordResetToken = passwordResetToken;
+    }
+
+    public LocalDateTime getPasswordResetTokenExpiration() {
+        return passwordResetTokenExpiration;
+    }
+
+    public void setPasswordResetTokenExpiration(LocalDateTime passwordResetTokenExpiration) {
+        this.passwordResetTokenExpiration = passwordResetTokenExpiration;
     }
 
     public CustomerProfile getCustomerProfile() {
