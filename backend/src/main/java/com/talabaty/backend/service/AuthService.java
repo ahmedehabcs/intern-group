@@ -8,4 +8,8 @@ import com.talabaty.backend.dto.response.RegisterResponse;
 public interface AuthService {
     RegisterResponse registerUser(SignupRequest request);
     LoginResponse login(LoginRequest request, String clientIp);
+    void verifyOtp(String email, String otp);
+    void resendOtp(String email);
+    void forgotPassword(String email);
+    void resetPassword(String email, String otp, String newPassword);
 }
