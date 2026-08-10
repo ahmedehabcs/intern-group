@@ -67,7 +67,9 @@ CREATE TABLE addresses (
 
 CREATE TABLE categories (
     id BIGSERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL UNIQUE
+    name VARCHAR(255) NOT NULL UNIQUE,
+    description TEXT,
+    is_active BOOLEAN NOT NULL DEFAULT TRUE
 );
 
 CREATE TABLE restaurants (
@@ -80,6 +82,7 @@ CREATE TABLE restaurants (
     description TEXT,
     logo_url VARCHAR(255),
     is_active BOOLEAN DEFAULT TRUE,
+
     CONSTRAINT fk_restaurant_governorate FOREIGN KEY (governorate_id) REFERENCES governorates(id)
 );
 
@@ -107,8 +110,8 @@ CREATE TABLE menu_items (
     base_price DOUBLE PRECISION NOT NULL,
     image_url VARCHAR(255),
     is_available BOOLEAN DEFAULT TRUE,
-    category_id BIGINT NOT NULL,
-    CONSTRAINT fk_mi_category FOREIGN KEY (category_id) REFERENCES menu_sections(id)
+    menu_section_id BIGINT NOT NULL,
+    CONSTRAINT fk_mi_menu_section FOREIGN KEY (menu_section_id) REFERENCES menu_sections(id)
 );
 
 CREATE TABLE addon_groups (
