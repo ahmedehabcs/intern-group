@@ -28,8 +28,8 @@ public class MenuItem {
     private Boolean isAvailable = true;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id", nullable = false)
-    private MenuSection category;
+    @JoinColumn(name = "menu_section_id", nullable = false)
+    private MenuSection menuSection;
 
     @ManyToMany
     @JoinTable(
@@ -42,13 +42,13 @@ public class MenuItem {
     public MenuItem() {}
     // Getters and Setters...
 
-    public MenuItem(String name, String description, Double basePrice, String imageUrl, Boolean isAvailable, MenuSection category, List<AddonGroup> addonGroups) {
+    public MenuItem(String name, String description, Double basePrice, String imageUrl, Boolean isAvailable, MenuSection menuSection, List<AddonGroup> addonGroups) {
         this.name = name;
         this.description = description;
         this.basePrice = basePrice;
         this.imageUrl = imageUrl;
         this.isAvailable = isAvailable;
-        this.category = category;
+        this.menuSection = menuSection;
         this.addonGroups = addonGroups;
     }
 
@@ -100,12 +100,12 @@ public class MenuItem {
         isAvailable = available;
     }
 
-    public MenuSection getCategory() {
-        return category;
+    public MenuSection getMenuSection() {
+        return menuSection;
     }
 
-    public void setCategory(MenuSection category) {
-        this.category = category;
+    public void setMenuSection(MenuSection menuSection) {
+        this.menuSection = menuSection;
     }
 
     public List<AddonGroup> getAddonGroups() {
@@ -125,7 +125,7 @@ public class MenuItem {
                 ", basePrice=" + basePrice +
                 ", imageUrl='" + imageUrl + '\'' +
                 ", isAvailable=" + isAvailable +
-                ", category=" + category +
+                ", menuSection=" + menuSection +
                 ", addonGroups=" + addonGroups +
                 '}';
     }

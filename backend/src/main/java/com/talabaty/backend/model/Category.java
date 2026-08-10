@@ -1,17 +1,25 @@
 package com.talabaty.backend.model;
-import jakarta.persistence.*;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.Table;
+
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "menu_sections")
-public class MenuSection {
+@Table(name = "categories")
+public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String name;
 
     @Column(columnDefinition = "TEXT")
@@ -20,24 +28,17 @@ public class MenuSection {
     @Column(nullable = false, columnDefinition = "boolean default true")
     private Boolean isActive = true;
 
-    // علاقة القسم بالمطعم (القسم يخص مطعم واحد)
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "restaurant_id", nullable = false)
-    private Restaurant restaurant;
+    @ManyToMany(mappedBy = "categories")
+    private List<Restaurant> restaurants = new ArrayList<>();
 
-    @OneToMany(mappedBy = "menuSection", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MenuItem> menuItems = new ArrayList<>();
+    public Category() {
+    }
 
-    public MenuSection() {}
-
-    public MenuSection(String name, String description, Boolean isActive, Restaurant restaurant, List<MenuItem> menuItems) {
+    public Category(String name, String description, Boolean isActive) {
         this.name = name;
         this.description = description;
         this.isActive = isActive;
-        this.restaurant = restaurant;
-        this.menuItems = menuItems;
     }
-    // Getters and Setters...
 
     public Long getId() {
         return id;
@@ -71,31 +72,21 @@ public class MenuSection {
         isActive = active;
     }
 
-    public Restaurant getRestaurant() {
-        return restaurant;
+    public List<Restaurant> getRestaurants() {
+        return restaurants;
     }
 
-    public void setRestaurant(Restaurant restaurant) {
-        this.restaurant = restaurant;
-    }
-
-    public List<MenuItem> getMenuItems() {
-        return menuItems;
-    }
-
-    public void setMenuItems(List<MenuItem> menuItems) {
-        this.menuItems = menuItems;
+    public void setRestaurants(List<Restaurant> restaurants) {
+        this.restaurants = restaurants;
     }
 
     @Override
     public String toString() {
-        return "MenuSection{" +
+        return "Category{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", isActive=" + isActive +
-                ", restaurant=" + restaurant +
-                ", menuItems=" + menuItems +
                 '}';
     }
 }
