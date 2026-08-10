@@ -17,7 +17,7 @@ public class DeliveryProfile {
     private String nationalId;
 
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE)
     @MapsId
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;

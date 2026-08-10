@@ -11,7 +11,7 @@ public class Admin{
     private String name;
     private String phoneNumber;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE)
     @MapsId
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;
@@ -47,6 +47,10 @@ public class Admin{
 
     public User getUser() {
         return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     @Override

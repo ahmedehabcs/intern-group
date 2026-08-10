@@ -14,7 +14,7 @@ public class CustomerProfile {
     private Long PhoneNumber;
 
     // Foreign key to the associated User
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE)
     @MapsId
 
     @JoinColumn(name = "id", referencedColumnName = "id", nullable = false)
