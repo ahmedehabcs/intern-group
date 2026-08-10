@@ -13,6 +13,8 @@ public class SignupRequest {
             message = "Email must end with a valid domain (e.g., gmail.com, yahoo.com, hotmail.com, outlook.com)"
     )
     private String email;
+
+
     @NotBlank(message = "Password is required")
     @Size(min = 8, message = "Password must be at least 8 characters long")
     @Pattern(
@@ -20,6 +22,8 @@ public class SignupRequest {
             message = "Password must contain at least one uppercase letter, one lowercase letter, and one number"
     )
     private String password;
+
+    @NotBlank(message = "Role is required")
     private String role; // "CUSTOMER" أو "DRIVER"
 
     // بيانات مشتركة

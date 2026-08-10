@@ -7,8 +7,10 @@ import com.talabaty.backend.dto.response.RegisterResponse;
 import com.talabaty.backend.service.AuthService;
 import com.talabaty.backend.service.EmailService;
 import com.talabaty.backend.security.JwtService;
-import com.talabaty.backend.model.User;
-import com.talabaty.backend.model.Role;
+import com.talabaty.backend.model.*;
+import com.talabaty.backend.repository.AdminRepository;
+import com.talabaty.backend.repository.CustomerProfileRepository;
+import com.talabaty.backend.repository.DeliveryProfileRepository;
 import com.talabaty.backend.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,6 +25,9 @@ import java.util.UUID;
 public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
+    private final CustomerProfileRepository customerProfileRepository;
+    private final DeliveryProfileRepository deliveryProfileRepository;
+    private final AdminRepository adminRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final EmailService emailService;
@@ -30,12 +35,18 @@ public class AuthServiceImpl implements AuthService {
     private final LoginRateLimitService loginRateLimitService;
     public AuthServiceImpl(
             UserRepository userRepository,
+            CustomerProfileRepository customerProfileRepository,
+            DeliveryProfileRepository deliveryProfileRepository,
+            AdminRepository adminRepository,
             PasswordEncoder passwordEncoder,
             JwtService jwtService,
             EmailService emailService,
             LoginRateLimitService loginRateLimitService
     ) {
         this.userRepository = userRepository;
+        this.customerProfileRepository = customerProfileRepository;
+        this.deliveryProfileRepository = deliveryProfileRepository;
+        this.adminRepository = adminRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.emailService = emailService;
@@ -53,8 +64,36 @@ public class AuthServiceImpl implements AuthService {
         user.setEmailVerified(false);
         generateAndSetOtp(user);
 
-        userRepository.save(user);
-        emailService.sendOtpEmail(user.getEmail(), user.getOtp());
+        User savedUser = userRepository.save(user);
+        
+        switch (role) {
+            case CUSTOMER:
+                CustomerProfile customerProfile = new CustomerProfile();
+                customerProfile.setUser(savedUser);
+                customerProfile.setName(request.getName());
+                customerProfile.setPhoneNumber(request.getPhoneNumber());
+                customerProfileRepository.save(customerProfile);
+                break;
+            case DRIVER:
+                DeliveryProfile deliveryProfile = new DeliveryProfile();
+                deliveryProfile.setUser(savedUser);
+                deliveryProfile.setName(request.getName());
+                deliveryProfile.setPhoneNumber(request.getPhoneNumber());
+                deliveryProfile.setVehicleType(request.getVehicleType());
+                deliveryProfile.setLicenseNumber(request.getLicenseNumber());
+                deliveryProfile.setNationalId(request.getNationalId());
+                deliveryProfileRepository.save(deliveryProfile);
+                break;
+            case ADMIN:
+                Admin admin = new Admin();
+                admin.setUser(savedUser);
+                admin.setName(request.getName());
+                admin.setPhoneNumber(String.valueOf(request.getPhoneNumber()));
+                adminRepository.save(admin);
+                break;
+        }
+
+        emailService.sendOtpEmail(savedUser.getEmail(), savedUser.getOtp());
 
         return new RegisterResponse("OTP sent to email for verification.");
     }
