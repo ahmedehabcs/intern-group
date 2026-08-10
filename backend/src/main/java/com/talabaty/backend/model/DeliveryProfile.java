@@ -19,7 +19,7 @@ public class DeliveryProfile {
 
     @OneToOne
     @MapsId
-    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "id", referencedColumnName = "id", nullable = false)
     private User user;
 
     @OneToMany(mappedBy = "rider", cascade = CascadeType.ALL)
