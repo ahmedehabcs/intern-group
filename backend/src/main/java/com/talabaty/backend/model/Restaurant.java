@@ -1,6 +1,7 @@
 package com.talabaty.backend.model;
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,8 +38,19 @@ public class Restaurant {
     @Column(nullable = false, columnDefinition = "boolean default true")
     private Boolean isActive = true;
 
+    @Column(name = "delivery_fee", nullable = false, precision = 10, scale = 2)
+    private BigDecimal deliveryFee = BigDecimal.ZERO;
+
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MenuSection> categories = new ArrayList<>();
+    private List<MenuSection> menuSections = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "restaurant_categories",
+            joinColumns = @JoinColumn(name = "restaurant_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id")
+    )
+    private List<Category> categories = new ArrayList<>();
 
     // Constructors, Getters, and Setters
 
@@ -118,11 +130,27 @@ public class Restaurant {
         isActive = active;
     }
 
-    public List<MenuSection> getCategories() {
+    public BigDecimal getDeliveryFee() {
+        return deliveryFee;
+    }
+
+    public void setDeliveryFee(BigDecimal deliveryFee) {
+        this.deliveryFee = deliveryFee;
+    }
+
+    public List<MenuSection> getMenuSections() {
+        return menuSections;
+    }
+
+    public void setMenuSections(List<MenuSection> menuSections) {
+        this.menuSections = menuSections;
+    }
+
+    public List<Category> getCategories() {
         return categories;
     }
 
-    public void setCategories(List<MenuSection> categories) {
+    public void setCategories(List<Category> categories) {
         this.categories = categories;
     }
 
@@ -138,7 +166,8 @@ public class Restaurant {
                 ", description='" + description + '\'' +
                 ", logoUrl='" + logoUrl + '\'' +
                 ", isActive=" + isActive +
-                ", categories=" + categories +
+                ", deliveryFee=" + deliveryFee +
+                ", menuSections=" + menuSections +
                 '}';
     }
 }

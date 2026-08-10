@@ -13,7 +13,7 @@ public class Admin{
 
     @OneToOne(cascade = CascadeType.REMOVE)
     @MapsId
-    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "id", referencedColumnName = "id", nullable = false)
     private User user;
 
     public Admin() {
