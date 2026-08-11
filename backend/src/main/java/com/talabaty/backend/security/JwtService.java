@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+import java.time.Clock;
 import java.time.Instant;
 import java.util.Base64;
 
@@ -26,9 +27,15 @@ public class JwtService {
     private final JwtProperties jwtProperties;
     private final JwtEncoder jwtEncoder;
     private final JwtDecoder jwtDecoder;
+    private final Clock clock;
 
     public JwtService(JwtProperties jwtProperties) {
+        this(jwtProperties, Clock.systemUTC());
+    }
+
+    JwtService(JwtProperties jwtProperties, Clock clock) {
         this.jwtProperties = jwtProperties;
+        this.clock = clock;
 
         byte[] secretBytes = Base64.getDecoder().decode(jwtProperties.getSecret());
 
@@ -55,7 +62,7 @@ public class JwtService {
     }
 
     public String generateAccessToken(User user) {
-        Instant issuedAt = Instant.now();
+        Instant issuedAt = Instant.now(clock);
         Instant expiresAt = issuedAt.plusSeconds(
                 jwtProperties.getAccessTokenExpirationSeconds()
         );
