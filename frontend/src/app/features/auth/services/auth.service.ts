@@ -19,7 +19,7 @@ export class AuthService {
     }
 
     login(data: LoginForm): Observable<LoginForm> {
-        return this.http.post<LoginForm>(`${this.baseUrl}/login`, data);
+        return this.http.post<LoginForm>(`${this.baseUrl}/login`, data)
     }
 
     reset(data: ResetPasswordRequest): Observable<ResetPasswordRequest>{
