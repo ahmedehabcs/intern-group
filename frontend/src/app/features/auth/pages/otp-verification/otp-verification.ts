@@ -1,7 +1,11 @@
-import { Component, ElementRef, QueryList, ViewChildren } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
+import { OTPRequestModel } from '../../models/otp.model';
+import { HttpErrorResponse } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-otp-verification',
@@ -9,40 +13,54 @@ import { ActivatedRoute, Router } from '@angular/router';
   templateUrl: './otp-verification.html',
   styleUrl: './otp-verification.css',
 })
-export class OtpVerification {
-  @ViewChildren('otpInput') inputs!: QueryList<ElementRef<HTMLInputElement>>;
-
-  readonly digits = ['', '', '', '', '', ''];
-  readonly email: string;
-  seconds = 118;
+export class OtpVerification implements OnInit {
+  email: string = '';
+  otp: string = '';
+  isSubmitting: boolean = false;
+  requestError: string | null = null;
 
   constructor(
-    route: ActivatedRoute,
-    private readonly router: Router,
-  ) {
-    this.email = route.snapshot.queryParamMap.get('email') || 'a.design@studio.com';
-    window.setInterval(() => {
-      if (this.seconds > 0) this.seconds--;
-    }, 1000);
+    private route: ActivatedRoute,
+    private router: Router,
+    private authService: AuthService
+  ) {}
+
+  ngOnInit(): void {
+    this.route.queryParams.subscribe(params => {
+      this.email = params['email'] || '';
+    });
   }
 
-  move(index: number, event: Event): void {
-    const input = event.target as HTMLInputElement;
-    this.digits[index] = input.value.replace(/\D/g, '').slice(-1);
-    if (this.digits[index] && index < 5) this.inputs.get(index + 1)?.nativeElement.focus();
-  }
+  async onSubmit(event: Event): Promise<void> {
+    event.preventDefault();
+    this.requestError = null;
 
-  keydown(index: number, event: KeyboardEvent): void {
-    if (event.key === 'Backspace' && !this.digits[index] && index > 0) {
-      this.inputs.get(index - 1)?.nativeElement.focus();
+    if (!this.otp || this.otp.trim().length === 0) {
+      this.requestError = 'Please enter the verification code.';
+      return;
     }
-  }
 
-  verify(): void {
-    this.router.navigateByUrl('/');
-  }
+    this.isSubmitting = true;
 
-  get time(): string {
-    return `${Math.floor(this.seconds / 60).toString().padStart(2, '0')}:${(this.seconds % 60).toString().padStart(2, '0')}`;
+    const request: OTPRequestModel = {
+      email: this.email,
+      otp: this.otp
+    };
+
+    try {
+      const response = await firstValueFrom(
+        this.authService.verifyOtp(request)
+      );
+      console.log('OTP verification response:', response);
+      this.router.navigate(['/auth/login']);
+    } catch (error: unknown) {
+      if (error instanceof HttpErrorResponse) {
+        this.requestError = error.error?.message ?? 'OTP verification failed.';
+      } else {
+        this.requestError = 'OTP verification failed.';
+      }
+    } finally {
+      this.isSubmitting = false;
+    }
   }
 }
