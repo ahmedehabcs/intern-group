@@ -1,31 +1,107 @@
-<div class="auth-page otp-page">
-  <form class="otp-card" (ngSubmit)="verify()">
-    <div class="otp-icon">
-      <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"></path><rect x="8.5" y="10" width="7" height="6" rx="1"></rect><path d="M10 10V8.5a2 2 0 0 1 4 0V10"></path></svg>
-      <span>✉</span>
-    </div>
+<div class="min-h-dvh w-full bg-(--surface)">
+  <div class="grid min-h-dvh w-full lg:grid-cols-[45%_55%]">
 
-    <h1 class="auth-heading">Check your email</h1>
-    <p class="auth-copy">Enter the 6-digit code sent to<br /><strong>{{ email }}</strong></p>
+    <!-- Left Side -->
+    <aside
+      class="relative hidden min-h-dvh flex-col justify-between overflow-hidden bg-[linear-gradient(180deg,rgba(20,10,4,0.2),rgba(20,10,4,0.88)),url('/assets/images/talabaty-food-table.png')] bg-cover bg-center p-[clamp(2.5rem,5vw,6rem)] text-white lg:flex">
 
-    <div class="otp-inputs">
-      @for (digit of digits; track $index) {
-        <input
-          #otpInput
-          type="text"
-          inputmode="numeric"
-          maxlength="1"
-          [value]="digits[$index]"
-          (input)="move($index, $event)"
-          (keydown)="keydown($index, $event)"
-          [attr.aria-label]="'Code digit ' + ($index + 1)"
-        />
-      }
-    </div>
+      <div class="relative z-10 flex items-center gap-3 text-2xl font-bold">
+        <span
+          class="flex h-11 w-11 items-center justify-center rounded-xl bg-(--surface) text-(--brand)">
+          T
+        </span>
+        <span>Talabaty</span>
+      </div>
 
-    <div class="timer">◷ <strong>{{ time }}</strong></div>
-    <p class="resend">Didn't receive a code? <button type="button" [disabled]="seconds > 0">Resend Code</button></p>
-    <button class="primary-btn verify-button" type="submit">Verify & Proceed</button>
-    <span class="secure">Secure verification</span>
-  </form>
+      <div class="relative z-10 max-w-xl">
+        <p class="mb-4 text-sm font-semibold uppercase tracking-[0.25em] text-white/70">
+          Email Verification
+        </p>
+
+        <h2 class="font-['Playfair_Display'] text-5xl font-bold leading-tight">
+          Almost there.
+        </h2>
+
+        <p class="mt-6 text-lg text-white/85">
+          Enter the verification code we sent to your email to continue.
+        </p>
+      </div>
+
+      <span class="relative z-10 text-sm text-white/70">
+        Secure. Fast. Simple.
+      </span>
+    </aside>
+
+    <!-- Right Side -->
+    <section
+      class="flex min-h-dvh items-center bg-(--surface) px-5 py-10 sm:px-10 lg:px-[clamp(3rem,6vw,7rem)]">
+
+      <div class="w-full max-w-lg">
+
+        <span
+          class="inline-flex rounded-full bg-(--brand-soft) px-4 py-2 text-xs font-bold uppercase tracking-[0.2em] text-(--brand)">
+          Verification
+        </span>
+
+        <h1
+          class="mt-5 font-['Playfair_Display'] text-3xl font-bold text-(--text) sm:text-4xl">
+          Verify your email
+        </h1>
+
+        <p class="mt-3 text-(--text-soft)">
+          We've sent a verification code to
+        </p>
+
+        <p class="font-semibold text-(--text)">
+          {{ email }}
+        </p>
+
+        <form class="mt-8 space-y-6" (submit)="onSubmit($event)">
+
+          <div>
+            <label
+              for="otp"
+              class="mb-2 block text-sm font-semibold text-(--text)">
+              Verification Code
+            </label>
+
+            <input
+              id="otp"
+              type="text"
+              placeholder="Enter the 6-digit code"
+              [(ngModel)]="otp"
+              name="otp"
+              class="w-full rounded-xl border border-(--border) bg-(--surface) px-4 py-3.5 text-(--text) outline-none transition placeholder:text-(--muted) focus:border-(--brand) focus:ring-4 focus:ring-(--brand-soft)">
+          </div>
+
+          @if (requestError) {
+          <div
+            class="rounded-xl border border-red-300 bg-red-50 px-4 py-3 text-sm font-medium text-red-700 dark:border-red-900 dark:bg-red-950/40 dark:text-red-300"
+            role="alert">
+            {{ requestError }}
+          </div>
+          }
+
+          <button
+            type="submit"
+            [disabled]="isSubmitting"
+            class="flex w-full items-center justify-center gap-2 rounded-xl bg-(--brand) px-5 py-3.5 font-bold text-white shadow-(--shadow-sm) transition hover:bg-(--brand-hover) focus:outline-none focus:ring-4 focus:ring-(--brand-soft) disabled:cursor-not-allowed disabled:opacity-60">
+            @if (isSubmitting) {
+            <svg class="h-5 w-5 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 0 1 8-8v4a4 4 0 0 0-4 4H4z"></path>
+            </svg>
+            <span>Verifying...</span>
+            } @else {
+            <span>Verify Email</span>
+            }
+          </button>
+
+        </form>
+
+      </div>
+
+    </section>
+
+  </div>
 </div>
