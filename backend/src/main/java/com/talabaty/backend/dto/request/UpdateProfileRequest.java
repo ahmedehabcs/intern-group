@@ -1,11 +1,19 @@
 package com.talabaty.backend.dto.request;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+
 // This DTO contains all possible fields for both Customer and Delivery profiles.
 // The service logic will decide which fields to use based on the user's role.
 public class UpdateProfileRequest {
 
     // Common fields for all profiles
+    @NotBlank(message = "Name is required")
     private String name;
+
+    @NotNull(message = "Phone number is required")
+    @Positive(message = "Phone number must be positive")
     private Long phoneNumber;
 
     // Fields specific to DeliveryProfile
