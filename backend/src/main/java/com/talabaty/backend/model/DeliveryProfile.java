@@ -13,7 +13,7 @@ public class DeliveryProfile {
     private String vehicleType;
     private String licenseNumber;
     private Boolean isOnline;
-    private Long PhoneNumber;
+    private String PhoneNumber;
     private String nationalId;
 
 
@@ -27,7 +27,7 @@ public class DeliveryProfile {
 
     public DeliveryProfile() {}
 
-    public DeliveryProfile(String name, String vehicleType, String licenseNumber, Boolean isOnline, Long phoneNumber, String nationalId, User user, List<Order> deliveryHistory) {
+    public DeliveryProfile(String name, String vehicleType, String licenseNumber, Boolean isOnline, String phoneNumber, String nationalId, User user, List<Order> deliveryHistory) {
         Name = name;
         this.vehicleType = vehicleType;
         this.licenseNumber = licenseNumber;
@@ -75,11 +75,11 @@ public class DeliveryProfile {
         isOnline = online;
     }
 
-    public Long getPhoneNumber() {
+    public String getPhoneNumber() {
         return PhoneNumber;
     }
 
-    public void setPhoneNumber(Long phoneNumber) {
+    public void setPhoneNumber(String phoneNumber) {
         PhoneNumber = phoneNumber;
     }
 
