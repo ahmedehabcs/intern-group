@@ -24,10 +24,14 @@ public class SignupRequest {
     private String password;
 
     @NotBlank(message = "Role is required")
+
     private String role; // "CUSTOMER" أو "DRIVER"
 
     // بيانات مشتركة
+    @NotBlank(message = "name is required")
     private String name;
+
+
     private Long phoneNumber;
 
     // بيانات خاصة بالدليفري

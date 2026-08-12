@@ -11,7 +11,7 @@ public class CustomerProfile {
     private Long id;
     private String Name;
     private Integer loyaltyPoints;
-    private Long PhoneNumber;
+    private String PhoneNumber;
 
     // Foreign key to the associated User
     @OneToOne(cascade = CascadeType.REMOVE)
@@ -33,7 +33,7 @@ public class CustomerProfile {
     private List<Address> addresses = new ArrayList<>();
 
     public CustomerProfile() {}
-    public CustomerProfile(String name, Integer loyaltyPoints, Long phoneNumber, User user, List<Order> orderHistory, List<Address> addresses) {
+    public CustomerProfile(String name, Integer loyaltyPoints, String phoneNumber, User user, List<Order> orderHistory, List<Address> addresses) {
         Name = name;
         this.loyaltyPoints = loyaltyPoints;
         PhoneNumber = phoneNumber;
@@ -65,11 +65,11 @@ public class CustomerProfile {
         this.loyaltyPoints = loyaltyPoints;
     }
 
-    public Long getPhoneNumber() {
+    public String getPhoneNumber() {
         return PhoneNumber;
     }
 
-    public void setPhoneNumber(Long phoneNumber) {
+    public void setPhoneNumber(String phoneNumber) {
         PhoneNumber = phoneNumber;
     }
 
