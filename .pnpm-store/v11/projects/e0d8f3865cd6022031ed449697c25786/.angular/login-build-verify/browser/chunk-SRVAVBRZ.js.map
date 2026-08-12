@@ -1,0 +1,12 @@
+{
+  "version": 3,
+  "sources": [
+    "src/app/features/search/search.routes.ts"
+  ],
+  "sourcesContent": [
+    "import { Routes } from '@angular/router';\r\n\r\nexport const SEARCH_ROUTES: Routes = [\r\n  {\r\n    path: '',\r\n    loadComponent: () =>\r\n      import('../home/pages/home/home').then(({ Home }) => Home),\r\n  },\r\n];\r\n"
+  ],
+  "mappings": ";;;AAEO,IAAM,gBAAwB;AAAA,EACnC;AAAA,IACE,MAAM;AAAA,IACN,eAAe,MACb,OAAO,qBAAyB,EAAE,KAAK,CAAC,EAAE,KAAK,MAAM,IAAI;AAAA,EAC7D;AACF;",
+  "names": [],
+  "debugId": "c1868e53-ce05-531e-8e8f-9b6f45172298"
+}

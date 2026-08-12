@@ -1,0 +1,12 @@
+{
+  "version": 3,
+  "sources": [
+    "src/app/features/orders/orders.routes.ts"
+  ],
+  "sourcesContent": [
+    "import { Routes } from '@angular/router';\r\n\r\n// Pages will be added when the orders feature is implemented.\r\nexport const ORDERS_ROUTES: Routes = [\r\n  { path: '', children: [] },\r\n  { path: ':orderId', children: [] },\r\n];\r\n"
+  ],
+  "mappings": ";;;AAGO,IAAM,gBAAwB;AAAA,EACnC,EAAE,MAAM,IAAI,UAAU,CAAC,EAAE;AAAA,EACzB,EAAE,MAAM,YAAY,UAAU,CAAC,EAAE;AACnC;",
+  "names": [],
+  "debugId": "6ea6371b-da14-5ec7-9107-a6b079f999b6"
+}

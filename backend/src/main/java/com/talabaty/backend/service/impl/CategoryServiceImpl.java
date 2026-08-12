@@ -21,24 +21,11 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<CategoryResponse> browseCategories(String search) {
-        // Normalize the search value and remove leading/trailing spaces.
-        String normalizedSearch = search == null ? "" : search.trim();
+    public List<CategoryResponse> browseCategories() {
+        List<Category> categories = categoryRepository
+                .findDistinctByIsActiveTrueAndRestaurants_IsActiveTrueOrderByNameAsc();
 
-        List<Category> categories;
-
-        if (normalizedSearch.isEmpty()) {
-            // Return all active categories that belong to active restaurants.
-            categories = categoryRepository
-                    .findDistinctByIsActiveTrueAndRestaurants_IsActiveTrueOrderByNameAsc();
-        } else {
-            // Search active categories by name.
-            categories = categoryRepository
-                    .findDistinctByIsActiveTrueAndRestaurants_IsActiveTrueAndNameContainingIgnoreCaseOrderByNameAsc(
-                            normalizedSearch
-                    );
-        }
-// Convert Category entities to CategoryResponse DTOs.
+        // Convert Category entities to CategoryResponse DTOs.
         List<CategoryResponse> responses = new ArrayList<>();
 
         for (Category category : categories) {

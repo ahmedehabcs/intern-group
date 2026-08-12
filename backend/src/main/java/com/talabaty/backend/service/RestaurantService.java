@@ -6,8 +6,7 @@ import java.util.List;
 
 public interface RestaurantService {
 
-    List<RestaurantResponse> browseRestaurants(
-            String search,
-            Long categoryId
-    );
+    List<RestaurantResponse> browseRestaurants(Long categoryId);
+
+    List<RestaurantResponse> searchRestaurants(String search);
 }
