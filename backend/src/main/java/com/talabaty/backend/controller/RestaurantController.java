@@ -1,10 +1,8 @@
 package com.talabaty.backend.controller;
 
-import com.talabaty.backend.config.OpenApiConfig;
 import com.talabaty.backend.dto.response.RestaurantResponse;
 import com.talabaty.backend.service.RestaurantService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,12 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @Tag(
-        name = "Customer Restaurants",
-        description = "Browse and search active restaurants"
+        name = "Restaurants",
+        description = "Browse active restaurants"
 )
-@SecurityRequirement(name = OpenApiConfig.SECURITY_SCHEME_NAME)
 @RestController
-@RequestMapping("/api/customer/restaurants")
+@RequestMapping("/api/restaurants")
 public class RestaurantController {
 
     private final RestaurantService restaurantService;
@@ -29,14 +26,17 @@ public class RestaurantController {
         this.restaurantService = restaurantService;
     }
 
-    @Operation(summary = "Browse active restaurants")
+    @Operation(
+            summary = "Browse active restaurants",
+            description = "Publicly browse active restaurants and optionally filter by category.",
+            tags = "Restaurants"
+    )
     @GetMapping
     public ResponseEntity<List<RestaurantResponse>> browseRestaurants(
-            @RequestParam(required = false) String search,
             @RequestParam(required = false) Long categoryId
     ) {
         return ResponseEntity.ok(
-                restaurantService.browseRestaurants(search, categoryId)
+                restaurantService.browseRestaurants(categoryId)
         );
     }
 }
