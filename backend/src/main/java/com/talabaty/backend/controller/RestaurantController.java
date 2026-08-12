@@ -1,14 +1,12 @@
 package com.talabaty.backend.controller;
 
+import com.talabaty.backend.dto.response.RestaurantDetailsResponse;
 import com.talabaty.backend.dto.response.RestaurantResponse;
 import com.talabaty.backend.service.RestaurantService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -37,6 +35,19 @@ public class RestaurantController {
     ) {
         return ResponseEntity.ok(
                 restaurantService.browseRestaurants(categoryId)
+        );
+    }
+    @Operation(
+            summary = "Get restaurant details",
+            description = "Get one active restaurant with its active menu sections and available menu items.",
+            tags = "Restaurants"
+    )
+    @GetMapping("/{restaurantId}")
+    public ResponseEntity<RestaurantDetailsResponse> getRestaurantDetails(
+            @PathVariable Long restaurantId
+    ) {
+        return ResponseEntity.ok(
+                restaurantService.getRestaurantDetails(restaurantId)
         );
     }
 }
