@@ -31,7 +31,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        component: [backend, frontend]
+        # Backend only: the frontend is not deployed to the server, so building
+        # and pushing its image on every merge would be wasted CI time. CI still
+        # builds the frontend as a quality gate. To publish it again - e.g. when
+        # you do start deploying it - make this: [backend, frontend]
+        component: [backend]
 
     steps:
       - name: Check out the tested commit
@@ -74,20 +78,95 @@ jobs:
           cache-to: type=gha,mode=max
 
   # ---------------------------------------------------------------------------
-  # Deployment is intentionally not wired up: this repository has no hosting
-  # target yet. The images above are host-agnostic, so adding a real deploy is a
-  # matter of appending a job here. See README-CICD.md for the concrete options.
+  # Deploys to a single Linux server over SSH. The job is inert until the four
+  # SSH_* secrets exist, so it neither fails nor does anything surprising before
+  # the server is set up. See README-CICD.md -> "Deploying to your server".
   # ---------------------------------------------------------------------------
   deploy:
-    name: Deploy (not configured)
+    name: Deploy to server
     runs-on: ubuntu-latest
     needs: publish
     steps:
-      - name: Explain what was published and what is missing
+      - name: Check out the tested commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+
+      # The `secrets` context is not available in a job-level `if`, so the guard
+      # has to live in a step.
+      - name: Is a server configured?
+        id: guard
         run: |
-          echo "Images published to GHCR:"
-          echo "  ghcr.io/${{ github.repository }}-backend:latest"
-          echo "  ghcr.io/${{ github.repository }}-frontend:latest"
-          echo ""
-          echo "No deployment target is configured yet."
-          echo "See README-CICD.md -> 'Adding a real deploy' to wire one up."
+          if [ -z "${{ secrets.SSH_HOST }}" ]; then
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "SSH_HOST is not set - skipping deploy."
+            echo "Images are published and ready at:"
+            echo "  ghcr.io/${{ github.repository }}-backend:latest"
+            echo "  ghcr.io/${{ github.repository }}-frontend:latest"
+          else
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      # Ships the compose file itself so the server always runs the version that
+      # matches this commit. The server's .env is never touched - it holds the
+      # secrets and stays put.
+      - name: Copy compose file to the server
+        if: steps.guard.outputs.configured == 'true'
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT || 22 }}
+          source: docker-compose.prod.yml
+          target: ${{ secrets.DEPLOY_PATH || '/opt/talabaty' }}
+
+      - name: Pull images and restart
+        if: steps.guard.outputs.configured == 'true'
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT || 22 }}
+          script: |
+            set -e
+            cd ${{ secrets.DEPLOY_PATH || '/opt/talabaty' }}
+
+            # GHCR packages are private by default even for a public repo, so
+            # the server authenticates with a read:packages token. Once the two
+            # packages are made public this login can be dropped.
+            echo "${{ secrets.GHCR_PULL_TOKEN }}" \
+              | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+            docker compose -f docker-compose.prod.yml pull
+            docker compose -f docker-compose.prod.yml up -d
+
+            # Read the published port from the server's .env. tr strips any CR
+            # left behind if the file was written on Windows - a bare \r makes
+            # the URL silently unusable.
+            API_PORT="$(grep -E '^API_PORT=' .env 2>/dev/null | cut -d= -f2 | tr -d ' \r')"
+            API_PORT="${API_PORT:-8080}"
+
+            # Wait for the API to actually answer before calling the deploy
+            # good. Without this the job goes green even when the backend is
+            # crashlooping on a failed migration.
+            #
+            # /v3/api-docs, not a business endpoint: SecurityConfig permits only
+            # /api/auth/**, /swagger-ui/** and /v3/api-docs/**, so anything else
+            # answers 403 and `curl -f` would report a healthy deploy as failed.
+            # It is also a genuine readiness signal - springdoc can only render
+            # it once the context and every controller have started.
+            for i in $(seq 1 45); do
+              if curl -fsS "http://localhost:${API_PORT}/v3/api-docs" >/dev/null 2>&1; then
+                echo "Health check passed after ${i}s."
+                docker image prune -f
+                exit 0
+              fi
+              sleep 1
+            done
+
+            echo "Health check FAILED - the API did not answer within 45s."
+            docker compose -f docker-compose.prod.yml ps
+            docker compose -f docker-compose.prod.yml logs --tail=50 backend
+            exit 1

@@ -16,7 +16,13 @@ services:
       POSTGRES_USER: ${DB_USERNAME:-postgres}
       POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
     ports:
-      - '5432:5432'
+      # The host port is configurable on purpose: a natively installed
+      # PostgreSQL already owns 5432 on this team's machines, and the container
+      # would fail to bind with "port is already allocated". Either stop the
+      # native service and keep 5432, or set DB_PORT=5433 in .env.
+      # This only affects access from the host: the backend container always
+      # reaches the database over the compose network at postgres:5432.
+      - '${DB_PORT:-5432}:5432'
     volumes:
       - postgres-data:/var/lib/postgresql/data
     healthcheck:
@@ -55,9 +61,9 @@ services:
       context: ./frontend
     depends_on:
       - backend
-    # The Angular bundle calls http://localhost:8080, baked in at build time
-    # from src/environments/environment.production.ts. That resolves in the
-    # user's browser, where 8080 is published above - so it works as-is.
+    # The production bundle uses a relative apiUrl, so the browser calls
+    # /api/... on this same origin and nginx proxies it to backend:8080 (see
+    # frontend/nginx.conf). Nothing host-specific is baked into the bundle.
     ports:
       - '4200:80'
 

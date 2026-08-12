@@ -3,6 +3,7 @@ package com.talabaty.backend.security;
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import com.nimbusds.jose.proc.SecurityContext;
 import com.talabaty.backend.model.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
@@ -29,10 +30,17 @@ public class JwtService {
     private final JwtDecoder jwtDecoder;
     private final Clock clock;
 
+    // @Autowired is required, not optional: Spring only infers a constructor
+    // implicitly when the class declares exactly one. This class has two (the
+    // package-private one below lets tests inject a fixed Clock), so without
+    // this annotation Spring falls back to a no-arg constructor that does not
+    // exist and startup fails with "No default constructor found".
+    @Autowired
     public JwtService(JwtProperties jwtProperties) {
         this(jwtProperties, Clock.systemUTC());
     }
 
+    // Package-private: test seam for a fixed Clock (see JwtSecurityTests).
     JwtService(JwtProperties jwtProperties, Clock clock) {
         this.jwtProperties = jwtProperties;
         this.clock = clock;
