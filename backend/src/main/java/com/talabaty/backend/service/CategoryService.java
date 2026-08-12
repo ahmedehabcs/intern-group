@@ -5,5 +5,5 @@ import com.talabaty.backend.dto.response.CategoryResponse;
 import java.util.List;
 
 public interface CategoryService {
-    List<CategoryResponse> browseCategories(String search);
+    List<CategoryResponse> browseCategories();
 }

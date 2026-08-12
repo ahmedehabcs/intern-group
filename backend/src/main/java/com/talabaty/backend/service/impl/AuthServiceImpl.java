@@ -1,5 +1,7 @@
 package com.talabaty.backend.service.impl;
-import com.talabaty.backend.dto.request.SignupRequest;
+
+import com.talabaty.backend.dto.request.CustomerSignupRequest;
+import com.talabaty.backend.dto.request.DriverSignupRequest;
 import com.talabaty.backend.service.LoginRateLimitService;
 import com.talabaty.backend.dto.request.LoginRequest;
 import com.talabaty.backend.dto.response.LoginResponse;
@@ -12,14 +14,16 @@ import com.talabaty.backend.repository.AdminRepository;
 import com.talabaty.backend.repository.CustomerProfileRepository;
 import com.talabaty.backend.repository.DeliveryProfileRepository;
 import com.talabaty.backend.repository.UserRepository;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.Random;
-import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -31,8 +35,8 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final EmailService emailService;
-    // Tracks failed logins for each email-and-IP combination.
     private final LoginRateLimitService loginRateLimitService;
+
     public AuthServiceImpl(
             UserRepository userRepository,
             CustomerProfileRepository customerProfileRepository,
@@ -54,49 +58,65 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public RegisterResponse registerUser(SignupRequest request) {
+    @Transactional
+    public RegisterResponse registerCustomer(CustomerSignupRequest request) {
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Email already in use");
         }
 
-        Role role = Role.valueOf(request.getRole().toUpperCase());
-        User user = new User(request.getEmail(), passwordEncoder.encode(request.getPassword()), role);
-        user.setEmailVerified(false);
-        generateAndSetOtp(user);
+        try {
+            User user = new User(request.getEmail(), passwordEncoder.encode(request.getPassword()), Role.CUSTOMER);
+            user.setEmailVerified(false);
+            generateAndSetOtp(user);
 
-        User savedUser = userRepository.save(user);
-        
-        switch (role) {
-            case CUSTOMER:
-                CustomerProfile customerProfile = new CustomerProfile();
-                customerProfile.setUser(savedUser);
-                customerProfile.setName(request.getName());
-                customerProfile.setPhoneNumber(request.getPhoneNumber());
-                customerProfileRepository.save(customerProfile);
-                break;
-            case DRIVER:
-                DeliveryProfile deliveryProfile = new DeliveryProfile();
-                deliveryProfile.setUser(savedUser);
-                deliveryProfile.setName(request.getName());
-                deliveryProfile.setPhoneNumber(request.getPhoneNumber());
-                deliveryProfile.setVehicleType(request.getVehicleType());
-                deliveryProfile.setLicenseNumber(request.getLicenseNumber());
-                deliveryProfile.setNationalId(request.getNationalId());
-                deliveryProfileRepository.save(deliveryProfile);
-                break;
-            case ADMIN:
-                Admin admin = new Admin();
-                admin.setUser(savedUser);
-                admin.setName(request.getName());
-                admin.setPhoneNumber(String.valueOf(request.getPhoneNumber()));
-                adminRepository.save(admin);
-                break;
+            User savedUser = userRepository.save(user);
+
+            CustomerProfile customerProfile = new CustomerProfile();
+            customerProfile.setUser(savedUser);
+            customerProfile.setName(request.getName());
+            // The new spec for CustomerSignupRequest doesn't include a phone number.
+            customerProfile.setPhoneNumber(null); 
+            customerProfileRepository.save(customerProfile);
+
+            emailService.sendOtpEmail(savedUser.getEmail(), savedUser.getOtp());
+
+            return new RegisterResponse("OTP sent to email for verification.");
+        } catch (DataIntegrityViolationException e) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email already in use");
+        }
+    }
+
+    @Override
+    @Transactional
+    public RegisterResponse registerDriver(DriverSignupRequest request) {
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email already in use");
         }
 
-        emailService.sendOtpEmail(savedUser.getEmail(), savedUser.getOtp());
+        try {
+            User user = new User(request.getEmail(), passwordEncoder.encode(request.getPassword()), Role.DRIVER);
+            user.setEmailVerified(false);
+            generateAndSetOtp(user);
 
-        return new RegisterResponse("OTP sent to email for verification.");
+            User savedUser = userRepository.save(user);
+
+            DeliveryProfile deliveryProfile = new DeliveryProfile();
+            deliveryProfile.setUser(savedUser);
+            deliveryProfile.setName(request.getName());
+            deliveryProfile.setPhoneNumber(request.getPhoneNumber());
+            deliveryProfile.setVehicleType(request.getVehicleType());
+            deliveryProfile.setLicenseNumber(request.getLicenseNumber());
+            deliveryProfile.setNationalId(request.getNationalId());
+            deliveryProfileRepository.save(deliveryProfile);
+
+            emailService.sendOtpEmail(savedUser.getEmail(), savedUser.getOtp());
+
+            return new RegisterResponse("OTP sent to email for verification.");
+        } catch (DataIntegrityViolationException e) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email already in use");
+        }
     }
+
 
     @Override
     public void verifyOtp(String email, String otp) {
@@ -172,7 +192,7 @@ public class AuthServiceImpl implements AuthService {
     private String generateNumericOtp() {
         return new Random().ints(6, 0, 10)
                 .mapToObj(String::valueOf)
-                .collect(java.util.stream.Collectors.joining());
+                .collect(Collectors.joining());
     }
 
     @Override
@@ -233,4 +253,4 @@ public class AuthServiceImpl implements AuthService {
                 accessToken
         );
     }
-    }
+}

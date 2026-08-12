@@ -80,6 +80,7 @@ CREATE TABLE restaurants (
     description TEXT,
     logo_url VARCHAR(255),
     is_active BOOLEAN DEFAULT TRUE,
+
     CONSTRAINT fk_restaurant_governorate FOREIGN KEY (governorate_id) REFERENCES governorates(id)
 );
 

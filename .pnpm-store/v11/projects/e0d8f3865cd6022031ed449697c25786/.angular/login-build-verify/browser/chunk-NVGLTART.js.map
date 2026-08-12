@@ -1,0 +1,14 @@
+{
+  "version": 3,
+  "sources": [
+    "src/app/layouts/auth-layout/auth-layout.ts",
+    "src/app/layouts/auth-layout/auth-layout.html"
+  ],
+  "sourcesContent": [
+    "import { Component } from '@angular/core';\r\nimport { RouterOutlet } from '@angular/router';\r\n\r\n@Component({\r\n  selector: 'app-auth-layout',\r\n  imports: [RouterOutlet],\r\n  templateUrl: './auth-layout.html',\r\n})\r\nexport class AuthLayout {}\r\n",
+    "<main>\r\n  <router-outlet />\r\n</main>\r\n"
+  ],
+  "mappings": ";;;;;;;;;;;;;;;AAQM,IAAO,aAAP,MAAO,YAAU;;qCAAV,aAAU;EAAA;yEAAV,aAAU,WAAA,CAAA,CAAA,iBAAA,CAAA,GAAA,OAAA,GAAA,MAAA,GAAA,UAAA,SAAA,oBAAA,IAAA,KAAA;AAAA,QAAA,KAAA,GAAA;ACRvB,MAAA,yBAAA,GAAA,MAAA;AACE,MAAA,oBAAA,GAAA,eAAA;AACF,MAAA,uBAAA;;oBDGY,YAAY,GAAA,eAAA,EAAA,CAAA;;;sEAGX,YAAU,CAAA;UALtB;uBACW,mBAAiB,SAClB,CAAC,YAAY,GAAC,UAAA,+CAAA,CAAA;;;;6EAGZ,YAAU,EAAA,WAAA,cAAA,UAAA,8CAAA,YAAA,EAAA,CAAA;AAAA,GAAA;",
+  "names": [],
+  "debugId": "04e1a4d0-2f6d-558d-bd97-9fba8fe363d2"
+}

@@ -1,9 +1,6 @@
 package com.talabaty.backend.controller;
 
-import com.talabaty.backend.dto.request.ForgotPasswordRequest;
-import com.talabaty.backend.dto.request.LoginRequest;
-import com.talabaty.backend.dto.request.ResetPasswordRequest;
-import com.talabaty.backend.dto.request.VerifyOtpRequest;
+import com.talabaty.backend.dto.request.*;
 import com.talabaty.backend.dto.response.LoginResponse;
 import com.talabaty.backend.dto.response.RegisterResponse;
 import com.talabaty.backend.service.AuthService;
@@ -11,14 +8,13 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.talabaty.backend.dto.request.SignupRequest;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import jakarta.servlet.http.HttpServletRequest;
+
 @Tag(
         name = "Authentication",
         description = "User sign-up and access-token login"
@@ -33,9 +29,15 @@ public class AuthController {
         this.authService = authService;
     }
 
-    @PostMapping("/signup")
-    public ResponseEntity<RegisterResponse> register(@Valid @RequestBody SignupRequest request) {
-        RegisterResponse result = authService.registerUser(request);
+    @PostMapping("/signup/customer")
+    public ResponseEntity<RegisterResponse> registerCustomer(@Valid @RequestBody CustomerSignupRequest request) {
+        RegisterResponse result = authService.registerCustomer(request);
+        return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("/signup/driver")
+    public ResponseEntity<RegisterResponse> registerDriver(@Valid @RequestBody DriverSignupRequest request) {
+        RegisterResponse result = authService.registerDriver(request);
         return ResponseEntity.ok(result);
     }
 

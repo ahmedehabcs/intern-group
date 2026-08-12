@@ -25,9 +25,11 @@ public class User {
 
     private String otp;
     private LocalDateTime otpExpiration;
+    private int otpAttemptCount;
 
     private String passwordResetToken;
     private LocalDateTime passwordResetTokenExpiration;
+    private int passwordResetAttemptCount;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private CustomerProfile customerProfile;
@@ -98,6 +100,14 @@ public class User {
         this.otpExpiration = otpExpiration;
     }
 
+    public int getOtpAttemptCount() {
+        return otpAttemptCount;
+    }
+
+    public void setOtpAttemptCount(int otpAttemptCount) {
+        this.otpAttemptCount = otpAttemptCount;
+    }
+
     public String getPasswordResetToken() {
         return passwordResetToken;
     }
@@ -112,6 +122,14 @@ public class User {
 
     public void setPasswordResetTokenExpiration(LocalDateTime passwordResetTokenExpiration) {
         this.passwordResetTokenExpiration = passwordResetTokenExpiration;
+    }
+
+    public int getPasswordResetAttemptCount() {
+        return passwordResetAttemptCount;
+    }
+
+    public void setPasswordResetAttemptCount(int passwordResetAttemptCount) {
+        this.passwordResetAttemptCount = passwordResetAttemptCount;
     }
 
     public CustomerProfile getCustomerProfile() {

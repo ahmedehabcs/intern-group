@@ -1,0 +1,14 @@
+{
+  "version": 3,
+  "sources": [
+    "src/app/layouts/checkout-layout/checkout-layout.ts",
+    "src/app/layouts/checkout-layout/checkout-layout.html"
+  ],
+  "sourcesContent": [
+    "import { Component } from '@angular/core';\r\nimport { RouterOutlet } from '@angular/router';\r\n\r\n@Component({\r\n  selector: 'app-checkout-layout',\r\n  imports: [RouterOutlet],\r\n  templateUrl: './checkout-layout.html',\r\n})\r\nexport class CheckoutLayout {}\r\n",
+    "<main>\r\n  <router-outlet />\r\n</main>\r\n"
+  ],
+  "mappings": ";;;;;;;;;;;;;;;AAQM,IAAO,iBAAP,MAAO,gBAAc;;qCAAd,iBAAc;EAAA;yEAAd,iBAAc,WAAA,CAAA,CAAA,qBAAA,CAAA,GAAA,OAAA,GAAA,MAAA,GAAA,UAAA,SAAA,wBAAA,IAAA,KAAA;AAAA,QAAA,KAAA,GAAA;ACR3B,MAAA,yBAAA,GAAA,MAAA;AACE,MAAA,oBAAA,GAAA,eAAA;AACF,MAAA,uBAAA;;oBDGY,YAAY,GAAA,eAAA,EAAA,CAAA;;;sEAGX,gBAAc,CAAA;UAL1B;uBACW,uBAAqB,SACtB,CAAC,YAAY,GAAC,UAAA,+CAAA,CAAA;;;;6EAGZ,gBAAc,EAAA,WAAA,kBAAA,UAAA,sDAAA,YAAA,EAAA,CAAA;AAAA,GAAA;",
+  "names": [],
+  "debugId": "14085771-38c5-5daa-849c-4e4167a7909c"
+}

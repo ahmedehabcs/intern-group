@@ -1,0 +1,55 @@
+package com.talabaty.backend.service.impl;
+
+import com.talabaty.backend.model.User;
+import com.talabaty.backend.repository.UserRepository;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
+import java.util.Collections;
+
+@Service
+public class UserDetailsServiceImpl implements UserDetailsService {
+
+    private final UserRepository userRepository;
+
+    public UserDetailsServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+//    @Override
+//    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+//        User user = userRepository.findByEmail(email)
+//                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+//
+//        return new org.springframework.security.core.userdetails.User(
+//                user.getEmail(),
+//                user.getPassword(),
+//                Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()))
+//        );
+//    }
+@Override
+public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
+    final Long id;
+
+    try {
+        id = Long.valueOf(userId);
+    } catch (NumberFormatException e) {
+        throw new UsernameNotFoundException("Invalid user ID: " + userId);
+    }
+
+    User user = userRepository.findById(id)
+            .orElseThrow(() -> new UsernameNotFoundException("User not found with ID: " + id));
+
+    return new org.springframework.security.core.userdetails.User(
+            user.getId().toString(),
+            user.getPassword(),
+            Collections.singletonList(
+                    new SimpleGrantedAuthority("ROLE_" + user.getRole().name())
+            )
+    );
+}
+
+}

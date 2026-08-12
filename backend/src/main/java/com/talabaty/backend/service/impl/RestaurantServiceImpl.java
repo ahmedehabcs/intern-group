@@ -23,52 +23,32 @@ public class RestaurantServiceImpl implements RestaurantService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<RestaurantResponse> browseRestaurants(
-            String search,
-            Long categoryId
-    ) {
-
-        // Remove extra spaces from the search value.
-        String normalizedSearch = search == null ? "" : search.trim();
-
-        boolean hasSearch = !normalizedSearch.isEmpty();
-        boolean hasCategory = categoryId != null;
-
+    public List<RestaurantResponse> browseRestaurants(Long categoryId) {
         List<Restaurant> restaurants;
 
-        // Search by restaurant name and category.
-        if (hasSearch && hasCategory) {
-
-            restaurants = restaurantRepository
-                    .findDistinctByIsActiveTrueAndNameContainingIgnoreCaseAndCategories_IdOrderByNameAsc(
-                            normalizedSearch,
-                            categoryId
-                    );
-
-            // Search only by restaurant name.
-        } else if (hasSearch) {
-
-            restaurants = restaurantRepository
-                    .findDistinctByIsActiveTrueAndNameContainingIgnoreCaseOrderByNameAsc(
-                            normalizedSearch
-                    );
-
-            // Filter only by category.
-        } else if (hasCategory) {
-
+        if (categoryId != null) {
             restaurants = restaurantRepository
                     .findDistinctByIsActiveTrueAndCategories_IdOrderByNameAsc(
                             categoryId
                     );
-
-            // Return all active restaurants.
         } else {
-
             restaurants = restaurantRepository
                     .findDistinctByIsActiveTrueOrderByNameAsc();
         }
 
-        // Convert Restaurant entities to RestaurantResponse DTOs.
+        return toResponseList(restaurants);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<RestaurantResponse> searchRestaurants(String search) {
+        List<Restaurant> restaurants = restaurantRepository
+                .findDistinctByIsActiveTrueAndNameContainingIgnoreCaseOrderByNameAsc(search);
+
+        return toResponseList(restaurants);
+    }
+
+    private List<RestaurantResponse> toResponseList(List<Restaurant> restaurants) {
         List<RestaurantResponse> responses = new ArrayList<>();
 
         for (Restaurant restaurant : restaurants) {

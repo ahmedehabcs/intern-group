@@ -26,10 +26,4 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
             Long categoryId
     );
 
-    // Search active restaurants by name and category
-    @EntityGraph(attributePaths = "categories")
-    List<Restaurant> findDistinctByIsActiveTrueAndNameContainingIgnoreCaseAndCategories_IdOrderByNameAsc(
-            String name,
-            Long categoryId
-    );
 }

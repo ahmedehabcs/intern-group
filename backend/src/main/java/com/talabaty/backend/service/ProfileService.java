@@ -1,9 +1,10 @@
 package com.talabaty.backend.service;
 
-import com.talabaty.backend.dto.request.UpdateProfileRequest;
-import com.talabaty.backend.dto.response.ProfileResponse;
-
+import tools.jackson.databind.JsonNode;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 public interface ProfileService {
-    ProfileResponse getProfile(String userEmail);
-    ProfileResponse updateProfile(String userEmail, UpdateProfileRequest request);
+    Object getProfile(Long userId);
+    void updateProfile(Long userId, JsonNode requestBody);
+  //  void updateProfile(String userEmail, JsonNode requestBody);
 }

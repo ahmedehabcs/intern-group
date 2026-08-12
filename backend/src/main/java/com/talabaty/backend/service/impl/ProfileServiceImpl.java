@@ -1,7 +1,12 @@
 package com.talabaty.backend.service.impl;
 
-import com.talabaty.backend.dto.request.UpdateProfileRequest;
-import com.talabaty.backend.dto.response.ProfileResponse;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import com.talabaty.backend.dto.request.CustomerProfileUpdateRequest;
+import com.talabaty.backend.dto.request.DriverProfileUpdateRequest;
+import com.talabaty.backend.dto.response.CustomerProfileResponse;
+import com.talabaty.backend.dto.response.DriverProfileResponse;
 import com.talabaty.backend.model.CustomerProfile;
 import com.talabaty.backend.model.DeliveryProfile;
 import com.talabaty.backend.model.User;
@@ -20,115 +25,138 @@ public class ProfileServiceImpl implements ProfileService {
     private final UserRepository userRepository;
     private final CustomerProfileRepository customerProfileRepository;
     private final DeliveryProfileRepository deliveryProfileRepository;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public ProfileServiceImpl(
-            UserRepository userRepository,
-            CustomerProfileRepository customerProfileRepository,
-            DeliveryProfileRepository deliveryProfileRepository
-    ) {
+    public ProfileServiceImpl(UserRepository userRepository,
+                              CustomerProfileRepository customerProfileRepository,
+                              DeliveryProfileRepository deliveryProfileRepository) {
         this.userRepository = userRepository;
         this.customerProfileRepository = customerProfileRepository;
         this.deliveryProfileRepository = deliveryProfileRepository;
     }
 
-    @Override
-    @Transactional
-    public ProfileResponse getProfile(String userEmail) {
-        return toProfileResponse(findUser(userEmail));
-    }
-
-    @Override
-    @Transactional
-    public ProfileResponse updateProfile(String userEmail, UpdateProfileRequest request) {
-        User user = findUser(userEmail);
-
+//    @Override
+//    public Object getProfile(String userEmail) {
+//        User user = userRepository.findByEmail(userEmail)
+//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+@Override
+public Object getProfile(Long userId) {
+    User user = userRepository.findById(userId)
+            .orElseThrow(() -> new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "User not found"
+            ));
         switch (user.getRole()) {
             case CUSTOMER:
-                CustomerProfile customerProfile = requireCustomerProfile(user);
-                customerProfile.setName(request.getName());
-                customerProfile.setPhoneNumber(request.getPhoneNumber());
-                customerProfileRepository.save(customerProfile);
-                break;
-
+                CustomerProfile customerProfile = user.getCustomerProfile();
+                if (customerProfile == null) {
+                    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer profile not found for this user.");
+                }
+                return new CustomerProfileResponse(
+                        user.getEmail(),
+                        customerProfile.getName(),
+                        customerProfile.getPhoneNumber()
+                );
             case DRIVER:
-                validateDriverFields(request);
-                DeliveryProfile deliveryProfile = requireDeliveryProfile(user);
-                deliveryProfile.setName(request.getName());
-                deliveryProfile.setPhoneNumber(request.getPhoneNumber());
-                deliveryProfile.setVehicleType(request.getVehicleType());
-                deliveryProfile.setLicenseNumber(request.getLicenseNumber());
-                deliveryProfile.setNationalId(request.getNationalId());
-                deliveryProfileRepository.save(deliveryProfile);
-                break;
-
+                DeliveryProfile deliveryProfile = user.getDeliveryProfile();
+                if (deliveryProfile == null) {
+                    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Driver profile not found for this user.");
+                }
+                return new DriverProfileResponse(
+                        user.getEmail(),
+                        deliveryProfile.getName(),
+                        deliveryProfile.getPhoneNumber(),
+                        deliveryProfile.getVehicleType(),
+                        deliveryProfile.getLicenseNumber(),
+                        deliveryProfile.getNationalId()
+                );
             default:
-                throw unsupportedRole();
-        }
-
-        return toProfileResponse(user);
-    }
-
-    private User findUser(String userEmail) {
-        return userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
-    }
-
-    private ProfileResponse toProfileResponse(User user) {
-        return switch (user.getRole()) {
-            case CUSTOMER -> {
-                CustomerProfile profile = requireCustomerProfile(user);
-                yield new ProfileResponse(
-                        user.getId(), user.getEmail(), user.getRole(),
-                        profile.getName(), profile.getPhoneNumber(), profile.getLoyaltyPoints(),
-                        null, null, null, null
-                );
-            }
-            case DRIVER -> {
-                DeliveryProfile profile = requireDeliveryProfile(user);
-                yield new ProfileResponse(
-                        user.getId(), user.getEmail(), user.getRole(),
-                        profile.getName(), profile.getPhoneNumber(), null,
-                        profile.getVehicleType(), profile.getLicenseNumber(),
-                        profile.getNationalId(), profile.getOnline()
-                );
-            }
-            default -> throw unsupportedRole();
-        };
-    }
-
-    private CustomerProfile requireCustomerProfile(User user) {
-        if (user.getCustomerProfile() == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer profile not found for this user.");
-        }
-        return user.getCustomerProfile();
-    }
-
-    private DeliveryProfile requireDeliveryProfile(User user) {
-        if (user.getDeliveryProfile() == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Delivery profile not found for this user.");
-        }
-        return user.getDeliveryProfile();
-    }
-
-    private void validateDriverFields(UpdateProfileRequest request) {
-        if (isBlank(request.getVehicleType())
-                || isBlank(request.getLicenseNumber())
-                || isBlank(request.getNationalId())) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Vehicle type, license number, and national ID are required for drivers."
-            );
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Profile retrieval is not supported for this user role.");
         }
     }
 
-    private boolean isBlank(String value) {
-        return value == null || value.isBlank();
+//    @Override
+//    @Transactional
+//    public void updateProfile(String userEmail, JsonNode requestBody) {
+//        User user = userRepository.findByEmail(userEmail)
+//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+@Override
+@Transactional
+public void updateProfile(Long userId, JsonNode requestBody) {
+    User user = userRepository.findById(userId)
+            .orElseThrow(() -> new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "User not found"
+            ));
+        switch (user.getRole()) {
+            case CUSTOMER:
+                CustomerProfile customerProfile = user.getCustomerProfile();
+                if (customerProfile == null) {
+                    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer profile not found for this user.");
+                }
+                try {
+                    CustomerProfileUpdateRequest customerRequest = objectMapper.treeToValue(requestBody, CustomerProfileUpdateRequest.class);
+                    updateCustomerProfile(customerProfile, customerRequest);
+                    customerProfileRepository.save(customerProfile);
+                } catch (JacksonException e) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid request body: " + e.getMessage());
+                }
+                break;
+            case DRIVER:
+                DeliveryProfile deliveryProfile = user.getDeliveryProfile();
+                if (deliveryProfile == null) {
+                    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Driver profile not found for this user.");
+                }
+                try {
+                    DriverProfileUpdateRequest driverRequest = objectMapper.treeToValue(requestBody, DriverProfileUpdateRequest.class);
+                    updateDriverProfile(deliveryProfile, driverRequest);
+                    deliveryProfileRepository.save(deliveryProfile);
+                } catch (JacksonException e) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid request body: " + e.getMessage());
+                }
+                break;
+            default:
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Profile updates are not supported for this user role.");
+        }
     }
 
-    private ResponseStatusException unsupportedRole() {
-        return new ResponseStatusException(
-                HttpStatus.FORBIDDEN,
-                "Profiles are not supported for this user role."
-        );
+    private void updateCustomerProfile(CustomerProfile profile, CustomerProfileUpdateRequest request) {
+        if (request.getName() != null) {
+            validateNotBlank("name", request.getName());
+            profile.setName(request.getName());
+        }
+        if (request.getPhoneNumber() != null) {
+            validateNotBlank("phoneNumber", request.getPhoneNumber());
+            profile.setPhoneNumber(request.getPhoneNumber());
+        }
+    }
+
+    private void updateDriverProfile(DeliveryProfile profile, DriverProfileUpdateRequest request) {
+        if (request.getName() != null) {
+            validateNotBlank("name", request.getName());
+            profile.setName(request.getName());
+        }
+        if (request.getPhoneNumber() != null) {
+            validateNotBlank("phoneNumber", request.getPhoneNumber());
+            profile.setPhoneNumber(request.getPhoneNumber());
+        }
+        if (request.getVehicleType() != null) {
+            validateNotBlank("vehicleType", request.getVehicleType());
+            profile.setVehicleType(request.getVehicleType());
+        }
+        if (request.getLicenseNumber() != null) {
+            validateNotBlank("licenseNumber", request.getLicenseNumber());
+            profile.setLicenseNumber(request.getLicenseNumber());
+        }
+        if (request.getNationalId() != null) {
+            validateNotBlank("nationalId", request.getNationalId());
+            profile.setNationalId(request.getNationalId());
+        }
+    }
+
+    private void validateNotBlank(String fieldName, String value) {
+        if (value.trim().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, fieldName + " cannot be blank");
+        }
     }
 }
