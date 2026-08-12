@@ -12,6 +12,9 @@ public class Address {
     private String building;
     private String floor;
     private String apartment;
+    private String city;
+    private String government;
+
 
 //    @ManyToOne
 //    @JoinColumn(name = "user_id")
@@ -28,11 +31,13 @@ public class Address {
 
     public Address() {}
 
-    public Address(String street, String building, String floor, String apartment, CustomerProfile customer, Governorate governorate) {
+    public Address(String street, String building, String floor, String apartment, String city, String goverment, CustomerProfile customer, Governorate governorate) {
         this.street = street;
         this.building = building;
         this.floor = floor;
         this.apartment = apartment;
+        this.city = city;
+        this.government = goverment;
         this.customer = customer;
         this.governorate = governorate;
     }
@@ -93,6 +98,22 @@ public class Address {
         this.governorate = governorate;
     }
 
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getGoverment() {
+        return government;
+    }
+
+    public void setGoverment(String goverment) {
+        this.government = goverment;
+    }
+
     @Override
     public String toString() {
         return "Address{" +
@@ -101,6 +122,8 @@ public class Address {
                 ", building='" + building + '\'' +
                 ", floor='" + floor + '\'' +
                 ", apartment='" + apartment + '\'' +
+                ", city='" + city + '\'' +
+                ", goverment='" + government + '\'' +
                 ", customer=" + customer +
                 ", governorate=" + governorate +
                 '}';
