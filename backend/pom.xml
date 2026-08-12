@@ -117,7 +117,7 @@
 				<configuration>
 					<url>jdbc:postgresql://localhost:5432/talabaty_db</url>
 					<user>postgres</user>
-					<password>Postgres123!</password>
+					<password>postgres</password>
 					<schemas>
 						<schema>talabaty_db</schema>
 					</schemas>
