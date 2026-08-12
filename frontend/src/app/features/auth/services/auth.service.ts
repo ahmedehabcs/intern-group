@@ -12,7 +12,7 @@ import { OTPRequestModel } from '../models/otp.model';
 })
 export class AuthService {
     private readonly http = inject(HttpClient);
-    private readonly baseUrl = `${environment.apiUrl}/auth`;
+    private readonly baseUrl = `${environment.apiUrl}/api/auth`;
 
     register(data: RegisterRequest): Observable<RegisterRequest> {
         return this.http.post<RegisterRequest>(`${this.baseUrl}/signup`, data);

@@ -69,7 +69,7 @@ export class Register {
         name: formValue.name,
         email: formValue.email,
         password: formValue.password,
-        role: formValue.isDelivery ? 'delivery' : 'customer'
+        role: formValue.isDelivery ? 'DRIVER' : 'CUSTOMER'
       }
 
       try {
