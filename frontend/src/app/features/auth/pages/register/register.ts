@@ -4,7 +4,7 @@ import { RegisterFormModel, RegisterRequest } from '../../models/register.model'
 import { firstValueFrom } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -14,19 +14,21 @@ import { RouterLink } from '@angular/router';
 })
 export class Register {
   private readonly AuthService = inject(AuthService);
+  private readonly router = inject(Router);
   protected readonly requestError = signal<string | null>(null);
 
   protected readonly RegisterModel = signal<RegisterFormModel>({
-    username: '',
+    name: '',
     email: '',
     password: '',
     confirmPassword: '',
+    isDelivery: false,
   });
 
   protected readonly registerForm = form(this.RegisterModel, (field) => {
-    required(field.username, { message: 'Username is required.' });
-    minLength(field.username, 3, { message: 'Username must contain at least 3 characters.' });
-    pattern(field.username, /^[a-zA-Z0-9_]+$/, { message: 'Use only letters, numbers, and underscores.', });
+    required(field.name, { message: 'Name is required.' });
+    minLength(field.name, 3, { message: 'Name must contain at least 3 characters.' });
+    pattern(field.name, /^[a-zA-Z\s]+$/, { message: 'Use only letters and spaces.' });
 
     required(field.email, { message: 'Email is required.' });
     email(field.email, { message: 'Enter a valid email address.' });
@@ -47,6 +49,14 @@ export class Register {
     );
   })
 
+  protected onDeliveryCheckboxChange(event: Event): void {
+    const isChecked = (event.target as HTMLInputElement).checked;
+    this.RegisterModel.update(model => ({
+      ...model,
+      isDelivery: isChecked
+    }));
+  }
+
   protected async onSubmit(even: Event): Promise<void> {
     even.preventDefault();
 
@@ -56,9 +66,10 @@ export class Register {
       const formValue = this.RegisterModel();
 
       const request: RegisterRequest = {
-        username: formValue.username,
+        name: formValue.name,
         email: formValue.email,
-        password: formValue.password
+        password: formValue.password,
+        role: formValue.isDelivery ? 'DRIVER' : 'CUSTOMER'
       }
 
       try {
@@ -66,6 +77,11 @@ export class Register {
           this.AuthService.register(request)
         )
         console.log('Registration request:', response);
+        this.router.navigate(['/auth/otp-verification'], {
+          queryParams: {
+            email: request.email
+          }
+        });
         this.resetForm();
       } catch (error: unknown) {
         if (error instanceof HttpErrorResponse) {
@@ -89,10 +105,11 @@ export class Register {
 
   private resetForm(): void {
     this.RegisterModel.set({
-      username: '',
+      name: '',
       email: '',
       password: '',
       confirmPassword: '',
+      isDelivery: false,
     })
   }
 

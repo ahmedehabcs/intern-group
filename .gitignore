@@ -1,0 +1,25 @@
+# IDE metadata
+.idea/
+.vscode/
+
+# Node package managers and caches
+node_modules/
+.pnpm-store/
+
+# Frontend build caches and output
+.angular/
+frontend/.angular/
+frontend/dist/
+
+# Backend build output
+backend/target/
+target/
+
+# Local environment files
+.env
+.env.*
+!.env.example
+
+# OS files
+.DS_Store
+Thumbs.db

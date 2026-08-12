@@ -1,12 +1,14 @@
 export interface RegisterFormModel {
-    username: string;
+    name: string;
     email: string;
     password: string;
     confirmPassword: string;
+    isDelivery: boolean;
 }
 
 export interface RegisterRequest {
-    username: string;
+    name: string;
     email: string;
     password: string;
+    role: string;
 }
