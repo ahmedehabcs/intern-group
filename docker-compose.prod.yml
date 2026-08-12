@@ -1,0 +1,64 @@
+# Production stack for a single Linux server: API + database only.
+#
+# The frontend is deliberately NOT deployed here. It stays a local/dev concern,
+# so this server exposes the Spring Boot API directly instead of serving the
+# Angular bundle behind an nginx proxy.
+#
+# Nothing is built on the server - these are the images CD published to GHCR, so
+# the server needs no JDK and no source checkout.
+#
+#   docker compose -f docker-compose.prod.yml pull
+#   docker compose -f docker-compose.prod.yml up -d
+#
+# Requires a .env file beside it. Every ${VAR:?...} is mandatory: compose
+# refuses to start and prints the message rather than booting on a default.
+# See .env.production.example.
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: talabaty_db
+      POSTGRES_USER: ${DB_USERNAME:?set DB_USERNAME in .env}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?set DB_PASSWORD in .env}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${DB_USERNAME} -d talabaty_db']
+      interval: 5s
+      timeout: 5s
+      retries: 12
+    restart: unless-stopped
+    # No `ports` on purpose: the database is reachable only on the compose
+    # network, never from the internet. To inspect it, go through the host:
+    #   docker compose -f docker-compose.prod.yml exec postgres psql -U <user> -d talabaty_db
+
+  backend:
+    image: ghcr.io/ahmedehabcs/intern-group-backend:${IMAGE_TAG:-latest}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/talabaty_db
+      DB_USERNAME: ${DB_USERNAME:?set DB_USERNAME in .env}
+      DB_PASSWORD: ${DB_PASSWORD:?set DB_PASSWORD in .env}
+      # Must decode to >= 32 bytes. Generate with: openssl rand -base64 32
+      JWT_SECRET: ${JWT_SECRET:?set JWT_SECRET in .env - never reuse the dev default}
+      # With no frontend on this server there is no same-origin proxy, so every
+      # browser call to this API *is* cross-origin and CORS is load-bearing.
+      # This must list the exact origin the Angular app is served from
+      # (scheme + host + port, no trailing slash), or the browser blocks
+      # every request. Comma-separated for more than one.
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:?set CORS_ALLOWED_ORIGINS in .env}
+      MAIL_USERNAME: ${MAIL_USERNAME:-}
+      MAIL_PASSWORD: ${MAIL_PASSWORD:-}
+      OTP_ENABLED: ${OTP_ENABLED:-false}
+    ports:
+      # Exposed directly, because nothing proxies for it now. 8080 is currently
+      # closed in this server's firewall - open it, or map to a free port that
+      # is already open. Host port only; the app always listens on 8080 inside.
+      - '${API_PORT:-8080}:8080'
+    restart: unless-stopped
+
+volumes:
+  postgres-data:
