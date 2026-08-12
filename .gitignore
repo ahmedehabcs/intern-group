@@ -1,16 +1,28 @@
-# Local environment files. .env.example is the committed template; real values
-# must never be committed.
-.env
-.env.local
-.env.*.local
-
-# IDE
+# IDE metadata
 .idea/
+.vscode/
 *.iml
 *.iws
 *.ipr
-.vscode/
 
-# OS
+# Node package managers and caches
+node_modules/
+.pnpm-store/
+
+# Frontend build caches and output
+.angular/
+frontend/.angular/
+frontend/dist/
+
+# Backend build output
+backend/target/
+target/
+
+# Local environment files
+.env
+.env.*
+!.env.example
+
+# OS files
 .DS_Store
 Thumbs.db

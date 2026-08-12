@@ -8,19 +8,5 @@
     <exclude-change idName="revinfo_seq" tagName="createSequence" />
     <exclude-change idName="revinfo" tagName="createTable" />
     <exclude-change idName="revchanges" tagName="createTable" />
-    <exclude-change idName="menu_item_addons#additional_price" tagName="addNotNullConstraint" />
-    <exclude-change idName="restaurants#delivery_fee" tagName="modifyDataType" />
-    <exclude-change idName="restaurants#delivery_fee" tagName="addNotNullConstraint" />
-    <exclude-change idName="menu_sections#is_active" tagName="addNotNullConstraint" />
-    <exclude-change idName="restaurants#is_active" tagName="addNotNullConstraint" />
-    <exclude-change idName="menu_item_addons#is_available" tagName="addNotNullConstraint" />
-    <exclude-change idName="menu_items#is_available" tagName="addNotNullConstraint" />
-    <exclude-change idName="reviews#order_id" tagName="addUniqueConstraint" />
-    <exclude-change idName="payments#order_id" tagName="addUniqueConstraint" />
-    <exclude-change idName="FK_WALLET_TRANSACTIONS_ON_WALLET" tagName="addForeignKeyConstraint" />
-    <exclude-change idName="menu_item_addon_groups" tagName="dropPrimaryKey" />
-    <exclude-change idName="restaurant_categories" tagName="dropPrimaryKey" />
-    <exclude-change idName="users#password_reset_attempt_count" tagName="addNotNullConstraint" />
-    <exclude-change idName="users#otp_attempt_count" tagName="addNotNullConstraint" />
   </component>
 </project>

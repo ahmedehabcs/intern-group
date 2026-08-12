@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -46,8 +47,34 @@ public class SearchServiceImpl implements SearchService {
         List<RestaurantResponse> restaurants = restaurantService
                 .searchRestaurants(normalizedSearch);
 
-        List<MenuItem> menuItems = menuItemRepository
-                .searchActiveMenuItems(normalizedSearch);
+        List<MenuItem> itemsMatchingName = menuItemRepository
+                .findByIsAvailableTrueAndMenuSectionIsActiveTrueAndMenuSectionRestaurantIsActiveTrueAndNameContainingIgnoreCaseOrderByNameAsc(
+                        normalizedSearch
+                );
+
+        List<MenuItem> itemsMatchingDescription = menuItemRepository
+                .findByIsAvailableTrueAndMenuSectionIsActiveTrueAndMenuSectionRestaurantIsActiveTrueAndDescriptionContainingIgnoreCaseOrderByNameAsc(
+                        normalizedSearch
+                );
+
+        List<MenuItem> menuItems = new ArrayList<>();
+
+        for (MenuItem menuItem : itemsMatchingName) {
+            menuItems.add(menuItem);
+        }
+
+        for (MenuItem menuItem : itemsMatchingDescription) {
+            if (!containsMenuItem(menuItems, menuItem.getId())) {
+                menuItems.add(menuItem);
+            }
+        }
+
+        menuItems.sort(
+                Comparator.comparing(
+                        MenuItem::getName,
+                        String.CASE_INSENSITIVE_ORDER
+                )
+        );
 
         List<MenuItemSearchResponse> menuItemResponses = new ArrayList<>();
 
@@ -56,6 +83,19 @@ public class SearchServiceImpl implements SearchService {
         }
 
         return new SearchResponse(restaurants, menuItemResponses);
+    }
+
+    private boolean containsMenuItem(
+            List<MenuItem> menuItems,
+            Long menuItemId
+    ) {
+        for (MenuItem menuItem : menuItems) {
+            if (menuItem.getId().equals(menuItemId)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private MenuItemSearchResponse toMenuItemResponse(MenuItem menuItem) {
