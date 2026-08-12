@@ -50,20 +50,37 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
+//        final String token = authorizationHeader.substring(7);
+//        final String userEmail;
+//
+//        try {
+//            Jwt jwt = jwtService.validateAccessToken(token);
+//            userEmail = jwt.getSubject();
+//        } catch (JwtException e) {
+//            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+//            response.getWriter().write("Invalid or expired token");
+//            return;
+//        }
+//
+//        if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+//            UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
         final String token = authorizationHeader.substring(7);
-        final String userEmail;
+        final Long userId;
 
         try {
             Jwt jwt = jwtService.validateAccessToken(token);
-            userEmail = jwt.getSubject();
+            Number userIdClaim = jwt.getClaim("userId");
+            userId = userIdClaim != null ? userIdClaim.longValue() : null;
         } catch (JwtException e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().write("Invalid or expired token");
             return;
         }
 
-        if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
+        if (userId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            UserDetails userDetails =
+                    this.userDetailsService.loadUserByUsername(userId.toString());
+
 
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                     userDetails,

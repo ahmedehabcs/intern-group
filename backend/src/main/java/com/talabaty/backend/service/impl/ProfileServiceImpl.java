@@ -1,8 +1,8 @@
 package com.talabaty.backend.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 import com.talabaty.backend.dto.request.CustomerProfileUpdateRequest;
 import com.talabaty.backend.dto.request.DriverProfileUpdateRequest;
 import com.talabaty.backend.dto.response.CustomerProfileResponse;
@@ -35,11 +35,17 @@ public class ProfileServiceImpl implements ProfileService {
         this.deliveryProfileRepository = deliveryProfileRepository;
     }
 
-    @Override
-    public Object getProfile(String userEmail) {
-        User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
-
+//    @Override
+//    public Object getProfile(String userEmail) {
+//        User user = userRepository.findByEmail(userEmail)
+//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+@Override
+public Object getProfile(Long userId) {
+    User user = userRepository.findById(userId)
+            .orElseThrow(() -> new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "User not found"
+            ));
         switch (user.getRole()) {
             case CUSTOMER:
                 CustomerProfile customerProfile = user.getCustomerProfile();
@@ -69,12 +75,19 @@ public class ProfileServiceImpl implements ProfileService {
         }
     }
 
-    @Override
-    @Transactional
-    public void updateProfile(String userEmail, JsonNode requestBody) {
-        User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
-
+//    @Override
+//    @Transactional
+//    public void updateProfile(String userEmail, JsonNode requestBody) {
+//        User user = userRepository.findByEmail(userEmail)
+//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+@Override
+@Transactional
+public void updateProfile(Long userId, JsonNode requestBody) {
+    User user = userRepository.findById(userId)
+            .orElseThrow(() -> new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "User not found"
+            ));
         switch (user.getRole()) {
             case CUSTOMER:
                 CustomerProfile customerProfile = user.getCustomerProfile();
@@ -85,7 +98,7 @@ public class ProfileServiceImpl implements ProfileService {
                     CustomerProfileUpdateRequest customerRequest = objectMapper.treeToValue(requestBody, CustomerProfileUpdateRequest.class);
                     updateCustomerProfile(customerProfile, customerRequest);
                     customerProfileRepository.save(customerProfile);
-                } catch (JsonProcessingException e) {
+                } catch (JacksonException e) {
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid request body: " + e.getMessage());
                 }
                 break;
@@ -98,7 +111,7 @@ public class ProfileServiceImpl implements ProfileService {
                     DriverProfileUpdateRequest driverRequest = objectMapper.treeToValue(requestBody, DriverProfileUpdateRequest.class);
                     updateDriverProfile(deliveryProfile, driverRequest);
                     deliveryProfileRepository.save(deliveryProfile);
-                } catch (JsonProcessingException e) {
+                } catch (JacksonException e) {
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid request body: " + e.getMessage());
                 }
                 break;

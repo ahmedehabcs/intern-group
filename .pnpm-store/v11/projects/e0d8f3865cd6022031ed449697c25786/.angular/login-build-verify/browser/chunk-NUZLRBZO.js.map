@@ -1,0 +1,12 @@
+{
+  "version": 3,
+  "sources": [
+    "src/app/features/cart/cart.routes.ts"
+  ],
+  "sourcesContent": [
+    "import { Routes } from '@angular/router';\r\n\r\n// Pages will be added when the cart feature is implemented.\r\nexport const CART_ROUTES: Routes = [{ path: '', children: [] }];\r\n"
+  ],
+  "mappings": ";;;AAGO,IAAM,cAAsB,CAAC,EAAE,MAAM,IAAI,UAAU,CAAC,EAAE,CAAC;",
+  "names": [],
+  "debugId": "7159a843-b049-50c3-8789-16ce442e0b5d"
+}
