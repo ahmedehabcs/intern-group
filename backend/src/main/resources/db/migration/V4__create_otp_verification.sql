@@ -7,4 +7,5 @@ CREATE TABLE otp_verification
     attempt_count INTEGER                                 NOT NULL,
     verified      BOOLEAN                                 NOT NULL,
     CONSTRAINT pk_otpverification PRIMARY KEY (id)
+
 );
