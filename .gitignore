@@ -1,6 +1,9 @@
 # IDE metadata
 .idea/
 .vscode/
+*.iml
+*.iws
+*.ipr
 
 # Node package managers and caches
 node_modules/
