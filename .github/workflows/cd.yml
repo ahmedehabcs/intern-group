@@ -1,0 +1,93 @@
+name: CD
+
+# Gated on CI rather than on the push itself, so an image is only ever published
+# from a commit whose backend tests and frontend build actually passed.
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: cd-${{ github.ref }}
+  # Not cancel-in-progress: a half-pushed image manifest is worse than a queue.
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Publish ${{ matrix.component }} image
+    runs-on: ubuntu-latest
+    # workflow_run fires on failure too, so filter explicitly. A manual
+    # workflow_dispatch run has no workflow_run payload and is always allowed.
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      github.event.workflow_run.conclusion == 'success'
+
+    strategy:
+      fail-fast: false
+      matrix:
+        component: [backend, frontend]
+
+    steps:
+      - name: Check out the tested commit
+        uses: actions/checkout@v4
+        with:
+          # Pin to the exact commit CI validated, not whatever main points at
+          # now - main may have advanced while CI was running.
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+
+      - name: Set up Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          # Built-in token - no account setup or extra secret needed.
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Derive image tags
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository }}-${{ matrix.component }}
+          tags: |
+            type=raw,value=latest
+            type=sha,format=long
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: ./${{ matrix.component }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          # Layer cache lives in the Actions cache, so unchanged dependency
+          # layers are not rebuilt on every push.
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  # ---------------------------------------------------------------------------
+  # Deployment is intentionally not wired up: this repository has no hosting
+  # target yet. The images above are host-agnostic, so adding a real deploy is a
+  # matter of appending a job here. See README-CICD.md for the concrete options.
+  # ---------------------------------------------------------------------------
+  deploy:
+    name: Deploy (not configured)
+    runs-on: ubuntu-latest
+    needs: publish
+    steps:
+      - name: Explain what was published and what is missing
+        run: |
+          echo "Images published to GHCR:"
+          echo "  ghcr.io/${{ github.repository }}-backend:latest"
+          echo "  ghcr.io/${{ github.repository }}-frontend:latest"
+          echo ""
+          echo "No deployment target is configured yet."
+          echo "See README-CICD.md -> 'Adding a real deploy' to wire one up."

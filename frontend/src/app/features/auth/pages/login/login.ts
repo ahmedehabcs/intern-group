@@ -1,13 +1,14 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { FormField, form, minLength, required, submit } from '@angular/forms/signals';
+import { FormField, form, required, submit, email, minLength } from '@angular/forms/signals';
 import { firstValueFrom } from 'rxjs';
 import { LoginForm } from '../../models/login.model';
 import { AuthService } from '../../services/auth.service';
+import { RouterLink } from "@angular/router";
 
 @Component({
   selector: 'app-login',
-  imports: [FormField],
+  imports: [FormField, RouterLink],
   templateUrl: './login.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -16,15 +17,13 @@ export class Login {
   protected readonly requestError = signal<string | null>(null);
 
   protected readonly LoginModel = signal<LoginForm>({
-    username: '',
+    email: '',
     password: '',
   });
 
   protected readonly loginForm = form(this.LoginModel, (field) => {
-    required(field.username, { message: 'Username is required.' });
-    minLength(field.username, 3, {
-      message: 'Username must contain at least 3 characters.',
-    });
+    required(field.email, { message: 'Email is required.' });
+    email(field.email, { message: 'Enter a valid email address.' });
 
     required(field.password, { message: 'Password is required.' });
     minLength(field.password, 8, {
@@ -55,7 +54,7 @@ export class Login {
 
   private resetForm(): void {
     this.LoginModel.set({
-      username: '',
+      email: '',
       password: '',
     });
   }
