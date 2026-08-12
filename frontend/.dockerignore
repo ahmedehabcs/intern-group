@@ -1,0 +1,20 @@
+# node_modules is reinstalled with `npm ci` inside the image. Copying the host
+# copy in would both bloat the context and risk shipping Windows-native binaries
+# into a Linux image.
+node_modules/
+dist/
+.angular/
+
+.idea/
+.vscode/
+*.iml
+
+Dockerfile
+.dockerignore
+# nginx.conf is deliberately NOT ignored - the runtime stage copies it.
+
+.env
+.env.*
+
+npm-debug.log
+yarn-error.log

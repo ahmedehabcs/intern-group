@@ -1,0 +1,65 @@
+# Local development stack. Brings up Postgres, the API, and the built frontend:
+#   docker compose up --build
+#
+# Frontend  -> http://localhost:4200
+# API       -> http://localhost:8080
+# Swagger   -> http://localhost:8080/swagger-ui.html
+#
+# To run only the database and keep the app in your IDE:
+#   docker compose up postgres
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: talabaty_db
+      POSTGRES_USER: ${DB_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      # The backend waits on this, so it must report ready only once the
+      # database actually accepts connections - not merely once the container
+      # has started. Flyway fails hard against a half-open Postgres.
+      test: ['CMD-SHELL', 'pg_isready -U ${DB_USERNAME:-postgres} -d talabaty_db']
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  backend:
+    build:
+      context: ./backend
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      # 'postgres' is the compose service name, reachable on the compose
+      # network. Not localhost - inside the container that is the container.
+      DB_URL: jdbc:postgresql://postgres:5432/talabaty_db
+      DB_USERNAME: ${DB_USERNAME:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-postgres}
+      CORS_ALLOWED_ORIGINS: http://localhost:4200
+      JWT_SECRET: ${JWT_SECRET:-ZGV2LW9ubHktaW5zZWN1cmUtc2VjcmV0LWNoYW5nZS1tZSE=}
+      MAIL_USERNAME: ${MAIL_USERNAME:-}
+      MAIL_PASSWORD: ${MAIL_PASSWORD:-}
+      # Off by default so the stack runs without SMTP credentials. Set
+      # OTP_ENABLED=true in your .env once MAIL_* are populated.
+      OTP_ENABLED: ${OTP_ENABLED:-false}
+    ports:
+      - '8080:8080'
+
+  frontend:
+    build:
+      context: ./frontend
+    depends_on:
+      - backend
+    # The Angular bundle calls http://localhost:8080, baked in at build time
+    # from src/environments/environment.production.ts. That resolves in the
+    # user's browser, where 8080 is published above - so it works as-is.
+    ports:
+      - '4200:80'
+
+volumes:
+  postgres-data:
