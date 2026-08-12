@@ -1,0 +1,22 @@
+# Keep the build context small and avoid copying host build output into the image.
+target/
+.mvn/wrapper/maven-wrapper.jar
+mvnw
+mvnw.cmd
+
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+.settings/
+.classpath
+.project
+
+Dockerfile
+.dockerignore
+HELP.md
+
+# Never let a local .env leak into an image layer.
+.env
+.env.*

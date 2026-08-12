@@ -1,0 +1,153 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+# One run per branch/PR. Pushing again cancels the previous run instead of
+# queueing a second one - with 6 people pushing this saves a lot of runner time.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  backend:
+    name: Backend (Java 21 / Maven)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+
+    # BackendApplicationTests is a @SpringBootTest: it boots the full application
+    # context, which runs the Flyway migrations and then validates the JPA schema
+    # against them (spring.jpa.hibernate.ddl-auto=validate). That needs a real
+    # PostgreSQL - an in-memory database would not exercise the same migrations.
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: talabaty_db
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres -d talabaty_db"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      # mvnw is committed with file mode 100644, so it arrives without the
+      # executable bit on Linux runners and ./mvnw would fail with "Permission
+      # denied". See README-CICD.md for the permanent one-line fix.
+      - name: Make the Maven wrapper executable
+        run: chmod +x ./mvnw
+
+      - name: Build and test
+        env:
+          # These names match the ${...} placeholders in application.properties.
+          DB_URL: jdbc:postgresql://localhost:5432/talabaty_db
+          DB_USERNAME: postgres
+          DB_PASSWORD: postgres
+          # CI-only signing key. JwtService Base64-decodes this and rejects
+          # anything under 32 bytes, so the fallback is real Base64 (33 bytes).
+          # The fallback also keeps fork pull requests working - they get no
+          # access to repository secrets, so secrets.JWT_SECRET is empty there.
+          JWT_SECRET: ${{ secrets.JWT_SECRET || 'Y2ktb25seS1zaWduaW5nLWtleS1uZXZlci1pbi1wcm9k' }}
+          # There is no SMTP server on the runner, so OTP delivery stays off.
+          OTP_ENABLED: 'false'
+          MAIL_USERNAME: ''
+          MAIL_PASSWORD: ''
+        run: ./mvnw -B --no-transfer-progress verify
+
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-test-reports
+          path: backend/target/surefire-reports/
+          if-no-files-found: ignore
+          retention-days: 7
+
+  frontend:
+    name: Frontend (Angular 22 / Node 24)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      # There is no "test" script and no test runner in devDependencies, and
+      # angular.json sets skipTests for every schematic, so the project contains
+      # zero .spec.ts files. `ng build` is therefore the only real check here -
+      # it still type-checks all TypeScript and compiles every template.
+      # Add a runner (see README-CICD.md) and a test step becomes worthwhile.
+      - name: Build (production configuration)
+        run: npm run build
+
+      - name: Upload build output
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-dist
+          path: frontend/dist/
+          if-no-files-found: error
+          retention-days: 7
+
+  formatting:
+    name: Formatting (Prettier, non-blocking)
+    runs-on: ubuntu-latest
+    # Deliberately advisory. `npx prettier --check .` currently reports 122
+    # unformatted files, so making this required would turn every pull request
+    # red for reasons unrelated to that pull request. Run
+    # `npx prettier --write .` in frontend/ once, commit the result, then delete
+    # this line to start enforcing it.
+    continue-on-error: true
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check formatting
+        run: npx prettier --check .
