@@ -10,4 +10,8 @@ import java.util.List;
 public interface MenuItemAddonRepository extends JpaRepository<MenuItemAddon, Long> {
 
     List<MenuItemAddon> findByAddonGroupIdAndIsAvailableTrue(Long addonGroupId);
+    List<MenuItemAddon>
+    findByAddonGroupIdInAndIsAvailableTrueOrderByNameAsc(
+            List<Long> addonGroupIds
+    );
 }
