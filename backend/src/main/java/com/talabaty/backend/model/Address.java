@@ -13,7 +13,6 @@ public class Address {
     private String floor;
     private String apartment;
     private String city;
-    private String government;
 
 
 //    @ManyToOne
@@ -31,13 +30,12 @@ public class Address {
 
     public Address() {}
 
-    public Address(String street, String building, String floor, String apartment, String city, String goverment, CustomerProfile customer, Governorate governorate) {
+    public Address(String street, String building, String floor, String apartment, String city, CustomerProfile customer, Governorate governorate) {
         this.street = street;
         this.building = building;
         this.floor = floor;
         this.apartment = apartment;
         this.city = city;
-        this.government = goverment;
         this.customer = customer;
         this.governorate = governorate;
     }
@@ -106,13 +104,7 @@ public class Address {
         this.city = city;
     }
 
-    public String getGoverment() {
-        return government;
-    }
 
-    public void setGoverment(String goverment) {
-        this.government = goverment;
-    }
 
     @Override
     public String toString() {
@@ -123,7 +115,6 @@ public class Address {
                 ", floor='" + floor + '\'' +
                 ", apartment='" + apartment + '\'' +
                 ", city='" + city + '\'' +
-                ", goverment='" + government + '\'' +
                 ", customer=" + customer +
                 ", governorate=" + governorate +
                 '}';
