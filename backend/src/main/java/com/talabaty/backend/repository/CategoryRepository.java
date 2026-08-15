@@ -11,4 +11,18 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
 
     List<Category>
     findDistinctByIsActiveTrueAndRestaurants_IsActiveTrueOrderByNameAsc();
+
+    List<Category> findByNameContainingIgnoreCaseOrderByNameAsc(
+            String name
+    );
+
+    List<Category> findByIsActiveOrderByNameAsc(
+            Boolean isActive
+    );
+
+    List<Category>
+    findByNameContainingIgnoreCaseAndIsActiveOrderByNameAsc(
+            String name,
+            Boolean isActive
+    );
 }
