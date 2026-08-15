@@ -21,15 +21,12 @@ public class SearchResponse {
     public List<RestaurantResponse> getRestaurants() {
         return restaurants;
     }
-
     public void setRestaurants(List<RestaurantResponse> restaurants) {
         this.restaurants = restaurants;
     }
-
     public List<MenuItemSearchResponse> getMenuItems() {
         return menuItems;
     }
-
     public void setMenuItems(List<MenuItemSearchResponse> menuItems) {
         this.menuItems = menuItems;
     }
