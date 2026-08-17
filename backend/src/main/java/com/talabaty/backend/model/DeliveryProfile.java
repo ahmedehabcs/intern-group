@@ -11,9 +11,15 @@ public class DeliveryProfile {
     private Long id;
     private String Name;
     private String vehicleType;
+
+    @Column(name = "license_number", unique = true)
     private String licenseNumber;
     private Boolean isOnline;
+
+    @Column(name = "phone_number") // Corrected: Mapped to phone_number column
     private String PhoneNumber;
+
+    @Column(name = "national_id", unique = true)
     private String nationalId;
 
 
