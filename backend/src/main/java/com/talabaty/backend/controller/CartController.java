@@ -39,6 +39,13 @@ public class CartController {
         this.cartService = cartService;
     }
 
+    @Operation(summary = "Get the current customer's cart")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Cart retrieved successfully"),
+            @ApiResponse(responseCode = "401", description = "Authentication required"),
+            @ApiResponse(responseCode = "403", description = "Customer role required"),
+            @ApiResponse(responseCode = "404", description = "User or customer profile not found")
+    })
     @GetMapping
     public ResponseEntity<CartResponse> getCart(
             Authentication authentication
@@ -58,7 +65,6 @@ public class CartController {
             @ApiResponse(responseCode = "404", description = "Menu item not found"),
             @ApiResponse(responseCode = "409", description = "Items from different restaurants are not allowed")
     })
-
     @PostMapping("/items")
     public ResponseEntity<CartResponse> addItem(
             Authentication authentication,
@@ -76,6 +82,14 @@ public class CartController {
                 .body(response);
     }
 
+    @Operation(summary = "Update a cart item's quantity")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Item quantity updated successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid quantity"),
+            @ApiResponse(responseCode = "401", description = "Authentication required"),
+            @ApiResponse(responseCode = "403", description = "Customer role required"),
+            @ApiResponse(responseCode = "404", description = "Cart item not found")
+    })
     @PatchMapping("/items/{cartItemId}/quantity")
     public ResponseEntity<CartResponse> updateItemQuantity(
             Authentication authentication,
@@ -94,6 +108,18 @@ public class CartController {
         );
     }
 
+    @Operation(
+            summary = "Replace a cart item's complete configuration",
+            description = "Replaces the quantity, special instructions, and complete add-on selection."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Item configuration replaced successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid quantity or add-on selection"),
+            @ApiResponse(responseCode = "401", description = "Authentication required"),
+            @ApiResponse(responseCode = "403", description = "Customer role required"),
+            @ApiResponse(responseCode = "404", description = "Cart item or menu item not found"
+            )
+    })
     @PutMapping("/items/{cartItemId}")
     public ResponseEntity<CartResponse> replaceItemConfiguration(
             Authentication authentication,
@@ -111,6 +137,13 @@ public class CartController {
         );
     }
 
+    @Operation(summary = "Remove an item from the cart")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Item removed successfully"),
+            @ApiResponse(responseCode = "401", description = "Authentication required"),
+            @ApiResponse(responseCode = "403", description = "Customer role required"),
+            @ApiResponse(responseCode = "404", description = "Cart item not found")
+    })
     @DeleteMapping("/items/{cartItemId}")
     public ResponseEntity<CartResponse> removeItem(
             Authentication authentication,
@@ -126,6 +159,13 @@ public class CartController {
         );
     }
 
+    @Operation(summary = "Remove all items from the cart")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Cart cleared successfully"),
+            @ApiResponse(responseCode = "401", description = "Authentication required"),
+            @ApiResponse(responseCode = "403", description = "Customer role required"),
+            @ApiResponse(responseCode = "404", description = "User or customer profile not found")
+    })
     @DeleteMapping("/items")
     public ResponseEntity<Void> clearCart(
             Authentication authentication

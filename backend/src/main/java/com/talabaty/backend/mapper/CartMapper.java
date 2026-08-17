@@ -27,39 +27,21 @@ public interface CartMapper {
     @Mapping(target = "imageUrl", source = "cartItem.menuItem.imageUrl")
     @Mapping(target = "basePrice", source = "cartItem.menuItem.basePrice")
     @Mapping(target = "quantity", source = "cartItem.quantity")
-    @Mapping(
-            target = "specialInstructions",
-            source = "cartItem.specialInstructions"
-    )
-    @Mapping(
-            target = "itemTotalPrice",
-            source = "cartItem.itemTotalPrice"
-    )
+    @Mapping(target = "specialInstructions", source = "cartItem.specialInstructions")
+    @Mapping(target = "itemTotalPrice", source = "cartItem.itemTotalPrice")
     @Mapping(target = "addons", source = "addonResponses")
     CartItemResponse toCartItemResponse(
             CartItem cartItem,
             List<CartItemAddonResponse> addonResponses
     );
 
-    @Mapping(
-            target = "menuItemAddonId",
-            source = "menuItemAddon.id"
-    )
+    @Mapping(target = "menuItemAddonId", source = "menuItemAddon.id")
     @Mapping(target = "name", source = "menuItemAddon.name")
-    @Mapping(
-            target = "addonGroupId",
-            source = "menuItemAddon.addonGroup.id"
-    )
-    @Mapping(
-            target = "addonGroupName",
-            source = "menuItemAddon.addonGroup.name"
-    )
+    @Mapping(target = "addonGroupId", source = "menuItemAddon.addonGroup.id")
+    @Mapping(target = "addonGroupName", source = "menuItemAddon.addonGroup.name")
     @Mapping(target = "quantity", source = "quantity")
     @Mapping(target = "priceAtAddition", source = "priceAtAddition")
-    @Mapping(
-            target = "totalPrice",
-            expression = "java(calculateAddonTotal(cartItemAddon))"
-    )
+    @Mapping(target = "totalPrice", expression = "java(calculateAddonTotal(cartItemAddon))")
     CartItemAddonResponse toCartItemAddonResponse(
             CartItemAddon cartItemAddon
     );
