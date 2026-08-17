@@ -9,9 +9,16 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
+
+    // Active order: rider owns it, still in progress (not yet delivered/cancelled)
+    Optional<Order> findFirstByRiderIdAndStatusIn(Long riderId, List<OrderStatus> statuses);
+
+    // Completed deliveries for history, most recent first
+    List<Order> findByRiderIdAndStatusOrderByUpdatedAtDesc(Long riderId, OrderStatus status);
     // Orders ready for pickup, not yet assigned to a rider
     List<Order> findByStatusAndRiderIsNullOrderByIdAsc(OrderStatus status);
 
@@ -38,6 +45,24 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
                             @Param("expectedStatus") OrderStatus expectedStatus);
 
 
+    // Atomic deliver: only succeeds if THIS rider owns the order and it's still PICKED_UP
+    @Modifying
+    @Query("UPDATE Order o SET o.status = :newStatus " +
+            "WHERE o.id = :orderId AND o.rider.id = :riderId AND o.status = :expectedStatus")
+    int markDeliveredIfOwned(@Param("orderId") Long orderId,
+                             @Param("riderId") Long riderId,
+                             @Param("newStatus") OrderStatus newStatus,
+                             @Param("expectedStatus") OrderStatus expectedStatus);
+
+    // Atomic cancel: releases order back to pool (no rider, back to READY)
+// Only succeeds if THIS rider owns it and it's still ACCEPTED (not yet picked up)
+    @Modifying
+    @Query("UPDATE Order o SET o.rider = NULL, o.status = :releasedStatus " +
+            "WHERE o.id = :orderId AND o.rider.id = :riderId AND o.status = :expectedStatus")
+    int cancelOrderIfOwned(@Param("orderId") Long orderId,
+                           @Param("riderId") Long riderId,
+                           @Param("releasedStatus") OrderStatus releasedStatus,
+                           @Param("expectedStatus") OrderStatus expectedStatus);
 }
 
 

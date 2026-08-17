@@ -79,5 +79,6 @@
     <exclude-change idName="fk_meniteaddgro_on_menu_item" tagName="addForeignKeyConstraint" />
     <exclude-change idName="fk_rescat_on_category" tagName="addForeignKeyConstraint" />
     <exclude-change idName="fk_rescat_on_restaurant" tagName="addForeignKeyConstraint" />
+    <exclude-change idName="order_cancellation_logs" tagName="createTable" />
   </component>
 </project>
