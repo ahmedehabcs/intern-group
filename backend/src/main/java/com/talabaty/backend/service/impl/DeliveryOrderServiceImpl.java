@@ -1,5 +1,7 @@
 package com.talabaty.backend.service.impl;
 
+import com.talabaty.backend.dto.response.EarningsDayResponse;
+import com.talabaty.backend.dto.response.EarningsSummaryResponse;
 import com.talabaty.backend.dto.response.OrderHistoryResponse;
 import com.talabaty.backend.dto.response.OrderSummaryresponse;
 import com.talabaty.backend.model.Address;
@@ -15,8 +17,10 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -181,5 +185,32 @@ public class DeliveryOrderServiceImpl implements DeliveryOrderService {
                         order.getTotalPrice()
                 ))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public EarningsSummaryResponse getEarningsSummary(Long riderId, LocalDate from, LocalDate to) {
+        LocalDateTime startDateTime = from.atStartOfDay();
+        LocalDateTime endDateTime = to.plusDays(1).atStartOfDay(); // exclusive upper bound
+
+        List<Order> deliveredOrders = orderRepository.findDeliveredOrdersInRange(riderId, startDateTime, endDateTime);
+
+        Map<LocalDate, List<Order>> groupedByDay = deliveredOrders.stream()
+                .collect(Collectors.groupingBy(o -> o.getUpdatedAt().toLocalDate()));
+
+        List<EarningsDayResponse> byDay = new ArrayList<>();
+        for (Map.Entry<LocalDate, List<Order>> entry : groupedByDay.entrySet()) {
+            BigDecimal dayTotal = entry.getValue().stream()
+                    .map(Order::getDeliveryFee)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+            byDay.add(new EarningsDayResponse(entry.getKey(), dayTotal, entry.getValue().size()));
+        }
+        byDay.sort(Comparator.comparing(EarningsDayResponse::getDate));
+
+        BigDecimal totalEarnings = deliveredOrders.stream()
+                .map(Order::getDeliveryFee)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        return new EarningsSummaryResponse(from, to, totalEarnings, deliveredOrders.size(), byDay);
     }
 }

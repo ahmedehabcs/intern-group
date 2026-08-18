@@ -84,5 +84,6 @@ public class AuthExceptionHandler {
         problemDetail.setProperty("errors", errors);
 
         return ResponseEntity.badRequest().body(problemDetail);
+
     }
 }

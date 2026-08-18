@@ -1,8 +1,10 @@
 package com.talabaty.backend.service;
 
+import com.talabaty.backend.dto.response.EarningsSummaryResponse;
 import com.talabaty.backend.dto.response.OrderHistoryResponse;
 import com.talabaty.backend.dto.response.OrderSummaryresponse;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,4 +17,5 @@ public interface DeliveryOrderService {
     void updateOnlineStatus(Long riderId, boolean online);
     Optional<OrderSummaryresponse> getActiveOrder(Long riderId);
     List<OrderHistoryResponse> getDeliveryHistory(Long riderId);
+    EarningsSummaryResponse getEarningsSummary(Long riderId, LocalDate from, LocalDate to);
 }

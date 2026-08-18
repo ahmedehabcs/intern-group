@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,7 +29,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     // Atomic accept: only succeeds if the order is still unassigned and READY.
     // Prevents two riders from grabbing the same order at the same time.
     @Modifying
-    @Query("UPDATE Order o SET o.rider.id = :riderId, o.status = :newStatus " +
+    @Query("UPDATE Order o SET o.rider.id = :riderId, o.status = :newStatus, o.updatedAt = CURRENT_TIMESTAMP " +
             "WHERE o.id = :orderId AND o.rider IS NULL AND o.status = :expectedStatus")
     int acceptOrderIfAvailable(@Param("orderId") Long orderId,
                                @Param("riderId") Long riderId,
@@ -37,7 +38,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     // Atomic pickup: only succeeds if THIS rider owns the order and it's still ACCEPTED
     @Modifying
-    @Query("UPDATE Order o SET o.status = :newStatus " +
+    @Query("UPDATE Order o SET o.status = :newStatus, o.updatedAt = CURRENT_TIMESTAMP " +
             "WHERE o.id = :orderId AND o.rider.id = :riderId AND o.status = :expectedStatus")
     int markPickedUpIfOwned(@Param("orderId") Long orderId,
                             @Param("riderId") Long riderId,
@@ -47,7 +48,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     // Atomic deliver: only succeeds if THIS rider owns the order and it's still PICKED_UP
     @Modifying
-    @Query("UPDATE Order o SET o.status = :newStatus " +
+    @Query("UPDATE Order o SET o.status = :newStatus, o.updatedAt = CURRENT_TIMESTAMP " +
             "WHERE o.id = :orderId AND o.rider.id = :riderId AND o.status = :expectedStatus")
     int markDeliveredIfOwned(@Param("orderId") Long orderId,
                              @Param("riderId") Long riderId,
@@ -55,14 +56,19 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
                              @Param("expectedStatus") OrderStatus expectedStatus);
 
     // Atomic cancel: releases order back to pool (no rider, back to READY)
-// Only succeeds if THIS rider owns it and it's still ACCEPTED (not yet picked up)
+    // Only succeeds if THIS rider owns it and it's still ACCEPTED (not yet picked up)
     @Modifying
-    @Query("UPDATE Order o SET o.rider = NULL, o.status = :releasedStatus " +
+    @Query("UPDATE Order o SET o.rider = NULL, o.status = :releasedStatus, o.updatedAt = CURRENT_TIMESTAMP " +
             "WHERE o.id = :orderId AND o.rider.id = :riderId AND o.status = :expectedStatus")
     int cancelOrderIfOwned(@Param("orderId") Long orderId,
                            @Param("riderId") Long riderId,
                            @Param("releasedStatus") OrderStatus releasedStatus,
                            @Param("expectedStatus") OrderStatus expectedStatus);
+
+    // Delivered orders for a rider within a date range, used for earnings aggregation
+    @Query("SELECT o FROM Order o WHERE o.rider.id = :riderId AND o.status = 'DELIVERED' " +
+            "AND o.updatedAt >= :startDateTime AND o.updatedAt < :endDateTime")
+    List<Order> findDeliveredOrdersInRange(@Param("riderId") Long riderId,
+                                           @Param("startDateTime") LocalDateTime startDateTime,
+                                           @Param("endDateTime") LocalDateTime endDateTime);
 }
-
-
