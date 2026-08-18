@@ -93,7 +93,9 @@ public class SecurityConfig {
                                 "/api/auth/**",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
-                                "/api/menu-items/**"
+                                "/api/menu-items/**",
+                                "/error"
+
                         ).permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/categories/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/restaurants/**").permitAll()
