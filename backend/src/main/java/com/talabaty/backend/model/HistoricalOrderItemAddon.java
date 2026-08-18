@@ -20,6 +20,9 @@ public class HistoricalOrderItemAddon {
     @Column(nullable = false)
     private Double addonPrice;
 
+    @Column(nullable = false)
+    private Integer quantity;
+
     public HistoricalOrderItemAddon() {
     }
 
@@ -51,6 +54,14 @@ public class HistoricalOrderItemAddon {
         this.addonPrice = addonPrice;
     }
 
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
+
     @Override
     public String toString() {
         return "HistoricalOrderItemAddon{" +
@@ -58,6 +69,7 @@ public class HistoricalOrderItemAddon {
                 ", orderItem=" + orderItem +
                 ", addonName='" + addonName + '\'' +
                 ", addonPrice=" + addonPrice +
+                ", quantity=" + quantity +
                 '}';
     }
 }

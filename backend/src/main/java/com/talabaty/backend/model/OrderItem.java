@@ -20,6 +20,9 @@ public class OrderItem {
     @JoinColumn(name = "menu_item_id", nullable = false)
     private MenuItem menuItem;
 
+    @Column(name = "product_name", nullable = false)
+    private String productName;
+
     @Column(nullable = false)
     private Integer quantity;
 
@@ -35,9 +38,10 @@ public class OrderItem {
     public OrderItem() {
     }
 
-    public OrderItem(Order order, MenuItem menuItem, Integer quantity, Double unitPrice, String notes, List<HistoricalOrderItemAddon> addons) {
+    public OrderItem(Order order, MenuItem menuItem, String productName, Integer quantity, Double unitPrice, String notes, List<HistoricalOrderItemAddon> addons) {
         this.order = order;
         this.menuItem = menuItem;
+        this.productName = productName;
         this.quantity = quantity;
         this.unitPrice = unitPrice;
         this.notes = notes;
@@ -96,7 +100,13 @@ public class OrderItem {
     public void setAddons(List<HistoricalOrderItemAddon> addons) {
         this.addons = addons;
     }
+    public String getProductName() {
+        return productName;
+    }
 
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
     @Override
     public String toString() {
         return "OrderItem{" +
