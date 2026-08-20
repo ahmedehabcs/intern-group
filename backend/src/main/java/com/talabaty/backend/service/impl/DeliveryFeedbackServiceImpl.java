@@ -92,6 +92,15 @@ public class DeliveryFeedbackServiceImpl implements DeliveryFeedbackService {
                 .toList();
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<DeliveryFeedbackResponse> getAllFeedback() {
+        return feedbackRepository.findAllByOrderByCreatedAtDesc()
+                .stream()
+                .map(this::toResponse)
+                .toList();
+    }
+
     private DeliveryFeedbackResponse toResponse(DeliveryFeedback feedback) {
         return new DeliveryFeedbackResponse(
                 feedback.getOrder().getId(),

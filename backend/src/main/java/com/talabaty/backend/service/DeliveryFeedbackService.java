@@ -14,4 +14,6 @@ public interface DeliveryFeedbackService {
     );
 
     List<DeliveryFeedbackResponse> getMyFeedback(Long riderId);
+
+    List<DeliveryFeedbackResponse> getAllFeedback();
 }

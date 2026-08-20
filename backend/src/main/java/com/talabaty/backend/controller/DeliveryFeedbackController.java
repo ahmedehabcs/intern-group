@@ -48,4 +48,10 @@ public class DeliveryFeedbackController {
 
         return ResponseEntity.ok(feedbackService.getMyFeedback(riderId));
     }
+
+    @GetMapping("/admin/all")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<DeliveryFeedbackResponse>> getAllFeedback() {
+        return ResponseEntity.ok(feedbackService.getAllFeedback());
+    }
 }
