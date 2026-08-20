@@ -3,14 +3,14 @@ package com.talabaty.backend.repository;
 
 import com.talabaty.backend.model.Order;
 import com.talabaty.backend.model.OrderStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-
 import java.util.List;
 import java.util.Optional;
-
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
 
@@ -63,6 +63,16 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
                            @Param("riderId") Long riderId,
                            @Param("releasedStatus") OrderStatus releasedStatus,
                            @Param("expectedStatus") OrderStatus expectedStatus);
+
+
+
+
+
+    // Customer order history, ordered from newest to oldest
+    // Order items are fetched with the orders because the summary mapper
+    // Customer order history, ordered from newest to oldest.
+    Page<Order> findByCustomerIdOrderByCreatedAtDesc(Long customerId, Pageable pageable);
+    Optional<Order> findByIdAndCustomerId(Long orderId, Long customerId);
 }
 
 

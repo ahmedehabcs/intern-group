@@ -2,7 +2,6 @@ package com.talabaty.backend.service.impl;
 
 import com.talabaty.backend.dto.response.OrderHistoryResponse;
 import com.talabaty.backend.dto.response.OrderSummaryresponse;
-import com.talabaty.backend.model.Address;
 import com.talabaty.backend.model.DeliveryProfile;
 import com.talabaty.backend.model.Order;
 import com.talabaty.backend.model.OrderCancellationLog;
@@ -140,20 +139,10 @@ public class DeliveryOrderServiceImpl implements DeliveryOrderService {
     }
 
     private OrderSummaryresponse toSummaryDto(Order order) {
-        Address address = order.getAddress();
-        String formattedAddress = String.format("%s, Bldg %s, Floor %s, Apt %s, %s (%s)",
-                address.getStreet(),
-                address.getBuilding(),
-                address.getFloor(),
-                address.getApartment(),
-                address.getCity(),
-                address.getGovernorate() != null ? address.getGovernorate().getName() : "N/A"
-        );
-
         return new OrderSummaryresponse(
                 order.getId(),
                 order.getRestaurant().getName(),
-                formattedAddress,
+                order.getDeliveryAddress(),
                 order.getOrderItems().size(),
                 order.getTotalPrice(),
                 order.getDeliveryFee()
