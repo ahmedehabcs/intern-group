@@ -7,6 +7,9 @@ public class KitchenDashboardSummaryResponse {
     private long confirmedOrders;
     private long preparingOrders;
     private long readyOrders;
+    private long acceptedOrders;
+    private long pickedUpOrders;
+    private long deliveredOrders;
     private long cancelledOrders;
     private long delayedOrders;
 
@@ -19,6 +22,9 @@ public class KitchenDashboardSummaryResponse {
             long confirmedOrders,
             long preparingOrders,
             long readyOrders,
+            long acceptedOrders,
+            long pickedUpOrders,
+            long deliveredOrders,
             long cancelledOrders,
             long delayedOrders
     ) {
@@ -27,6 +33,9 @@ public class KitchenDashboardSummaryResponse {
         this.confirmedOrders = confirmedOrders;
         this.preparingOrders = preparingOrders;
         this.readyOrders = readyOrders;
+        this.acceptedOrders = acceptedOrders;
+        this.pickedUpOrders = pickedUpOrders;
+        this.deliveredOrders = deliveredOrders;
         this.cancelledOrders = cancelledOrders;
         this.delayedOrders = delayedOrders;
     }
@@ -69,6 +78,30 @@ public class KitchenDashboardSummaryResponse {
 
     public void setReadyOrders(long readyOrders) {
         this.readyOrders = readyOrders;
+    }
+
+    public long getAcceptedOrders() {
+        return acceptedOrders;
+    }
+
+    public void setAcceptedOrders(long acceptedOrders) {
+        this.acceptedOrders = acceptedOrders;
+    }
+
+    public long getPickedUpOrders() {
+        return pickedUpOrders;
+    }
+
+    public void setPickedUpOrders(long pickedUpOrders) {
+        this.pickedUpOrders = pickedUpOrders;
+    }
+
+    public long getDeliveredOrders() {
+        return deliveredOrders;
+    }
+
+    public void setDeliveredOrders(long deliveredOrders) {
+        this.deliveredOrders = deliveredOrders;
     }
 
     public long getCancelledOrders() {

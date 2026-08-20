@@ -61,6 +61,9 @@ public class KitchenDashboardServiceImpl implements KitchenDashboardService {
                 countByStatus(orders, OrderStatus.CONFIRMED),
                 countByStatus(orders, OrderStatus.PREPARING),
                 countByStatus(orders, OrderStatus.READY),
+                countByStatus(orders, OrderStatus.ACCEPTED),
+                countByStatus(orders, OrderStatus.PICKED_UP),
+                countByStatus(orders, OrderStatus.DELIVERED),
                 countByStatus(orders, OrderStatus.CANCELLED),
                 countDelayedOrders(orders, delayCutoff)
         );
