@@ -14,6 +14,9 @@ public class Address {
     private String apartment;
     private String city;
 
+    @Column(name = "is_default", nullable = false)
+    private boolean isDefault;
+
 
 //    @ManyToOne
 //    @JoinColumn(name = "user_id")
@@ -102,6 +105,14 @@ public class Address {
 
     public void setCity(String city) {
         this.city = city;
+    }
+
+    public boolean isDefault() {
+        return isDefault;
+    }
+
+    public void setDefault(boolean aDefault) {
+        isDefault = aDefault;
     }
 
 

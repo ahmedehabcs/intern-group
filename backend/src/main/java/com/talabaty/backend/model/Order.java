@@ -37,7 +37,7 @@ public class Order {
 
     // Selected customer address
     @ManyToOne
-    @JoinColumn(name = "address_id", nullable = false)
+    @JoinColumn(name = "address_id")
     private Address address;
 
     // Immutable formatted delivery-address snapshot
