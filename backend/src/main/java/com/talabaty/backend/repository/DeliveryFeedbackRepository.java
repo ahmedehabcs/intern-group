@@ -11,4 +11,6 @@ public interface DeliveryFeedbackRepository
     boolean existsByOrderId(Long orderId);
 
     List<DeliveryFeedback> findByRiderIdOrderByCreatedAtDesc(Long riderId);
+
+    List<DeliveryFeedback> findAllByOrderByCreatedAtDesc();
 }
