@@ -9,9 +9,9 @@ public class CustomerProfile {
 
     @Id
     private Long id;
-    private String Name;
+    private String name;
     private Integer loyaltyPoints;
-    private String PhoneNumber;
+    private String phoneNumber;
 
     // Foreign key to the associated User
     @OneToOne(cascade = CascadeType.REMOVE)
@@ -34,9 +34,9 @@ public class CustomerProfile {
 
     public CustomerProfile() {}
     public CustomerProfile(String name, Integer loyaltyPoints, String phoneNumber, User user, List<Order> orderHistory, List<Address> addresses) {
-        Name = name;
+        this.name = name;
         this.loyaltyPoints = loyaltyPoints;
-        PhoneNumber = phoneNumber;
+        this.phoneNumber = phoneNumber;
         this.user = user;
         this.orderHistory = orderHistory;
         this.addresses = addresses;
@@ -50,11 +50,11 @@ public class CustomerProfile {
     }
 
     public String getName() {
-        return Name;
+        return name;
     }
 
     public void setName(String name) {
-        Name = name;
+        this.name = name;
     }
 
     public Integer getLoyaltyPoints() {
@@ -66,11 +66,11 @@ public class CustomerProfile {
     }
 
     public String getPhoneNumber() {
-        return PhoneNumber;
+        return phoneNumber;
     }
 
     public void setPhoneNumber(String phoneNumber) {
-        PhoneNumber = phoneNumber;
+        this.phoneNumber = phoneNumber;
     }
 
     public User getUser() {
@@ -101,11 +101,11 @@ public class CustomerProfile {
     public String toString() {
         return "CustomerProfile{" +
                 "id=" + id +
-                ", Name='" + Name + '\'' +
-                ", loyalty Points=" + loyaltyPoints +
-                ", Phone Number=" + PhoneNumber +
+                ", name='" + name + '\'' +
+                ", loyaltyPoints=" + loyaltyPoints +
+                ", phoneNumber=" + phoneNumber +
                 ", user=" + user +
-                ", order History=" + orderHistory +
+                ", orderHistory=" + orderHistory +
                 ", addresses=" + addresses +
                 '}';
     }
