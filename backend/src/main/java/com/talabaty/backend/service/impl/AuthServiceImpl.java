@@ -75,7 +75,7 @@ public class AuthServiceImpl implements AuthService {
             customerProfile.setUser(savedUser);
             customerProfile.setName(request.getName());
             // The new spec for CustomerSignupRequest doesn't include a phone number.
-            customerProfile.setPhoneNumber(null); 
+            customerProfile.setPhoneNumber(null);
             customerProfileRepository.save(customerProfile);
 
             emailService.sendOtpEmail(savedUser.getEmail(), savedUser.getOtp());
@@ -127,8 +127,12 @@ public class AuthServiceImpl implements AuthService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid OTP");
         }
 
-        if (user.getOtpExpiration().isBefore(LocalDateTime.now())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "This OTP has expired. Please request a new one.");
+        if (user.getOtpExpiration() == null ||
+                user.getOtpExpiration().isBefore(LocalDateTime.now())) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "This OTP has expired. Please request a new one."
+            );
         }
 
         user.setEmailVerified(true);
@@ -188,7 +192,7 @@ public class AuthServiceImpl implements AuthService {
         user.setOtp(otp);
         user.setOtpExpiration(LocalDateTime.now().plusMinutes(15));
     }
-    
+
     private String generateNumericOtp() {
         return new Random().ints(6, 0, 10)
                 .mapToObj(String::valueOf)
