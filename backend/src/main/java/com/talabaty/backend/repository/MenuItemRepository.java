@@ -33,4 +33,15 @@ public interface MenuItemRepository extends JpaRepository<MenuItem, Long> {
     findByIdAndIsAvailableTrueAndMenuSectionIsActiveTrueAndMenuSectionRestaurantIsActiveTrue(
             Long id
     );
+
+    @EntityGraph(attributePaths = "menuSection")
+    List<MenuItem> findByMenuSectionRestaurantIdOrderByMenuSectionNameAscNameAsc(
+            Long restaurantId
+    );
+
+    @EntityGraph(attributePaths = "menuSection")
+    Optional<MenuItem> findByIdAndMenuSectionRestaurantId(
+            Long id,
+            Long restaurantId
+    );
 }

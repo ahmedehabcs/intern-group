@@ -17,4 +17,10 @@ public interface KitchenOrderService {
             Long orderId,
             OrderStatus newStatus
     );
+
+    KitchenOrderDetailsResponse cancelOrder(
+            Long userId,
+            Long orderId,
+            String reason
+    );
 }

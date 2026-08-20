@@ -4,9 +4,11 @@ import com.talabaty.backend.dto.response.KitchenOrderDetailsResponse;
 import com.talabaty.backend.dto.response.KitchenOrderSummaryResponse;
 import com.talabaty.backend.mapper.OrderMapper;
 import com.talabaty.backend.model.KitchenManager;
+import com.talabaty.backend.model.KitchenOrderCancellation;
 import com.talabaty.backend.model.Order;
 import com.talabaty.backend.model.OrderStatus;
 import com.talabaty.backend.repository.KitchenManagerRepository;
+import com.talabaty.backend.repository.KitchenOrderCancellationRepository;
 import com.talabaty.backend.repository.OrderRepository;
 import com.talabaty.backend.service.KitchenOrderService;
 import org.springframework.http.HttpStatus;
@@ -27,15 +29,18 @@ public class KitchenOrderServiceImpl implements KitchenOrderService {
     );
 
     private final KitchenManagerRepository kitchenManagerRepository;
+    private final KitchenOrderCancellationRepository kitchenOrderCancellationRepository;
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
 
     public KitchenOrderServiceImpl(
             KitchenManagerRepository kitchenManagerRepository,
+            KitchenOrderCancellationRepository kitchenOrderCancellationRepository,
             OrderRepository orderRepository,
             OrderMapper orderMapper
     ) {
         this.kitchenManagerRepository = kitchenManagerRepository;
+        this.kitchenOrderCancellationRepository = kitchenOrderCancellationRepository;
         this.orderRepository = orderRepository;
         this.orderMapper = orderMapper;
     }
@@ -86,7 +91,59 @@ public class KitchenOrderServiceImpl implements KitchenOrderService {
         return orderMapper.toKitchenOrderDetailsResponse(orderRepository.save(order));
     }
 
+    @Override
+    @Transactional
+    public KitchenOrderDetailsResponse cancelOrder(
+            Long userId,
+            Long orderId,
+            String reason
+    ) {
+        if (reason == null || reason.isBlank()) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Cancellation reason is required"
+            );
+        }
+
+        String normalizedReason = reason.trim();
+        if (normalizedReason.length() > 255) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Cancellation reason must not exceed 255 characters"
+            );
+        }
+
+        KitchenManager manager = getKitchenManager(userId);
+        Long restaurantId = manager.getRestaurant().getId();
+        Order order = findRestaurantOrder(orderId, restaurantId);
+
+        if (order.getStatus() != OrderStatus.PENDING
+                && order.getStatus() != OrderStatus.CONFIRMED) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Only pending or confirmed orders can be cancelled by the kitchen"
+            );
+        }
+
+        order.setStatus(OrderStatus.CANCELLED);
+        Order savedOrder = orderRepository.save(order);
+
+        kitchenOrderCancellationRepository.save(
+                new KitchenOrderCancellation(
+                        savedOrder,
+                        manager,
+                        normalizedReason
+                )
+        );
+
+        return orderMapper.toKitchenOrderDetailsResponse(savedOrder);
+    }
+
     private Long getManagerRestaurantId(Long userId) {
+        return getKitchenManager(userId).getRestaurant().getId();
+    }
+
+    private KitchenManager getKitchenManager(Long userId) {
         if (userId == null) {
             throw new ResponseStatusException(
                     HttpStatus.UNAUTHORIZED,
@@ -94,14 +151,12 @@ public class KitchenOrderServiceImpl implements KitchenOrderService {
             );
         }
 
-        KitchenManager manager = kitchenManagerRepository
+        return kitchenManagerRepository
                 .findByUserId(userId)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.FORBIDDEN,
                         "Kitchen manager profile not found"
                 ));
-
-        return manager.getRestaurant().getId();
     }
 
     private Order findRestaurantOrder(Long orderId, Long restaurantId) {

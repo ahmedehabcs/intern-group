@@ -9,6 +9,7 @@ import com.talabaty.backend.model.MenuSection;
 import com.talabaty.backend.dto.response.AddonGroupResponse;
 import com.talabaty.backend.dto.response.MenuItemAddonResponse;
 import com.talabaty.backend.dto.response.MenuItemDetailsResponse;
+import com.talabaty.backend.dto.response.KitchenMenuItemResponse;
 import com.talabaty.backend.model.AddonGroup;
 import com.talabaty.backend.model.MenuItemAddon;
 import org.mapstruct.Mapper;
@@ -84,5 +85,13 @@ public interface MenuMapper {
     MenuItemDetailsResponse toMenuItemDetailsResponse(
             MenuItem menuItem,
             List<AddonGroupResponse> addonGroupResponses
+    );
+
+    @Mapping(target = "menuSectionId", source = "menuSection.id")
+    @Mapping(target = "menuSectionName", source = "menuSection.name")
+    KitchenMenuItemResponse toKitchenMenuItemResponse(MenuItem menuItem);
+
+    List<KitchenMenuItemResponse> toKitchenMenuItemResponseList(
+            List<MenuItem> menuItems
     );
 }

@@ -1,5 +1,6 @@
 package com.talabaty.backend.controller;
 
+import com.talabaty.backend.dto.request.CancelKitchenOrderRequest;
 import com.talabaty.backend.dto.request.UpdateKitchenOrderStatusRequest;
 import com.talabaty.backend.dto.response.KitchenOrderDetailsResponse;
 import com.talabaty.backend.dto.response.KitchenOrderSummaryResponse;
@@ -70,6 +71,24 @@ public class KitchenOrderController {
                         userId,
                         orderId,
                         request.getStatus()
+                )
+        );
+    }
+
+    @Operation(summary = "Cancel a pending or confirmed kitchen order")
+    @PatchMapping("/{orderId}/cancel")
+    public ResponseEntity<KitchenOrderDetailsResponse> cancelOrder(
+            Authentication authentication,
+            @PathVariable Long orderId,
+            @Valid @RequestBody CancelKitchenOrderRequest request
+    ) {
+        Long userId = Long.valueOf(authentication.getName());
+
+        return ResponseEntity.ok(
+                kitchenOrderService.cancelOrder(
+                        userId,
+                        orderId,
+                        request.getReason()
                 )
         );
     }
