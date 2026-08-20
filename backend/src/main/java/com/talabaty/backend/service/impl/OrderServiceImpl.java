@@ -29,7 +29,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-
+import com.talabaty.backend.dto.response.CustomerOrderDetailsResponse;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,7 +37,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
+import com.talabaty.backend.dto.response.CustomerOrderPageResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import com.talabaty.backend.model.CustomerOrderCancellation;
+import com.talabaty.backend.repository.CustomerOrderCancellationRepository;
 @Service
 public class OrderServiceImpl implements OrderService {
 
@@ -48,7 +52,7 @@ public class OrderServiceImpl implements OrderService {
     private final MenuItemAddonRepository menuItemAddonRepository;
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
-
+    private final CustomerOrderCancellationRepository customerOrderCancellationRepository;
     public OrderServiceImpl(
             UserRepository userRepository,
             CartRepository cartRepository,
@@ -56,6 +60,7 @@ public class OrderServiceImpl implements OrderService {
             MenuItemRepository menuItemRepository,
             MenuItemAddonRepository menuItemAddonRepository,
             OrderRepository orderRepository,
+            CustomerOrderCancellationRepository customerOrderCancellationRepository,
             OrderMapper orderMapper
     ) {
         this.userRepository = userRepository;
@@ -64,6 +69,7 @@ public class OrderServiceImpl implements OrderService {
         this.menuItemRepository = menuItemRepository;
         this.menuItemAddonRepository = menuItemAddonRepository;
         this.orderRepository = orderRepository;
+        this.customerOrderCancellationRepository = customerOrderCancellationRepository;
         this.orderMapper = orderMapper;
     }
 
@@ -97,7 +103,7 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
         if (user.getRole() != Role.CUSTOMER) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Order placement is available only to customers");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "This operation is available only to customers");
         }
 
         CustomerProfile customer = user.getCustomerProfile();
@@ -320,10 +326,7 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
-    private void validateAddonGroupLimits(
-            Map<Long, AddonGroup> allowedGroups,
-            Map<Long, Integer> quantitiesByGroup
-    ) {
+    private void validateAddonGroupLimits(Map<Long, AddonGroup> allowedGroups, Map<Long, Integer> quantitiesByGroup) {
         for (AddonGroup group : allowedGroups.values()) {
             int selectedQuantity = quantitiesByGroup.getOrDefault(group.getId(), 0);
 
@@ -421,5 +424,79 @@ public class OrderServiceImpl implements OrderService {
         cart.setRestaurant(null);
         cart.setSubtotal(0.0);
         cartRepository.save(cart);
+    }
+
+
+//order history
+@Override
+@Transactional(readOnly = true)
+public CustomerOrderPageResponse getCustomerOrders(Long userId, int page, int size) {
+    CustomerProfile customer = requireCustomer(userId);
+
+    Page<Order> orderPage =
+            orderRepository.findByCustomerIdOrderByCreatedAtDesc(
+                    customer.getId(),
+                    PageRequest.of(page, size)
+            );
+
+    return orderMapper.toCustomerOrderPageResponse(orderPage);
+}
+
+    @Override
+    @Transactional(readOnly = true)
+    public CustomerOrderDetailsResponse getCustomerOrderDetails(
+            Long userId,
+            Long orderId
+    ) {
+        CustomerProfile customer = requireCustomer(userId);
+
+        Order order = orderRepository
+                .findByIdAndCustomerId(orderId, customer.getId())
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Order not found"
+                ));
+
+        return orderMapper.toCustomerOrderDetailsResponse(order);
+    }
+    @Override
+    @Transactional
+    public CustomerOrderDetailsResponse cancelCustomerOrder(Long userId, Long orderId, String reason) {
+        CustomerProfile customer = requireCustomer(userId);
+
+        Order order = orderRepository
+                .findByIdAndCustomerId(orderId, customer.getId())
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Order not found"
+                ));
+
+        if (order.getStatus() == OrderStatus.CANCELLED) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Order is already cancelled"
+            );
+        }
+
+        if (order.getStatus() != OrderStatus.PENDING) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Order can no longer be cancelled because processing has started"
+            );
+        }
+
+        order.setStatus(OrderStatus.CANCELLED);
+
+        CustomerOrderCancellation cancellation =
+                new CustomerOrderCancellation(
+                        order,
+                        customer,
+                        reason
+                );
+
+        customerOrderCancellationRepository.save(cancellation);
+        orderRepository.save(order);
+
+        return orderMapper.toCustomerOrderDetailsResponse(order);
     }
 }
