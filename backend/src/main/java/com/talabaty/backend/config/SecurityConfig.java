@@ -102,6 +102,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/categories/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/restaurants/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/search").permitAll()
+                        .requestMatchers("/api/kitchen/**").hasRole("KITCHEN_MANAGER")
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(exceptions -> exceptions

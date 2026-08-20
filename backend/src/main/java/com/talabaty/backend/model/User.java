@@ -40,6 +40,9 @@ public class User {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Admin adminProfile;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private KitchenManager kitchenManagerProfile;
+
     public User() {}
 
     public User(String email, String password, Role role) {
@@ -154,5 +157,13 @@ public class User {
 
     public void setAdminProfile(Admin adminProfile) {
         this.adminProfile = adminProfile;
+    }
+
+    public KitchenManager getKitchenManagerProfile() {
+        return kitchenManagerProfile;
+    }
+
+    public void setKitchenManagerProfile(KitchenManager kitchenManagerProfile) {
+        this.kitchenManagerProfile = kitchenManagerProfile;
     }
 }

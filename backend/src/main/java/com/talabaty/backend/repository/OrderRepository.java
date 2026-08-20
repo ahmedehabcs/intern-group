@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 public interface OrderRepository extends JpaRepository<Order, Long> {
@@ -73,6 +74,13 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     // Customer order history, ordered from newest to oldest.
     Page<Order> findByCustomerIdOrderByCreatedAtDesc(Long customerId, Pageable pageable);
     Optional<Order> findByIdAndCustomerId(Long orderId, Long customerId);
+
+    List<Order> findByRestaurantIdAndStatusInOrderByCreatedAtAsc(
+            Long restaurantId,
+            Collection<OrderStatus> statuses
+    );
+
+    Optional<Order> findByIdAndRestaurantId(Long orderId, Long restaurantId);
 }
 
 
