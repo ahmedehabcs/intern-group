@@ -19,6 +19,17 @@ import java.util.Map;
 // must not leak onto other controllers as they are added.
 @RestControllerAdvice(assignableTypes = AuthController.class)
 public class AuthExceptionHandler {
+// handlers
+    @ExceptionHandler(OtpException.class)
+    public ResponseEntity<ProblemDetail> handleOtpException(OtpException exception) {
+
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
+                HttpStatus.BAD_REQUEST,
+                exception.getMessage()
+        );
+
+        return ResponseEntity.badRequest().body(problemDetail);
+    }
 
     // Create a standardized error response for an invalid JSON request.
     @ExceptionHandler(ResponseStatusException.class)
