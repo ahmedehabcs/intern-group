@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import com.talabaty.backend.exception.OtpException;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
@@ -42,16 +43,16 @@ public class OtpService {
 
     public boolean verifyOtp(String email, String submittedOtp) {
         OtpVerification record = otpRepo.findTopByEmailOrderByIdDesc(email)
-                .orElseThrow(() -> new RuntimeException("No OTP requested for this email"));
+                .orElseThrow(() -> new OtpException("No OTP requested for this email"));
 
         if (record.isVerified()) return true;
 
         if (record.getExpiresAt().isBefore(LocalDateTime.now())) {
-            throw new RuntimeException("OTP expired");
+            throw new OtpException("OTP expired");
         }
 
         if (record.getAttemptCount() >= MAX_ATTEMPTS) {
-            throw new RuntimeException("Too many attempts, request a new OTP");
+            throw new OtpException("Too many attempts, request a new OTP");
         }
 
         record.setAttemptCount(record.getAttemptCount() + 1);
