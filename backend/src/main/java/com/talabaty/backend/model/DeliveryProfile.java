@@ -9,18 +9,25 @@ public class DeliveryProfile {
 
     @Id
     private Long id;
-    private String Name;
+    private String name;
     private String vehicleType;
 
     @Column(name = "license_number", unique = true)
     private String licenseNumber;
     private Boolean isOnline;
 
-    @Column(name = "phone_number") // Corrected: Mapped to phone_number column
-    private String PhoneNumber;
+    @Column(name = "is_active", nullable = false, columnDefinition = "boolean default true")
+    private Boolean isActive = true;
+
+    @Column(name = "phone_number")
+    private String phoneNumber;
 
     @Column(name = "national_id", unique = true)
     private String nationalId;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "approval_status", nullable = false)
+    private ApprovalStatus approvalStatus = ApprovalStatus.PENDING;
 
 
     @OneToOne(cascade = CascadeType.REMOVE)
@@ -34,11 +41,11 @@ public class DeliveryProfile {
     public DeliveryProfile() {}
 
     public DeliveryProfile(String name, String vehicleType, String licenseNumber, Boolean isOnline, String phoneNumber, String nationalId, User user, List<Order> deliveryHistory) {
-        Name = name;
+        this.name = name;
         this.vehicleType = vehicleType;
         this.licenseNumber = licenseNumber;
         this.isOnline = isOnline;
-        PhoneNumber = phoneNumber;
+        this.phoneNumber = phoneNumber;
         this.nationalId = nationalId;
         this.user = user;
         this.deliveryHistory = deliveryHistory;
@@ -48,13 +55,21 @@ public class DeliveryProfile {
         return id;
     }
 
+    public Boolean getActive() {
+        return isActive;
+    }
+
+    public void setActive(Boolean active) {
+        isActive = active;
+    }
+
 
     public String getName() {
-        return Name;
+        return name;
     }
 
     public void setName(String name) {
-        Name = name;
+        this.name = name;
     }
 
     public String getVehicleType() {
@@ -82,11 +97,11 @@ public class DeliveryProfile {
     }
 
     public String getPhoneNumber() {
-        return PhoneNumber;
+        return phoneNumber;
     }
 
     public void setPhoneNumber(String phoneNumber) {
-        PhoneNumber = phoneNumber;
+        this.phoneNumber = phoneNumber;
     }
 
     public String getNationalId() {
@@ -95,6 +110,14 @@ public class DeliveryProfile {
 
     public void setNationalId(String nationalId) {
         this.nationalId = nationalId;
+    }
+
+    public ApprovalStatus getApprovalStatus() {
+        return approvalStatus;
+    }
+
+    public void setApprovalStatus(ApprovalStatus approvalStatus) {
+        this.approvalStatus = approvalStatus;
     }
 
     public User getUser() {
@@ -117,11 +140,11 @@ public class DeliveryProfile {
     public String toString() {
         return "DeliveryProfile{" +
                 "id=" + id +
-                ", Name='" + Name + '\'' +
+                ", name='" + name + '\'' +
                 ", vehicle Type='" + vehicleType + '\'' +
                 ", license Number='" + licenseNumber + '\'' +
                 ", isOnline=" + isOnline +
-                ", Phone Number=" + PhoneNumber +
+                ", phoneNumber=" + phoneNumber +
                 ", national Id='" + nationalId + '\'' +
                 ", user=" + user +
                 ", delivery History=" + deliveryHistory +

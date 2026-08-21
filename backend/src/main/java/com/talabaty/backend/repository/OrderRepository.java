@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import java.util.Collection;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -76,18 +76,22 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     Page<Order> findByCustomerIdOrderByCreatedAtDesc(Long customerId, Pageable pageable);
     Optional<Order> findByIdAndCustomerId(Long orderId, Long customerId);
 
-    List<Order> findByRestaurantIdAndStatusInOrderByCreatedAtAsc(
-            Long restaurantId,
-            Collection<OrderStatus> statuses
-    );
-
+    // Kitchen: active orders for a restaurant
+    List<Order> findByRestaurantIdAndStatusInOrderByCreatedAtAsc(Long restaurantId, List<OrderStatus> statuses);
+    List<Order> findByRestaurantIdAndCreatedAtBetweenOrderByCreatedAtAsc(Long restaurantId, LocalDateTime start, LocalDateTime end);
     Optional<Order> findByIdAndRestaurantId(Long orderId, Long restaurantId);
 
-    List<Order> findByRestaurantIdAndCreatedAtBetweenOrderByCreatedAtAsc(
-            Long restaurantId,
-            LocalDateTime startOfDay,
-            LocalDateTime endOfDay
-    );
+    // Admin filter: status, restaurant, and date range are all optional (pass null to skip a filter)
+    @Query("SELECT o FROM Order o WHERE " +
+            "(CAST(:status AS string) IS NULL OR o.status = :status) AND " +
+            "(:restaurantId IS NULL OR o.restaurant.id = :restaurantId) AND " +
+            "(CAST(:startDateTime AS timestamp) IS NULL OR o.updatedAt >= :startDateTime) AND " +
+            "(CAST(:endDateTime AS timestamp) IS NULL OR o.updatedAt < :endDateTime) " +
+            "ORDER BY o.updatedAt DESC")
+    List<Order> findOrdersForAdmin(@Param("status") OrderStatus status,
+                                   @Param("restaurantId") Long restaurantId,
+                                   @Param("startDateTime") LocalDateTime startDateTime,
+                                   @Param("endDateTime") LocalDateTime endDateTime);
 }
 
 

@@ -44,4 +44,10 @@ public interface MenuItemRepository extends JpaRepository<MenuItem, Long> {
             Long id,
             Long restaurantId
     );
+
+    @EntityGraph(attributePaths = "menuSection")
+    Optional<MenuItem> findByIdAndMenuSectionId(
+            Long id,
+            Long menuSectionId
+    );
 }
