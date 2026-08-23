@@ -91,18 +91,26 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(authorize -> authorize
+                        // Public auth endpoints (no authentication required)
                         .requestMatchers(
-                                "/api/auth/**",
+                                "/api/auth/signup/**",
+                                "/api/auth/login",
+                                "/api/auth/verify-otp",
+                                "/api/auth/resend-otp",
+                                "/api/auth/forgot-password",
+                                "/api/auth/reset-password",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
                                 "/api/menu-items/**",
                                 "/error"
-
                         ).permitAll()
+                        // Public read-only endpoints
                         .requestMatchers(HttpMethod.GET, "/api/categories/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/restaurants/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/search").permitAll()
+                        // Role-based access
                         .requestMatchers("/api/kitchen/**").hasRole("KITCHEN_MANAGER")
+                        // All other requests require authentication
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(exceptions -> exceptions
