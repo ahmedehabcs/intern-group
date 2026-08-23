@@ -31,6 +31,17 @@ public class User {
     private LocalDateTime passwordResetTokenExpiration;
     private int passwordResetAttemptCount;
 
+    // Password change (authenticated) - separate from forgot-password
+    private String passwordChangeToken;
+    private LocalDateTime passwordChangeTokenExpiration;
+    private int passwordChangeAttemptCount;
+
+    // Email change fields
+    private String emailChangeToken;
+    private LocalDateTime emailChangeTokenExpiration;
+    private int emailChangeAttemptCount;
+    private String pendingEmail;
+
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private CustomerProfile customerProfile;
 
@@ -133,6 +144,62 @@ public class User {
 
     public void setPasswordResetAttemptCount(int passwordResetAttemptCount) {
         this.passwordResetAttemptCount = passwordResetAttemptCount;
+    }
+
+    public String getPasswordChangeToken() {
+        return passwordChangeToken;
+    }
+
+    public void setPasswordChangeToken(String passwordChangeToken) {
+        this.passwordChangeToken = passwordChangeToken;
+    }
+
+    public LocalDateTime getPasswordChangeTokenExpiration() {
+        return passwordChangeTokenExpiration;
+    }
+
+    public void setPasswordChangeTokenExpiration(LocalDateTime passwordChangeTokenExpiration) {
+        this.passwordChangeTokenExpiration = passwordChangeTokenExpiration;
+    }
+
+    public int getPasswordChangeAttemptCount() {
+        return passwordChangeAttemptCount;
+    }
+
+    public void setPasswordChangeAttemptCount(int passwordChangeAttemptCount) {
+        this.passwordChangeAttemptCount = passwordChangeAttemptCount;
+    }
+
+    public int getEmailChangeAttemptCount() {
+        return emailChangeAttemptCount;
+    }
+
+    public void setEmailChangeAttemptCount(int emailChangeAttemptCount) {
+        this.emailChangeAttemptCount = emailChangeAttemptCount;
+    }
+
+    public String getEmailChangeToken() {
+        return emailChangeToken;
+    }
+
+    public void setEmailChangeToken(String emailChangeToken) {
+        this.emailChangeToken = emailChangeToken;
+    }
+
+    public LocalDateTime getEmailChangeTokenExpiration() {
+        return emailChangeTokenExpiration;
+    }
+
+    public void setEmailChangeTokenExpiration(LocalDateTime emailChangeTokenExpiration) {
+        this.emailChangeTokenExpiration = emailChangeTokenExpiration;
+    }
+
+    public String getPendingEmail() {
+        return pendingEmail;
+    }
+
+    public void setPendingEmail(String pendingEmail) {
+        this.pendingEmail = pendingEmail;
     }
 
     public CustomerProfile getCustomerProfile() {

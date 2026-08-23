@@ -31,7 +31,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getServletPath();
-        return path.startsWith("/api/auth/") ||
+        // Skip only public auth endpoints - secured endpoints need authentication
+        return path.startsWith("/api/auth/signup") ||
+               path.startsWith("/api/auth/login") ||
+               path.startsWith("/api/auth/verify-otp") ||
+               path.startsWith("/api/auth/resend-otp") ||
+               path.startsWith("/api/auth/forgot-password") ||
+               path.startsWith("/api/auth/reset-password") ||
+               path.startsWith("/api/auth/verify-email-change") ||
+               path.startsWith("/api/auth/verify-password-change") ||
                path.startsWith("/swagger-ui") ||
                path.startsWith("/v3/api-docs");
     }
