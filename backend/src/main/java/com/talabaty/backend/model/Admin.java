@@ -1,13 +1,20 @@
 package com.talabaty.backend.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "admins")
-public class Admin{
+@Getter
+@Setter
+@NoArgsConstructor
+public class Admin {
 
     @Id
     private Long id;
+
     private String name;
     private String phoneNumber;
 
@@ -15,51 +22,4 @@ public class Admin{
     @MapsId
     @JoinColumn(name = "id", referencedColumnName = "id", nullable = false)
     private User user;
-
-    public Admin() {
-    }
-
-    public Admin(String name, String phoneNumber, User user) {
-        this.name = name;
-        this.phoneNumber = phoneNumber;
-        this.user = user;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    @Override
-    public String toString() {
-        return "Admin{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", phoneNumber='" + phoneNumber + '\'' +
-                ", user=" + user +
-                '}';
-    }
 }

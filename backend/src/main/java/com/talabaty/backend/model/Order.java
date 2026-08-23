@@ -1,7 +1,9 @@
-
 package com.talabaty.backend.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -10,37 +12,34 @@ import java.util.List;
 
 @Entity
 @Table(name = "orders")
+@Getter
+@Setter
+@NoArgsConstructor
 public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Customer
     @ManyToOne
     @JoinColumn(name = "customer_id", nullable = false)
     private CustomerProfile customer;
 
-    // Restaurant
     @ManyToOne
     @JoinColumn(name = "restaurant_id", nullable = false)
     private Restaurant restaurant;
 
-    // Immutable restaurant-name snapshot
     @Column(name = "restaurant_name", nullable = false)
     private String restaurantName;
 
-    // Rider
     @ManyToOne
     @JoinColumn(name = "rider_id")
     private DeliveryProfile rider;
 
-    // Selected customer address
     @ManyToOne
     @JoinColumn(name = "address_id")
     private Address address;
 
-    // Immutable formatted delivery-address snapshot
     @Column(name = "delivery_address", nullable = false, columnDefinition = "TEXT")
     private String deliveryAddress;
 
@@ -74,9 +73,6 @@ public class Order {
     )
     private List<OrderItem> orderItems = new ArrayList<>();
 
-    public Order() {
-    }
-
     @PrePersist
     private void setTimestampsWhenCreated() {
         LocalDateTime now = LocalDateTime.now();
@@ -91,143 +87,5 @@ public class Order {
     @PreUpdate
     private void updateTimestamp() {
         updatedAt = LocalDateTime.now();
-    }
-
-    // Getters & Setters
-
-    public Long getId() {
-        return id;
-    }
-
-    public CustomerProfile getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(CustomerProfile customer) {
-        this.customer = customer;
-    }
-
-    public Restaurant getRestaurant() {
-        return restaurant;
-    }
-
-    public void setRestaurant(Restaurant restaurant) {
-        this.restaurant = restaurant;
-    }
-
-    public String getRestaurantName() {
-        return restaurantName;
-    }
-
-    public void setRestaurantName(String restaurantName) {
-        this.restaurantName = restaurantName;
-    }
-
-    public DeliveryProfile getRider() {
-        return rider;
-    }
-
-    public void setRider(DeliveryProfile rider) {
-        this.rider = rider;
-    }
-
-    public Address getAddress() {
-        return address;
-    }
-
-    public void setAddress(Address address) {
-        this.address = address;
-    }
-
-    public String getDeliveryAddress() {
-        return deliveryAddress;
-    }
-
-    public void setDeliveryAddress(String deliveryAddress) {
-        this.deliveryAddress = deliveryAddress;
-    }
-
-    public OrderStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(OrderStatus status) {
-        this.status = status;
-    }
-
-    public PaymentMethod getPaymentMethod() {
-        return paymentMethod;
-    }
-
-    public void setPaymentMethod(PaymentMethod paymentMethod) {
-        this.paymentMethod = paymentMethod;
-    }
-
-    public BigDecimal getSubtotal() {
-        return subtotal;
-    }
-
-    public void setSubtotal(BigDecimal subtotal) {
-        this.subtotal = subtotal;
-    }
-
-    public BigDecimal getDeliveryFee() {
-        return deliveryFee;
-    }
-
-    public void setDeliveryFee(BigDecimal deliveryFee) {
-        this.deliveryFee = deliveryFee;
-    }
-
-    public BigDecimal getTotalPrice() {
-        return totalPrice;
-    }
-
-    public void setTotalPrice(BigDecimal totalPrice) {
-        this.totalPrice = totalPrice;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public List<OrderItem> getOrderItems() {
-        return orderItems;
-    }
-
-    public void setOrderItems(List<OrderItem> orderItems) {
-        this.orderItems = orderItems;
-    }
-
-    @Override
-    public String toString() {
-        return "Order{" +
-                "id=" + id +
-                ", customer=" + customer +
-                ", restaurant=" + restaurant +
-                ", restaurantName='" + restaurantName + '\'' +
-                ", rider=" + rider +
-                ", address=" + address +
-                ", deliveryAddress='" + deliveryAddress + '\'' +
-                ", status=" + status +
-                ", paymentMethod=" + paymentMethod +
-                ", subtotal=" + subtotal +
-                ", deliveryFee=" + deliveryFee +
-                ", totalPrice=" + totalPrice +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
-                '}';
     }
 }

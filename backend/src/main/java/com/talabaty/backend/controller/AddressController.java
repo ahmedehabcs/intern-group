@@ -1,4 +1,5 @@
 package com.talabaty.backend.controller;
+
 import com.talabaty.backend.dto.request.AddressRequest;
 import com.talabaty.backend.dto.response.AddressResponse;
 import com.talabaty.backend.service.AddressService;
@@ -7,6 +8,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -28,13 +30,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/addresses")
 @SecurityRequirement(name = "bearerAuth")
+@RequiredArgsConstructor
 public class AddressController {
 
     private final AddressService addressService;
-
-    public AddressController(AddressService addressService) {
-        this.addressService = addressService;
-    }
 
     @Operation(summary = "Get the authenticated customer's addresses")
     @GetMapping

@@ -1,11 +1,17 @@
 package com.talabaty.backend.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "delivery_feedback")
+@Getter
+@Setter
+@NoArgsConstructor
 public class DeliveryFeedback {
 
     @Id
@@ -36,53 +42,5 @@ public class DeliveryFeedback {
     @PrePersist
     private void setCreatedAt() {
         this.createdAt = LocalDateTime.now();
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public Integer getRating() {
-        return rating;
-    }
-
-    public void setRating(Integer rating) {
-        this.rating = rating;
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public CustomerProfile getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(CustomerProfile customer) {
-        this.customer = customer;
-    }
-
-    public DeliveryProfile getRider() {
-        return rider;
-    }
-
-    public void setRider(DeliveryProfile rider) {
-        this.rider = rider;
-    }
-
-    public Order getOrder() {
-        return order;
-    }
-
-    public void setOrder(Order order) {
-        this.order = order;
     }
 }

@@ -1,9 +1,15 @@
 package com.talabaty.backend.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "historical_order_item_addons")
+@Getter
+@Setter
+@NoArgsConstructor
 public class HistoricalOrderItemAddon {
 
     @Id
@@ -22,54 +28,4 @@ public class HistoricalOrderItemAddon {
 
     @Column(nullable = false)
     private Integer quantity;
-
-    public HistoricalOrderItemAddon() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public OrderItem getOrderItem() {
-        return orderItem;
-    }
-
-    public void setOrderItem(OrderItem orderItem) {
-        this.orderItem = orderItem;
-    }
-
-    public String getAddonName() {
-        return addonName;
-    }
-
-    public void setAddonName(String addonName) {
-        this.addonName = addonName;
-    }
-
-    public Double getAddonPrice() {
-        return addonPrice;
-    }
-
-    public void setAddonPrice(Double addonPrice) {
-        this.addonPrice = addonPrice;
-    }
-
-    public Integer getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-    }
-
-    @Override
-    public String toString() {
-        return "HistoricalOrderItemAddon{" +
-                "id=" + id +
-                ", orderItem=" + orderItem +
-                ", addonName='" + addonName + '\'' +
-                ", addonPrice=" + addonPrice +
-                ", quantity=" + quantity +
-                '}';
-    }
 }

@@ -1,9 +1,17 @@
 package com.talabaty.backend.model;
+
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "customer_order_cancellations")
+@Getter
+@Setter
+@NoArgsConstructor
 public class CustomerOrderCancellation {
 
     @Id
@@ -23,9 +31,6 @@ public class CustomerOrderCancellation {
 
     @Column(name = "cancelled_at", nullable = false, updatable = false)
     private LocalDateTime cancelledAt;
-
-    public CustomerOrderCancellation() {
-    }
 
     public CustomerOrderCancellation(Order order, CustomerProfile customer, String reason) {
         this.order = order;
@@ -48,35 +53,7 @@ public class CustomerOrderCancellation {
         return reason.trim();
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public Order getOrder() {
-        return order;
-    }
-
-    public void setOrder(Order order) {
-        this.order = order;
-    }
-
-    public CustomerProfile getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(CustomerProfile customer) {
-        this.customer = customer;
-    }
-
-    public String getReason() {
-        return reason;
-    }
-
     public void setReason(String reason) {
         this.reason = normalizeReason(reason);
-    }
-
-    public LocalDateTime getCancelledAt() {
-        return cancelledAt;
     }
 }

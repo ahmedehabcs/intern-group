@@ -20,7 +20,7 @@ public interface CategoryMapper {
     List<AdminCategoryResponse> toAdminResponseList(List<Category> categories);
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "active", ignore = true)
+    @Mapping(target = "isActive", ignore = true)
     @Mapping(target = "restaurants", ignore = true)
     Category toEntity(CategoryRequest request);
 

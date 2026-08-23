@@ -1,11 +1,18 @@
 package com.talabaty.backend.model;
+
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "order_items")
+@Getter
+@Setter
+@NoArgsConstructor
 public class OrderItem {
 
     @Id
@@ -32,13 +39,22 @@ public class OrderItem {
     @Column(columnDefinition = "TEXT")
     private String notes;
 
-    @OneToMany(mappedBy = "orderItem", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(
+            mappedBy = "orderItem",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
     private List<HistoricalOrderItemAddon> addons = new ArrayList<>();
 
-    public OrderItem() {
-    }
-
-    public OrderItem(Order order, MenuItem menuItem, String productName, Integer quantity, Double unitPrice, String notes, List<HistoricalOrderItemAddon> addons) {
+    public OrderItem(
+            Order order,
+            MenuItem menuItem,
+            String productName,
+            Integer quantity,
+            Double unitPrice,
+            String notes,
+            List<HistoricalOrderItemAddon> addons
+    ) {
         this.order = order;
         this.menuItem = menuItem;
         this.productName = productName;
@@ -46,77 +62,5 @@ public class OrderItem {
         this.unitPrice = unitPrice;
         this.notes = notes;
         this.addons = addons;
-    }
-// Getters & Setters
-
-    public Long getId() {
-        return id;
-    }
-
-    public Order getOrder() {
-        return order;
-    }
-
-    public void setOrder(Order order) {
-        this.order = order;
-    }
-
-    public MenuItem getMenuItem() {
-        return menuItem;
-    }
-
-    public void setMenuItem(MenuItem menuItem) {
-        this.menuItem = menuItem;
-    }
-
-    public Integer getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-    }
-
-    public Double getUnitPrice() {
-        return unitPrice;
-    }
-
-    public void setUnitPrice(Double unitPrice) {
-        this.unitPrice = unitPrice;
-    }
-
-    public String getNotes() {
-        return notes;
-    }
-
-    public void setNotes(String notes) {
-        this.notes = notes;
-    }
-
-    public List<HistoricalOrderItemAddon> getAddons() {
-        return addons;
-    }
-
-    public void setAddons(List<HistoricalOrderItemAddon> addons) {
-        this.addons = addons;
-    }
-    public String getProductName() {
-        return productName;
-    }
-
-    public void setProductName(String productName) {
-        this.productName = productName;
-    }
-    @Override
-    public String toString() {
-        return "OrderItem{" +
-                "id=" + id +
-                ", order=" + order +
-                ", menuItem=" + menuItem +
-                ", quantity=" + quantity +
-                ", unitPrice=" + unitPrice +
-                ", notes='" + notes + '\'' +
-                ", addons=" + addons +
-                '}';
     }
 }

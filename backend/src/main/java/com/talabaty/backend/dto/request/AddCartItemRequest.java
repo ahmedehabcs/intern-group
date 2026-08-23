@@ -4,9 +4,17 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class AddCartItemRequest {
 
     @NotNull(message = "Menu item ID is required")
@@ -29,51 +37,4 @@ public class AddCartItemRequest {
             @NotNull(message = "Add-on entry must not be null")
             @Valid CartItemAddonRequest
             > addons;
-
-    public AddCartItemRequest() {
-    }
-
-    public AddCartItemRequest(
-            Long menuItemId,
-            Integer quantity,
-            String specialInstructions,
-            List<CartItemAddonRequest> addons
-    ) {
-        this.menuItemId = menuItemId;
-        this.quantity = quantity;
-        this.specialInstructions = specialInstructions;
-        this.addons = addons;
-    }
-
-    public Long getMenuItemId() {
-        return menuItemId;
-    }
-
-    public void setMenuItemId(Long menuItemId) {
-        this.menuItemId = menuItemId;
-    }
-
-    public Integer getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-    }
-
-    public String getSpecialInstructions() {
-        return specialInstructions;
-    }
-
-    public void setSpecialInstructions(String specialInstructions) {
-        this.specialInstructions = specialInstructions;
-    }
-
-    public List<CartItemAddonRequest> getAddons() {
-        return addons;
-    }
-
-    public void setAddons(List<CartItemAddonRequest> addons) {
-        this.addons = addons;
-    }
 }

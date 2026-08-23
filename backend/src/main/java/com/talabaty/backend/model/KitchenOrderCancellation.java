@@ -1,21 +1,17 @@
 package com.talabaty.backend.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "kitchen_order_cancellations")
+@Getter
+@Setter
+@NoArgsConstructor
 public class KitchenOrderCancellation {
 
     @Id
@@ -36,9 +32,6 @@ public class KitchenOrderCancellation {
     @Column(name = "cancelled_at", nullable = false, updatable = false)
     private LocalDateTime cancelledAt;
 
-    public KitchenOrderCancellation() {
-    }
-
     public KitchenOrderCancellation(
             Order order,
             KitchenManager kitchenManager,
@@ -56,35 +49,7 @@ public class KitchenOrderCancellation {
         }
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public Order getOrder() {
-        return order;
-    }
-
-    public void setOrder(Order order) {
-        this.order = order;
-    }
-
-    public KitchenManager getKitchenManager() {
-        return kitchenManager;
-    }
-
-    public void setKitchenManager(KitchenManager kitchenManager) {
-        this.kitchenManager = kitchenManager;
-    }
-
-    public String getReason() {
-        return reason;
-    }
-
     public void setReason(String reason) {
         this.reason = reason == null ? null : reason.trim();
-    }
-
-    public LocalDateTime getCancelledAt() {
-        return cancelledAt;
     }
 }
