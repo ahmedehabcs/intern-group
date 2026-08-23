@@ -25,15 +25,24 @@ export class KitchenOrderDetails {
   readonly submitting = signal(false);
   readonly error = signal<string | null>(null);
   readonly status = new FormControl<OrderStatus>('CONFIRMED', { nonNullable: true });
-  readonly reason = new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.maxLength(255)] });
+  readonly reason = new FormControl('', {
+    nonNullable: true,
+    validators: [Validators.required, Validators.maxLength(255)],
+  });
 
-  constructor() { this.load(); }
+  constructor() {
+    this.load();
+  }
 
   load(): void {
-    this.api.order(Number(this.route.snapshot.paramMap.get('orderId')))
-      .pipe(finalize(() => this.loading.set(false)), takeUntilDestroyed(this.destroy))
+    this.api
+      .order(Number(this.route.snapshot.paramMap.get('orderId')))
+      .pipe(
+        finalize(() => this.loading.set(false)),
+        takeUntilDestroyed(this.destroy),
+      )
       .subscribe({
-        next: value => {
+        next: (value) => {
           this.order.set(value);
           this.status.setValue(value.status);
         },
@@ -45,17 +54,40 @@ export class KitchenOrderDetails {
     const order = this.order();
     if (!order) return;
     this.submitting.set(true);
-    this.api.updateStatus(order.id, this.status.value)
-      .pipe(finalize(() => this.submitting.set(false)), takeUntilDestroyed(this.destroy))
-      .subscribe({ next: value => this.order.set(value), error: () => this.error.set('Order status could not be updated.') });
+    this.api
+      .updateStatus(order.id, this.status.value)
+      .pipe(
+        finalize(() => this.submitting.set(false)),
+        takeUntilDestroyed(this.destroy),
+      )
+      .subscribe({
+        next: (value) => this.order.set(value),
+        error: () => this.error.set('Order status could not be updated.'),
+      });
   }
 
   async cancel(): Promise<void> {
     const order = this.order();
-    if (!order || this.reason.invalid || !await this.confirmation.confirm('Cancel this kitchen order?', 'Cancel kitchen order', 'Cancel order')) return;
+    if (
+      !order ||
+      this.reason.invalid ||
+      !(await this.confirmation.confirm(
+        'Cancel this kitchen order?',
+        'Cancel kitchen order',
+        'Cancel order',
+      ))
+    )
+      return;
     this.submitting.set(true);
-    this.api.cancel(order.id, this.reason.value)
-      .pipe(finalize(() => this.submitting.set(false)), takeUntilDestroyed(this.destroy))
-      .subscribe({ next: value => this.order.set(value), error: () => this.error.set('Order could not be cancelled.') });
+    this.api
+      .cancel(order.id, this.reason.value)
+      .pipe(
+        finalize(() => this.submitting.set(false)),
+        takeUntilDestroyed(this.destroy),
+      )
+      .subscribe({
+        next: (value) => this.order.set(value),
+        error: () => this.error.set('Order could not be cancelled.'),
+      });
   }
 }

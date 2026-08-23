@@ -56,7 +56,13 @@ export class AccountPage {
     this.loading.set(true);
     forkJoin({
       addresses: this.addressApi.list(),
-      profile: this.profileApi.get().pipe(catchError((error: HttpErrorResponse) => error.status === 404 ? of(null) : throwError(() => error))),
+      profile: this.profileApi
+        .get()
+        .pipe(
+          catchError((error: HttpErrorResponse) =>
+            error.status === 404 ? of(null) : throwError(() => error),
+          ),
+        ),
     })
       .pipe(
         finalize(() => this.loading.set(false)),
@@ -106,8 +112,17 @@ export class AccountPage {
     this.mutate(this.addressApi.setDefault(id), () => this.load());
   }
   async remove(id: number): Promise<void> {
-    if (!await this.confirmation.confirm('Delete this delivery address?', 'Delete address', 'Delete')) return;
-    this.mutate(this.addressApi.delete(id), () => this.addresses.update((v) => v.filter((a) => a.id !== id)));
+    if (
+      !(await this.confirmation.confirm(
+        'Delete this delivery address?',
+        'Delete address',
+        'Delete',
+      ))
+    )
+      return;
+    this.mutate(this.addressApi.delete(id), () =>
+      this.addresses.update((v) => v.filter((a) => a.id !== id)),
+    );
   }
   private mutate<T>(request: import('rxjs').Observable<T>, next: (v: T) => void): void {
     this.submitting.set(true);

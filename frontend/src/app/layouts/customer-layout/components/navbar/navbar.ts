@@ -31,7 +31,15 @@ export class Navbar implements OnInit {
     this.isDark = document.documentElement.dataset['theme'] === 'dark';
     if (this.tokens.isValid() && this.tokens.role() === 'CUSTOMER') {
       this.cart.load().subscribe({ error: () => void 0 });
-      this.addressesApi.list().subscribe({ next: addresses => this.defaultAddress.set(addresses.find(address => address.isDefault) ?? addresses[0] ?? null), error: () => void 0 });
+      this.addressesApi
+        .list()
+        .subscribe({
+          next: (addresses) =>
+            this.defaultAddress.set(
+              addresses.find((address) => address.isDefault) ?? addresses[0] ?? null,
+            ),
+          error: () => void 0,
+        });
     }
   }
 
@@ -63,21 +71,31 @@ export class Navbar implements OnInit {
 
   profileLink(): string {
     switch (this.tokens.role()) {
-      case 'CUSTOMER': return '/account';
-      case 'DRIVER': return '/driver/profile';
-      case 'ADMIN': return '/admin';
-      case 'KITCHEN_MANAGER': return '/kitchen';
-      default: return '/auth/login';
+      case 'CUSTOMER':
+        return '/account';
+      case 'DRIVER':
+        return '/driver/profile';
+      case 'ADMIN':
+        return '/admin';
+      case 'KITCHEN_MANAGER':
+        return '/kitchen';
+      default:
+        return '/auth/login';
     }
   }
 
   profileLabel(): string {
     switch (this.tokens.role()) {
-      case 'CUSTOMER': return 'My account';
-      case 'DRIVER': return 'Driver profile';
-      case 'ADMIN': return 'Admin dashboard';
-      case 'KITCHEN_MANAGER': return 'Kitchen workspace';
-      default: return 'Profile';
+      case 'CUSTOMER':
+        return 'My account';
+      case 'DRIVER':
+        return 'Driver profile';
+      case 'ADMIN':
+        return 'Admin dashboard';
+      case 'KITCHEN_MANAGER':
+        return 'Kitchen workspace';
+      default:
+        return 'Profile';
     }
   }
 
@@ -85,6 +103,7 @@ export class Navbar implements OnInit {
   closeMenusOnOutsideClick(event: MouseEvent): void {
     const target = event.target instanceof Element ? event.target : null;
     if (!target?.closest('.profile-menu')) this.profileMenuOpen.set(false);
-    if (!target?.closest('.mobile-navigation') && !target?.closest('.menu-button')) this.mobileMenuOpen.set(false);
+    if (!target?.closest('.mobile-navigation') && !target?.closest('.menu-button'))
+      this.mobileMenuOpen.set(false);
   }
 }

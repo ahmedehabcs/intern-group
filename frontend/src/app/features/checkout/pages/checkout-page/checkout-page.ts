@@ -25,16 +25,25 @@ export class CheckoutPage {
   readonly submitting = signal(false);
   readonly error = signal<string | null>(null);
   readonly form = new FormGroup({
-    addressId: new FormControl<number | null>(null, { validators: [Validators.required, Validators.min(1)] }),
+    addressId: new FormControl<number | null>(null, {
+      validators: [Validators.required, Validators.min(1)],
+    }),
   });
 
   constructor() {
     forkJoin({ addresses: this.addressesApi.list(), cart: this.cart.load() })
-      .pipe(finalize(() => this.loading.set(false)), takeUntilDestroyed(this.destroy))
+      .pipe(
+        finalize(() => this.loading.set(false)),
+        takeUntilDestroyed(this.destroy),
+      )
       .subscribe({
-        next: value => {
+        next: (value) => {
           this.addresses.set(value.addresses);
-          this.form.controls.addressId.setValue(value.addresses.find(address => address.isDefault)?.id ?? value.addresses[0]?.id ?? null);
+          this.form.controls.addressId.setValue(
+            value.addresses.find((address) => address.isDefault)?.id ??
+              value.addresses[0]?.id ??
+              null,
+          );
         },
         error: () => this.error.set('Unable to prepare checkout.'),
       });
@@ -48,10 +57,14 @@ export class CheckoutPage {
     this.submitting.set(true);
     this.error.set(null);
     const value = this.form.getRawValue();
-    this.orders.place({ addressId: value.addressId!, paymentMethod: 'CASH' })
-      .pipe(finalize(() => this.submitting.set(false)), takeUntilDestroyed(this.destroy))
+    this.orders
+      .place({ addressId: value.addressId!, paymentMethod: 'CASH' })
+      .pipe(
+        finalize(() => this.submitting.set(false)),
+        takeUntilDestroyed(this.destroy),
+      )
       .subscribe({
-        next: order => {
+        next: (order) => {
           this.cart.cart.set(null);
           void this.router.navigate(['/orders', order.id]);
         },

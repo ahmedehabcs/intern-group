@@ -1,1 +1,86 @@
-import{HttpErrorResponse}from'@angular/common/http';import{Component,DestroyRef,inject,signal}from'@angular/core';import{takeUntilDestroyed}from'@angular/core/rxjs-interop';import{FormControl,FormGroup,ReactiveFormsModule,Validators}from'@angular/forms';import{Router,RouterLink}from'@angular/router';import{finalize}from'rxjs';import{AuthService}from'../../services/auth.service';type SignupRole='CUSTOMER'|'DRIVER';@Component({selector:'app-register',imports:[ReactiveFormsModule,RouterLink],templateUrl:'./register.html'})export class Register{private api=inject(AuthService);private router=inject(Router);private destroy=inject(DestroyRef);readonly submitting=signal(false);readonly error=signal<string|null>(null);readonly form=new FormGroup({role:new FormControl<SignupRole>('CUSTOMER',{nonNullable:true}),name:new FormControl('',{nonNullable:true,validators:[Validators.required,Validators.minLength(2),Validators.maxLength(50)]}),email:new FormControl('',{nonNullable:true,validators:[Validators.required,Validators.email]}),phoneNumber:new FormControl('',{nonNullable:true,validators:[Validators.maxLength(20)]}),password:new FormControl('',{nonNullable:true,validators:[Validators.required,Validators.minLength(8),Validators.maxLength(100)]}),vehicleType:new FormControl('',{nonNullable:true}),licenseNumber:new FormControl('',{nonNullable:true}),nationalId:new FormControl('',{nonNullable:true})});submit():void{if(this.form.invalid){this.form.markAllAsTouched();return}const v=this.form.getRawValue();if(v.role==='DRIVER'&&(!v.vehicleType||!v.licenseNumber||v.nationalId.length<10)){this.error.set('Vehicle type, license number, and a valid national ID are required.');return}this.submitting.set(true);this.error.set(null);const request=v.role==='DRIVER'?this.api.signupDriver({name:v.name,email:v.email,password:v.password,phoneNumber:v.phoneNumber||undefined,vehicleType:v.vehicleType,licenseNumber:v.licenseNumber,nationalId:v.nationalId}):this.api.signupCustomer({name:v.name,email:v.email,password:v.password,phoneNumber:v.phoneNumber||undefined});request.pipe(finalize(()=>this.submitting.set(false)),takeUntilDestroyed(this.destroy)).subscribe({next:()=>void this.router.navigate(['/auth/otp-verification'],{queryParams:{email:v.email}}),error:e=>this.error.set(e instanceof HttpErrorResponse?(e.error?.message??'Registration failed.'):'Registration failed.')})}}
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
+import { finalize } from 'rxjs';
+import { AuthService } from '../../services/auth.service';
+type SignupRole = 'CUSTOMER' | 'DRIVER';
+@Component({
+  selector: 'app-register',
+  imports: [ReactiveFormsModule, RouterLink],
+  templateUrl: './register.html',
+})
+export class Register {
+  private api = inject(AuthService);
+  private router = inject(Router);
+  private destroy = inject(DestroyRef);
+  readonly submitting = signal(false);
+  readonly error = signal<string | null>(null);
+  readonly form = new FormGroup({
+    role: new FormControl<SignupRole>('CUSTOMER', { nonNullable: true }),
+    name: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required, Validators.minLength(2), Validators.maxLength(50)],
+    }),
+    email: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required, Validators.email],
+    }),
+    phoneNumber: new FormControl('', { nonNullable: true, validators: [Validators.maxLength(20)] }),
+    password: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required, Validators.minLength(8), Validators.maxLength(100)],
+    }),
+    vehicleType: new FormControl('', { nonNullable: true }),
+    licenseNumber: new FormControl('', { nonNullable: true }),
+    nationalId: new FormControl('', { nonNullable: true }),
+  });
+  submit(): void {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+    const v = this.form.getRawValue();
+    if (v.role === 'DRIVER' && (!v.vehicleType || !v.licenseNumber || v.nationalId.length < 10)) {
+      this.error.set('Vehicle type, license number, and a valid national ID are required.');
+      return;
+    }
+    this.submitting.set(true);
+    this.error.set(null);
+    const request =
+      v.role === 'DRIVER'
+        ? this.api.signupDriver({
+            name: v.name,
+            email: v.email,
+            password: v.password,
+            phoneNumber: v.phoneNumber || undefined,
+            vehicleType: v.vehicleType,
+            licenseNumber: v.licenseNumber,
+            nationalId: v.nationalId,
+          })
+        : this.api.signupCustomer({
+            name: v.name,
+            email: v.email,
+            password: v.password,
+            phoneNumber: v.phoneNumber || undefined,
+          });
+    request
+      .pipe(
+        finalize(() => this.submitting.set(false)),
+        takeUntilDestroyed(this.destroy),
+      )
+      .subscribe({
+        next: () =>
+          void this.router.navigate(['/auth/otp-verification'], {
+            queryParams: { email: v.email },
+          }),
+        error: (e) =>
+          this.error.set(
+            e instanceof HttpErrorResponse
+              ? (e.error?.message ?? 'Registration failed.')
+              : 'Registration failed.',
+          ),
+      });
+  }
+}

@@ -1,1 +1,19 @@
-import{Routes}from'@angular/router';import{authGuard}from'../../core/auth/guards/auth.guard';import{roleGuard}from'../../core/auth/guards/role.guard';const base={canActivate:[authGuard,roleGuard],data:{roles:['DRIVER']}};export const DRIVER_ROUTES:Routes=[{path:'',pathMatch:'full',redirectTo:'available'},...(['available','active','history','feedback']as const).map(mode=>({path:mode,...base,data:{...base.data,mode},loadComponent:()=>import('./pages/driver-page/driver-page').then(m=>m.DriverPage)})),{path:'profile',...base,loadComponent:()=>import('./pages/driver-profile/driver-profile').then(m=>m.DriverProfile)}];
+import { Routes } from '@angular/router';
+import { authGuard } from '../../core/auth/guards/auth.guard';
+import { roleGuard } from '../../core/auth/guards/role.guard';
+const base = { canActivate: [authGuard, roleGuard], data: { roles: ['DRIVER'] } };
+export const DRIVER_ROUTES: Routes = [
+  { path: '', pathMatch: 'full', redirectTo: 'available' },
+  ...(['available', 'active', 'history', 'feedback'] as const).map((mode) => ({
+    path: mode,
+    ...base,
+    data: { ...base.data, mode },
+    loadComponent: () => import('./pages/driver-page/driver-page').then((m) => m.DriverPage),
+  })),
+  {
+    path: 'profile',
+    ...base,
+    loadComponent: () =>
+      import('./pages/driver-profile/driver-profile').then((m) => m.DriverProfile),
+  },
+];

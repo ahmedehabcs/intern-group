@@ -16,7 +16,11 @@ import { KitchenApiService } from '../../services/kitchen-api.service';
 import { ConfirmationDialogService } from '../../../../shared/services/confirmation-dialog.service';
 import { StatusBadge } from '../../../../shared/components/status-badge/status-badge';
 type Mode = 'dashboard' | 'orders' | 'history' | 'menu-items' | 'sections' | 'addon-groups';
-interface KitchenMenuContext { items: KitchenMenuItemResponse[]; sections: KitchenMenuSectionResponse[]; groups: KitchenAddonGroupResponse[]; }
+interface KitchenMenuContext {
+  items: KitchenMenuItemResponse[];
+  sections: KitchenMenuSectionResponse[];
+  groups: KitchenAddonGroupResponse[];
+}
 @Component({
   selector: 'app-kitchen-page',
   imports: [RouterLink, ReactiveFormsModule, StatusBadge],
@@ -53,7 +57,10 @@ export class KitchenPage {
       nonNullable: true,
       validators: [Validators.required, Validators.maxLength(100)],
     }),
-    description: new FormControl('', { nonNullable: true, validators: [Validators.maxLength(500)] }),
+    description: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.maxLength(500)],
+    }),
     basePrice: new FormControl(0, {
       nonNullable: true,
       validators: [Validators.required, Validators.min(0), Validators.max(999999)],
@@ -126,7 +133,11 @@ export class KitchenPage {
                 direction: this.historyForm.value.direction,
               })
             : this.mode === 'menu-items'
-              ? forkJoin({ items: this.api.menuItems(), sections: this.api.sections(), groups: this.api.groups() })
+              ? forkJoin({
+                  items: this.api.menuItems(),
+                  sections: this.api.sections(),
+                  groups: this.api.groups(),
+                })
               : this.mode === 'sections'
                 ? this.api.sections()
                 : this.api.groups()
@@ -145,9 +156,10 @@ export class KitchenPage {
           else if (this.mode === 'history') this.orders.set(value as KitchenOrderPageResponse);
           else if (this.mode === 'menu-items') {
             const context = value as KitchenMenuContext;
-            this.menuItems.set(context.items); this.sections.set(context.sections); this.groups.set(context.groups);
-          }
-          else if (this.mode === 'sections')
+            this.menuItems.set(context.items);
+            this.sections.set(context.sections);
+            this.groups.set(context.groups);
+          } else if (this.mode === 'sections')
             this.sections.set(value as KitchenMenuSectionResponse[]);
           else this.groups.set(value as KitchenAddonGroupResponse[]);
         },
@@ -182,9 +194,18 @@ export class KitchenPage {
   saveMenu(): void {
     if (this.menuForm.invalid) return;
     const raw = this.menuForm.getRawValue();
-    const value = { ...raw, description: raw.description || undefined, imageUrl: raw.imageUrl || undefined };
+    const value = {
+      ...raw,
+      description: raw.description || undefined,
+      imageUrl: raw.imageUrl || undefined,
+    };
     const request = this.editingMenuId()
-      ? this.api.updateMenuItem(this.editingMenuId()!, { name: raw.name, basePrice: raw.basePrice, menuSectionId: raw.menuSectionId, available: raw.available })
+      ? this.api.updateMenuItem(this.editingMenuId()!, {
+          name: raw.name,
+          basePrice: raw.basePrice,
+          menuSectionId: raw.menuSectionId,
+          available: raw.available,
+        })
       : this.api.createMenuItem(value);
     this.mutate(request, (saved) => {
       this.menuItems.update((rows) =>
@@ -240,7 +261,14 @@ export class KitchenPage {
     });
   }
   async deleteGroup(id: number): Promise<void> {
-    if (!await this.confirmation.confirm('Delete this add-on group?', 'Delete add-on group', 'Delete')) return;
+    if (
+      !(await this.confirmation.confirm(
+        'Delete this add-on group?',
+        'Delete add-on group',
+        'Delete',
+      ))
+    )
+      return;
     this.mutate(this.api.deleteGroup(id), () =>
       this.groups.update((rows) => rows.filter((row) => row.id !== id)),
     );
@@ -281,7 +309,8 @@ export class KitchenPage {
     });
   }
   async deleteAddon(groupId: number, id: number): Promise<void> {
-    if (!await this.confirmation.confirm('Delete this add-on?', 'Delete add-on', 'Delete')) return;
+    if (!(await this.confirmation.confirm('Delete this add-on?', 'Delete add-on', 'Delete')))
+      return;
     this.mutate(this.api.deleteAddon(id), () =>
       this.groups.update((groups) =>
         groups.map((group) =>
@@ -303,7 +332,8 @@ export class KitchenPage {
       .subscribe({ next, error: () => this.error.set('The change could not be saved.') });
   }
   async removeItem(id: number): Promise<void> {
-    if (!await this.confirmation.confirm('Delete this menu item?', 'Delete menu item', 'Delete')) return;
+    if (!(await this.confirmation.confirm('Delete this menu item?', 'Delete menu item', 'Delete')))
+      return;
     this.processingId.set(id);
     this.api
       .deleteMenuItem(id)

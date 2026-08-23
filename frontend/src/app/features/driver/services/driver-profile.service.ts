@@ -10,9 +10,13 @@ export class DriverProfileService {
   private mock = inject(MockDataStore);
   private api = `${environment.apiUrl}/api/profile`;
   get(): Observable<DriverProfileResponse> {
-    return environment.mock.enabled ? this.mock.driverProfile() : this.http.get<DriverProfileResponse>(this.api);
+    return environment.mock.enabled
+      ? this.mock.driverProfile()
+      : this.http.get<DriverProfileResponse>(this.api);
   }
   update(b: DriverProfileUpdateRequest): Observable<void> {
-    return environment.mock.enabled ? this.mock.updateDriverProfile(b) : this.http.put<void>(this.api, b);
+    return environment.mock.enabled
+      ? this.mock.updateDriverProfile(b)
+      : this.http.put<void>(this.api, b);
   }
 }

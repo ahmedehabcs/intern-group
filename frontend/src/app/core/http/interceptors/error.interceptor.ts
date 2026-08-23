@@ -14,6 +14,6 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
         void router.navigate(['/auth/login'], { queryParams: { returnUrl: router.url } });
       }
       return throwError(() => error);
-    })
+    }),
   );
 };

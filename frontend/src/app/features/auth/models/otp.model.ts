@@ -1,5 +1,7 @@
 export interface VerifyOtpRequest {
-    email: string;
-    otp: string;
+  email: string;
+  otp: string;
 }
-export interface RegisterResponse { message: string; }
+export interface RegisterResponse {
+  message: string;
+}

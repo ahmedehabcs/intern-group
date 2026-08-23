@@ -29,7 +29,10 @@ export const routes: Routes = [
       },
       {
         path: 'menu-items/:menuItemId',
-        loadComponent: () => import('./features/restaurants/pages/menu-item-details/menu-item-details').then(m => m.MenuItemDetails),
+        loadComponent: () =>
+          import('./features/restaurants/pages/menu-item-details/menu-item-details').then(
+            (m) => m.MenuItemDetails,
+          ),
       },
       {
         path: 'search',
@@ -78,7 +81,7 @@ export const routes: Routes = [
   },
   {
     path: 'driver',
-    loadChildren: () => import('./features/driver/driver.routes').then(m => m.DRIVER_ROUTES),
+    loadChildren: () => import('./features/driver/driver.routes').then((m) => m.DRIVER_ROUTES),
   },
   {
     path: 'restaurant-portal',
@@ -93,8 +96,14 @@ export const routes: Routes = [
   },
   {
     path: 'kitchen',
-    loadComponent: () => import('./layouts/restaurant-layout/restaurant-layout').then(({ RestaurantLayout }) => RestaurantLayout),
-    loadChildren: () => import('./features/restaurant-portal/restaurant-portal.routes').then(m => m.RESTAURANT_PORTAL_ROUTES),
+    loadComponent: () =>
+      import('./layouts/restaurant-layout/restaurant-layout').then(
+        ({ RestaurantLayout }) => RestaurantLayout,
+      ),
+    loadChildren: () =>
+      import('./features/restaurant-portal/restaurant-portal.routes').then(
+        (m) => m.RESTAURANT_PORTAL_ROUTES,
+      ),
   },
   {
     path: '**',

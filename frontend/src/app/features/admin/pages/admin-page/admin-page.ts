@@ -45,24 +45,51 @@ export class AdminPage {
     to: new FormControl('', { nonNullable: true }),
   });
   readonly categoryForm = new FormGroup({
-    name: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.maxLength(100)] }),
-    description: new FormControl('', { nonNullable: true, validators: [Validators.maxLength(1000)] }),
+    name: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required, Validators.maxLength(100)],
+    }),
+    description: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.maxLength(1000)],
+    }),
   });
   readonly restaurantForm = new FormGroup({
     name: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
     phone: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
-    email: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.email] }),
+    email: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required, Validators.email],
+    }),
     address: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
-    governorateId: new FormControl(0, { nonNullable: true, validators: [Validators.required, Validators.min(1)] }),
+    governorateId: new FormControl(0, {
+      nonNullable: true,
+      validators: [Validators.required, Validators.min(1)],
+    }),
     description: new FormControl('', { nonNullable: true }),
     logoUrl: new FormControl('', { nonNullable: true }),
-    deliveryFee: new FormControl(0, { nonNullable: true, validators: [Validators.required, Validators.min(0)] }),
+    deliveryFee: new FormControl(0, {
+      nonNullable: true,
+      validators: [Validators.required, Validators.min(0)],
+    }),
   });
   readonly managerForm = new FormGroup({
-    restaurantId: new FormControl(0, { nonNullable: true, validators: [Validators.required, Validators.min(1)] }),
-    email: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.email] }),
-    password: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.minLength(8), Validators.maxLength(100)] }),
-    name: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.maxLength(100)] }),
+    restaurantId: new FormControl(0, {
+      nonNullable: true,
+      validators: [Validators.required, Validators.min(1)],
+    }),
+    email: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required, Validators.email],
+    }),
+    password: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required, Validators.minLength(8), Validators.maxLength(100)],
+    }),
+    name: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required, Validators.maxLength(100)],
+    }),
     phoneNumber: new FormControl('', { nonNullable: true, validators: [Validators.maxLength(20)] }),
   });
   constructor() {
@@ -88,7 +115,8 @@ export class AdminPage {
                 ? this.api.riders(this.search.value.trim() || undefined)
                 : this.mode === 'pending'
                   ? this.api.pendingRiders()
-                  : this.api.feedback()) as Observable<unknown>;
+                  : this.api.feedback()
+    ) as Observable<unknown>;
     req
       .pipe(
         finalize(() => this.loading.set(false)),
@@ -111,35 +139,75 @@ export class AdminPage {
   createCategory(): void {
     if (this.categoryForm.invalid) return;
     const value = this.categoryForm.getRawValue();
-    const body={ name: value.name, description: value.description || undefined };
-    const request=this.editingCategoryId()?this.api.updateCategory(this.editingCategoryId()!,body):this.api.createCategory(body);
+    const body = { name: value.name, description: value.description || undefined };
+    const request = this.editingCategoryId()
+      ? this.api.updateCategory(this.editingCategoryId()!, body)
+      : this.api.createCategory(body);
     this.mutate(request, (created) => {
-      this.categories.update((rows) => this.editingCategoryId()?rows.map(row=>row.id===created.id?created:row):[...rows, created]); this.editingCategoryId.set(null);this.categoryForm.reset();
+      this.categories.update((rows) =>
+        this.editingCategoryId()
+          ? rows.map((row) => (row.id === created.id ? created : row))
+          : [...rows, created],
+      );
+      this.editingCategoryId.set(null);
+      this.categoryForm.reset();
     });
   }
-  editCategory(item:AdminCategoryResponse):void{this.editingCategoryId.set(item.id);this.categoryForm.patchValue(item);}
+  editCategory(item: AdminCategoryResponse): void {
+    this.editingCategoryId.set(item.id);
+    this.categoryForm.patchValue(item);
+  }
   async deleteCategory(id: number): Promise<void> {
-    if (!await this.confirmation.confirm('Delete this category?', 'Delete category', 'Delete')) return;
-    this.mutate(this.api.deleteCategory(id), () => this.categories.update((rows) => rows.filter((row) => row.id !== id)));
+    if (!(await this.confirmation.confirm('Delete this category?', 'Delete category', 'Delete')))
+      return;
+    this.mutate(this.api.deleteCategory(id), () =>
+      this.categories.update((rows) => rows.filter((row) => row.id !== id)),
+    );
   }
   createRestaurant(): void {
     if (this.restaurantForm.invalid) return;
     const value = this.restaurantForm.getRawValue();
-    this.mutate(this.api.createRestaurant({ ...value, description: value.description || undefined, logoUrl: value.logoUrl || undefined }), (created) => {
-      this.restaurants.update((rows) => [...rows, created]); this.restaurantForm.reset();
-    });
+    this.mutate(
+      this.api.createRestaurant({
+        ...value,
+        description: value.description || undefined,
+        logoUrl: value.logoUrl || undefined,
+      }),
+      (created) => {
+        this.restaurants.update((rows) => [...rows, created]);
+        this.restaurantForm.reset();
+      },
+    );
   }
   assignManager(): void {
     if (this.managerForm.invalid) return;
     const value = this.managerForm.getRawValue();
-    this.mutate(this.api.assignManager(value.restaurantId, { email: value.email, password: value.password, name: value.name, phoneNumber: value.phoneNumber || undefined }), () => this.managerForm.reset());
+    this.mutate(
+      this.api.assignManager(value.restaurantId, {
+        email: value.email,
+        password: value.password,
+        name: value.name,
+        phoneNumber: value.phoneNumber || undefined,
+      }),
+      () => this.managerForm.reset(),
+    );
   }
   private mutate<T>(request: Observable<T>, next: (value: T) => void): void {
-    this.processingId.set(-1); this.error.set(null);
-    request.pipe(finalize(() => this.processingId.set(null)), takeUntilDestroyed(this.destroy)).subscribe({ next, error: () => this.error.set('The change could not be saved.') });
+    this.processingId.set(-1);
+    this.error.set(null);
+    request
+      .pipe(
+        finalize(() => this.processingId.set(null)),
+        takeUntilDestroyed(this.destroy),
+      )
+      .subscribe({ next, error: () => this.error.set('The change could not be saved.') });
   }
   async riderAction(id: number, a: 'approve' | 'reject' | 'deactivate'): Promise<void> {
-    if ((a === 'reject' || a === 'deactivate') && !await this.confirmation.confirm(`${a} this rider?`, 'Update rider', a)) return;
+    if (
+      (a === 'reject' || a === 'deactivate') &&
+      !(await this.confirmation.confirm(`${a} this rider?`, 'Update rider', a))
+    )
+      return;
     this.processingId.set(id);
     this.api
       .riderAction(id, a)
@@ -153,7 +221,8 @@ export class AdminPage {
       });
   }
   async cancelOrder(id: number): Promise<void> {
-    if (!await this.confirmation.confirm('Cancel this order?', 'Cancel order', 'Cancel order')) return;
+    if (!(await this.confirmation.confirm('Cancel this order?', 'Cancel order', 'Cancel order')))
+      return;
     this.processingId.set(id);
     this.api
       .cancelOrder(id)
@@ -167,7 +236,14 @@ export class AdminPage {
       });
   }
   async deactivateRestaurant(id: number): Promise<void> {
-    if (!await this.confirmation.confirm('Deactivate this restaurant?', 'Deactivate restaurant', 'Deactivate')) return;
+    if (
+      !(await this.confirmation.confirm(
+        'Deactivate this restaurant?',
+        'Deactivate restaurant',
+        'Deactivate',
+      ))
+    )
+      return;
     this.processingId.set(id);
     this.api
       .deactivateRestaurant(id)

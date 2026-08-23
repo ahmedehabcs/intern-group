@@ -1,12 +1,285 @@
-<main class="p-4 sm:p-6 lg:p-8"><header class="mb-6"><p class="text-xs font-medium uppercase tracking-[.16em] text-orange-600">Management</p><h2 class="mt-1 text-2xl font-medium capitalize text-slate-900">{{mode.replace('-', ' ')}}</h2><p class="mt-1 text-sm text-slate-500">Review records and manage marketplace operations.</p></header>
-@if (loading()) { <p class="p-10 text-center">Loading…</p> } @else if (error()) { <p class="mt-5 bg-red-50 p-4 text-red-700">{{error()}}</p> } @else {
-<section class="mt-6 space-y-3">@if(mode==='restaurants'||mode==='riders'){<form (ngSubmit)="load()" class="flex gap-2"><input [formControl]="search" [placeholder]="'Search '+mode" class="flex-1 rounded-lg border p-2"><button class="rounded-lg bg-slate-900 px-4 text-white">Search</button></form>}@switch (mode) {
- @case ('categories') { <form [formGroup]="categoryForm" (ngSubmit)="createCategory()" class="grid gap-3 rounded-xl border p-4 sm:grid-cols-3"><input formControlName="name" placeholder="Category name" class="rounded-lg border p-2"><input formControlName="description" placeholder="Description" class="rounded-lg border p-2"><button [disabled]="categoryForm.invalid||processingId()===-1" class="rounded-lg bg-orange-500 p-2 font-medium text-white">{{editingCategoryId()?'Save category':'Add category'}}</button></form>@for (item of categories(); track item.id) { <article class="flex justify-between rounded-xl border p-4"><div><strong>{{item.name}}</strong><p>{{item.description}} · {{item.active?'Active':'Inactive'}}</p></div><span class="flex gap-2"><button (click)="editCategory(item)" class="icon-action" aria-label="Edit category" title="Edit category"><svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4L16.5 3.5Z"/></svg></button><button (click)="deleteCategory(item.id)" class="icon-action danger" aria-label="Delete category" title="Delete category"><svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2m-9 0 1 15h8l1-15M10 10v7m4-7v7"/></svg></button></span></article> } @empty { <p>No categories.</p> } }
- @case ('customers') { <form (ngSubmit)="load()" class="flex gap-2"><input [formControl]="search" placeholder="Search customers" class="flex-1 rounded-lg border p-2"><button class="rounded-lg bg-slate-900 px-4 text-white">Search</button></form>@for (item of customers(); track item.id) { <article class="rounded-xl border p-4"><strong>{{item.name}}</strong><p>{{item.email}} · {{item.phoneNumber}}</p></article> } @empty { <p>No customers.</p> } }
- @case ('orders') { <form [formGroup]="orderFilters" (ngSubmit)="load()" class="grid gap-2 rounded-xl border p-3 sm:grid-cols-5"><select formControlName="status" class="rounded-lg border p-2"><option value="">All statuses</option>@for(status of ['PENDING','CONFIRMED','PREPARING','READY','ACCEPTED','PICKED_UP','DELIVERED','CANCELLED'];track status){<option [value]="status">{{status}}</option>}</select><input formControlName="restaurantId" type="number" min="1" placeholder="Restaurant ID" class="rounded-lg border p-2"><input formControlName="from" type="date" class="rounded-lg border p-2"><input formControlName="to" type="date" class="rounded-lg border p-2"><button class="rounded-lg bg-slate-900 text-white">Apply</button></form>@for (item of orders(); track item.id) { <article class="flex justify-between rounded-xl border p-4"><span>#{{item.id}} · {{item.restaurantName}} · {{item.status}}</span>@if(item.status!=='CANCELLED'&&item.status!=='DELIVERED'){<button (click)="cancelOrder(item.id)" class="text-red-600">Cancel</button>}</article> } @empty { <p>No orders.</p> } }
- @case ('restaurants') { <form [formGroup]="restaurantForm" (ngSubmit)="createRestaurant()" class="grid gap-3 rounded-xl border p-4 sm:grid-cols-2"><input formControlName="name" placeholder="Restaurant name" class="rounded-lg border p-2"><input formControlName="phone" placeholder="Phone" class="rounded-lg border p-2"><input formControlName="email" type="email" placeholder="Email" class="rounded-lg border p-2"><input formControlName="address" placeholder="Address" class="rounded-lg border p-2"><input formControlName="governorateId" type="number" min="1" placeholder="Governorate ID" class="rounded-lg border p-2"><input formControlName="deliveryFee" type="number" min="0" placeholder="Delivery fee" class="rounded-lg border p-2"><input formControlName="description" placeholder="Description" class="rounded-lg border p-2"><input formControlName="logoUrl" placeholder="Logo URL" class="rounded-lg border p-2"><button [disabled]="restaurantForm.invalid||processingId()===-1" class="rounded-lg bg-orange-500 p-2 font-bold text-white sm:col-span-2">Create restaurant</button></form><form [formGroup]="managerForm" (ngSubmit)="assignManager()" class="grid gap-3 rounded-xl border p-4 sm:grid-cols-3"><input formControlName="restaurantId" type="number" min="1" placeholder="Restaurant ID" class="rounded-lg border p-2"><input formControlName="name" placeholder="Manager name" class="rounded-lg border p-2"><input formControlName="email" type="email" placeholder="Manager email" class="rounded-lg border p-2"><input formControlName="password" type="password" placeholder="Password" class="rounded-lg border p-2"><input formControlName="phoneNumber" placeholder="Phone" class="rounded-lg border p-2"><button [disabled]="managerForm.invalid||processingId()===-1" class="rounded-lg bg-slate-900 p-2 font-bold text-white">Assign manager</button></form>@for (item of restaurants(); track item.id) { <article class="flex justify-between rounded-xl border p-4"><span>{{item.name}} · {{item.isActive?'Active':'Inactive'}}</span>@if(item.isActive){<button (click)="deactivateRestaurant(item.id)" class="text-red-600">Deactivate</button>}</article> } @empty { <p>No restaurants.</p> } }
- @case ('riders') { @for (item of riders(); track item.id) { <article class="flex justify-between rounded-xl border p-4"><span>{{item.name}} · {{item.approvalStatus}} · {{item.online?'Online':'Offline'}}</span>@if(item.isActive){<button (click)="riderAction(item.id,'deactivate')" class="text-red-600">Deactivate</button>}</article> } @empty { <p>No riders.</p> } }
- @case ('pending') { @for (item of riders(); track item.id) { <article class="flex justify-between rounded-xl border p-4"><span>{{item.name}} · {{item.vehicleType}}</span><span><button (click)="riderAction(item.id,'approve')" class="text-green-700">Approve</button> <button (click)="riderAction(item.id,'reject')" class="text-red-600">Reject</button></span></article> } @empty { <p>No pending riders.</p> } }
- @case ('feedback') { @for (item of feedback(); track item.orderId) { <article class="rounded-xl border p-4">Order #{{item.orderId}} · {{item.rating}}/5 · {{item.comment}}</article> } @empty { <p>No feedback.</p> } }
-}</section> }
+<main class="p-4 sm:p-6 lg:p-8">
+  <header class="mb-6">
+    <p class="text-xs font-medium uppercase tracking-[.16em] text-orange-600">Management</p>
+    <h2 class="mt-1 text-2xl font-medium capitalize text-slate-900">
+      {{ mode.replace('-', ' ') }}
+    </h2>
+    <p class="mt-1 text-sm text-slate-500">Review records and manage marketplace operations.</p>
+  </header>
+  @if (loading()) {
+    <p class="p-10 text-center">Loading…</p>
+  } @else if (error()) {
+    <p class="mt-5 bg-red-50 p-4 text-red-700">{{ error() }}</p>
+  } @else {
+    <section class="mt-6 space-y-3">
+      @if (mode === 'restaurants' || mode === 'riders') {
+        <form (ngSubmit)="load()" class="flex gap-2">
+          <input
+            [formControl]="search"
+            [placeholder]="'Search ' + mode"
+            class="flex-1 rounded-lg border p-2"
+          /><button class="rounded-lg bg-slate-900 px-4 text-white">Search</button>
+        </form>
+      }
+      @switch (mode) {
+        @case ('categories') {
+          <form
+            [formGroup]="categoryForm"
+            (ngSubmit)="createCategory()"
+            class="grid gap-3 rounded-xl border p-4 sm:grid-cols-3"
+          >
+            <input
+              formControlName="name"
+              placeholder="Category name"
+              class="rounded-lg border p-2"
+            /><input
+              formControlName="description"
+              placeholder="Description"
+              class="rounded-lg border p-2"
+            /><button
+              [disabled]="categoryForm.invalid || processingId() === -1"
+              class="rounded-lg bg-orange-500 p-2 font-medium text-white"
+            >
+              {{ editingCategoryId() ? 'Save category' : 'Add category' }}
+            </button>
+          </form>
+          @for (item of categories(); track item.id) {
+            <article class="flex justify-between rounded-xl border p-4">
+              <div>
+                <strong>{{ item.name }}</strong>
+                <p>{{ item.description }} · {{ item.active ? 'Active' : 'Inactive' }}</p>
+              </div>
+              <span class="flex gap-2"
+                ><button
+                  (click)="editCategory(item)"
+                  class="icon-action"
+                  aria-label="Edit category"
+                  title="Edit category"
+                >
+                  <svg viewBox="0 0 24 24">
+                    <path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4L16.5 3.5Z" />
+                  </svg></button
+                ><button
+                  (click)="deleteCategory(item.id)"
+                  class="icon-action danger"
+                  aria-label="Delete category"
+                  title="Delete category"
+                >
+                  <svg viewBox="0 0 24 24">
+                    <path d="M3 6h18M8 6V4h8v2m-9 0 1 15h8l1-15M10 10v7m4-7v7" />
+                  </svg></button
+              ></span>
+            </article>
+          } @empty {
+            <p>No categories.</p>
+          }
+        }
+        @case ('customers') {
+          <form (ngSubmit)="load()" class="flex gap-2">
+            <input
+              [formControl]="search"
+              placeholder="Search customers"
+              class="flex-1 rounded-lg border p-2"
+            /><button class="rounded-lg bg-slate-900 px-4 text-white">Search</button>
+          </form>
+          @for (item of customers(); track item.id) {
+            <article class="rounded-xl border p-4">
+              <strong>{{ item.name }}</strong>
+              <p>{{ item.email }} · {{ item.phoneNumber }}</p>
+            </article>
+          } @empty {
+            <p>No customers.</p>
+          }
+        }
+        @case ('orders') {
+          <form
+            [formGroup]="orderFilters"
+            (ngSubmit)="load()"
+            class="grid gap-2 rounded-xl border p-3 sm:grid-cols-5"
+          >
+            <select formControlName="status" class="rounded-lg border p-2">
+              <option value="">All statuses</option>
+              @for (
+                status of [
+                  'PENDING',
+                  'CONFIRMED',
+                  'PREPARING',
+                  'READY',
+                  'ACCEPTED',
+                  'PICKED_UP',
+                  'DELIVERED',
+                  'CANCELLED',
+                ];
+                track status
+              ) {
+                <option [value]="status">{{ status }}</option>
+              }</select
+            ><input
+              formControlName="restaurantId"
+              type="number"
+              min="1"
+              placeholder="Restaurant ID"
+              class="rounded-lg border p-2"
+            /><input formControlName="from" type="date" class="rounded-lg border p-2" /><input
+              formControlName="to"
+              type="date"
+              class="rounded-lg border p-2"
+            /><button class="rounded-lg bg-slate-900 text-white">Apply</button>
+          </form>
+          @for (item of orders(); track item.id) {
+            <article class="flex justify-between rounded-xl border p-4">
+              <span>#{{ item.id }} · {{ item.restaurantName }} · {{ item.status }}</span>
+              @if (item.status !== 'CANCELLED' && item.status !== 'DELIVERED') {
+                <button (click)="cancelOrder(item.id)" class="text-red-600">Cancel</button>
+              }
+            </article>
+          } @empty {
+            <p>No orders.</p>
+          }
+        }
+        @case ('restaurants') {
+          <form
+            [formGroup]="restaurantForm"
+            (ngSubmit)="createRestaurant()"
+            class="grid gap-3 rounded-xl border p-4 sm:grid-cols-2"
+          >
+            <input
+              formControlName="name"
+              placeholder="Restaurant name"
+              class="rounded-lg border p-2"
+            /><input
+              formControlName="phone"
+              placeholder="Phone"
+              class="rounded-lg border p-2"
+            /><input
+              formControlName="email"
+              type="email"
+              placeholder="Email"
+              class="rounded-lg border p-2"
+            /><input
+              formControlName="address"
+              placeholder="Address"
+              class="rounded-lg border p-2"
+            /><input
+              formControlName="governorateId"
+              type="number"
+              min="1"
+              placeholder="Governorate ID"
+              class="rounded-lg border p-2"
+            /><input
+              formControlName="deliveryFee"
+              type="number"
+              min="0"
+              placeholder="Delivery fee"
+              class="rounded-lg border p-2"
+            /><input
+              formControlName="description"
+              placeholder="Description"
+              class="rounded-lg border p-2"
+            /><input
+              formControlName="logoUrl"
+              placeholder="Logo URL"
+              class="rounded-lg border p-2"
+            /><button
+              [disabled]="restaurantForm.invalid || processingId() === -1"
+              class="rounded-lg bg-orange-500 p-2 font-bold text-white sm:col-span-2"
+            >
+              Create restaurant
+            </button>
+          </form>
+          <form
+            [formGroup]="managerForm"
+            (ngSubmit)="assignManager()"
+            class="grid gap-3 rounded-xl border p-4 sm:grid-cols-3"
+          >
+            <input
+              formControlName="restaurantId"
+              type="number"
+              min="1"
+              placeholder="Restaurant ID"
+              class="rounded-lg border p-2"
+            /><input
+              formControlName="name"
+              placeholder="Manager name"
+              class="rounded-lg border p-2"
+            /><input
+              formControlName="email"
+              type="email"
+              placeholder="Manager email"
+              class="rounded-lg border p-2"
+            /><input
+              formControlName="password"
+              type="password"
+              placeholder="Password"
+              class="rounded-lg border p-2"
+            /><input
+              formControlName="phoneNumber"
+              placeholder="Phone"
+              class="rounded-lg border p-2"
+            /><button
+              [disabled]="managerForm.invalid || processingId() === -1"
+              class="rounded-lg bg-slate-900 p-2 font-bold text-white"
+            >
+              Assign manager
+            </button>
+          </form>
+          @for (item of restaurants(); track item.id) {
+            <article class="flex justify-between rounded-xl border p-4">
+              <span>{{ item.name }} · {{ item.isActive ? 'Active' : 'Inactive' }}</span>
+              @if (item.isActive) {
+                <button (click)="deactivateRestaurant(item.id)" class="text-red-600">
+                  Deactivate
+                </button>
+              }
+            </article>
+          } @empty {
+            <p>No restaurants.</p>
+          }
+        }
+        @case ('riders') {
+          @for (item of riders(); track item.id) {
+            <article class="flex justify-between rounded-xl border p-4">
+              <span
+                >{{ item.name }} · {{ item.approvalStatus }} ·
+                {{ item.online ? 'Online' : 'Offline' }}</span
+              >
+              @if (item.isActive) {
+                <button (click)="riderAction(item.id, 'deactivate')" class="text-red-600">
+                  Deactivate
+                </button>
+              }
+            </article>
+          } @empty {
+            <p>No riders.</p>
+          }
+        }
+        @case ('pending') {
+          @for (item of riders(); track item.id) {
+            <article class="flex justify-between rounded-xl border p-4">
+              <span>{{ item.name }} · {{ item.vehicleType }}</span
+              ><span
+                ><button (click)="riderAction(item.id, 'approve')" class="text-green-700">
+                  Approve
+                </button>
+                <button (click)="riderAction(item.id, 'reject')" class="text-red-600">
+                  Reject
+                </button></span
+              >
+            </article>
+          } @empty {
+            <p>No pending riders.</p>
+          }
+        }
+        @case ('feedback') {
+          @for (item of feedback(); track item.orderId) {
+            <article class="rounded-xl border p-4">
+              Order #{{ item.orderId }} · {{ item.rating }}/5 · {{ item.comment }}
+            </article>
+          } @empty {
+            <p>No feedback.</p>
+          }
+        }
+      }
+    </section>
+  }
 </main>

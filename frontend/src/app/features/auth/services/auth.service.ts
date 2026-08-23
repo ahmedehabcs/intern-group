@@ -17,18 +17,24 @@ export class AuthService {
   readonly authenticated = computed(() => this.tokens.isValid());
   readonly role = this.tokens.role.asReadonly();
   login(b: LoginRequest): Observable<LoginResponse> {
-    return (environment.mock.enabled ? this.mock.login(b) : this.http
-      .post<LoginResponse>(`${this.base}/login`, b)
+    return (
+      environment.mock.enabled
+        ? this.mock.login(b)
+        : this.http.post<LoginResponse>(`${this.base}/login`, b)
     ).pipe(tap((r) => this.tokens.setSession(r.accessToken, r.role)));
   }
   signupCustomer(b: CustomerSignupRequest): Observable<RegisterResponse> {
     // TODO(api-contract): generated CustomerSignupRequest documentation is malformed;
     // this mapping preserves the fields already present in the original frontend form.
-    return environment.mock.enabled ? this.mock.register() : this.http.post<RegisterResponse>(`${this.base}/signup/customer`, b);
+    return environment.mock.enabled
+      ? this.mock.register()
+      : this.http.post<RegisterResponse>(`${this.base}/signup/customer`, b);
   }
   signupDriver(b: DriverSignupRequest): Observable<RegisterResponse> {
     // TODO(api-contract): base DriverSignupRequest fields are malformed in generated docs.
-    return environment.mock.enabled ? this.mock.register() : this.http.post<RegisterResponse>(`${this.base}/signup/driver`, b);
+    return environment.mock.enabled
+      ? this.mock.register()
+      : this.http.post<RegisterResponse>(`${this.base}/signup/driver`, b);
   }
   verifyOtp(b: VerifyOtpRequest): Observable<string> {
     if (environment.mock.enabled) return this.mock.verifyOtp(b);
@@ -42,7 +48,8 @@ export class AuthService {
     });
   }
   forgotPassword(b: ForgotPasswordRequest): Observable<string> {
-    if (environment.mock.enabled) return this.mock.authMessage(`Password reset instructions sent to ${b.email}`);
+    if (environment.mock.enabled)
+      return this.mock.authMessage(`Password reset instructions sent to ${b.email}`);
     return this.http.post(`${this.base}/forgot-password`, b, { responseType: 'text' });
   }
   resetPassword(b: ResetPasswordRequest): Observable<string> {

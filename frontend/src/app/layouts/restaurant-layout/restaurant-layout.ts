@@ -13,9 +13,11 @@ export class RestaurantLayout {
   readonly menuOpen = signal(false);
   readonly isDark = signal(document.documentElement.dataset['theme'] === 'dark');
 
-  closeMenu(): void { this.menuOpen.set(false); }
+  closeMenu(): void {
+    this.menuOpen.set(false);
+  }
   toggleTheme(): void {
-    this.isDark.update(value => !value);
+    this.isDark.update((value) => !value);
     const theme = this.isDark() ? 'dark' : 'light';
     document.documentElement.dataset['theme'] = theme;
     localStorage.setItem('talabaty-theme', theme);

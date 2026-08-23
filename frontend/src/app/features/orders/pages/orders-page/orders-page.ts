@@ -26,16 +26,24 @@ export class OrdersPage {
   readonly loading = signal(true);
   readonly error = signal<string | null>(null);
 
-  constructor() { this.load(); }
+  constructor() {
+    this.load();
+  }
 
   load(page = this.page()): void {
     this.page.set(page);
     this.loading.set(true);
     this.error.set(null);
-    forkJoin({ orders: this.api.list(page, this.size()), restaurants: this.restaurantsApi.restaurants() })
-      .pipe(finalize(() => this.loading.set(false)), takeUntilDestroyed(this.destroy))
+    forkJoin({
+      orders: this.api.list(page, this.size()),
+      restaurants: this.restaurantsApi.restaurants(),
+    })
+      .pipe(
+        finalize(() => this.loading.set(false)),
+        takeUntilDestroyed(this.destroy),
+      )
       .subscribe({
-        next: value => {
+        next: (value) => {
           this.data.set(value.orders);
           this.restaurants.set(value.restaurants);
         },
@@ -44,6 +52,6 @@ export class OrdersPage {
   }
 
   restaurant(name: string): RestaurantResponse | undefined {
-    return this.restaurants().find(item => item.name === name);
+    return this.restaurants().find((item) => item.name === name);
   }
 }

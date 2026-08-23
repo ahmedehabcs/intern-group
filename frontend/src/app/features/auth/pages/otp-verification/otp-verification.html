@@ -1,1 +1,37 @@
-<main class="mx-auto flex min-h-screen max-w-md items-center p-6"><section class="w-full"><h1 class="text-3xl font-black">Verify your email</h1><p class="mt-2 text-slate-600">Enter the code sent to <strong>{{email}}</strong>.</p><form [formGroup]="form" (ngSubmit)="submit()" class="mt-6 space-y-4"><label class="block">Verification code<input formControlName="otp" autocomplete="one-time-code" class="mt-1 w-full rounded-xl border p-3"></label>@if(error()){<p class="rounded-xl bg-red-50 p-3 text-red-700">{{error()}}</p>}@if(message()){<p class="rounded-xl bg-green-50 p-3 text-green-700">{{message()}}</p>}<button [disabled]="form.invalid||submitting()" class="w-full rounded-xl bg-orange-500 p-3 font-bold text-white">{{submitting()?'Verifying…':'Verify email'}}</button></form><button type="button" [disabled]="resending()" (click)="resend()" class="mt-4 w-full text-orange-600">{{resending()?'Sending…':'Resend code'}}</button></section></main>
+<main class="mx-auto flex min-h-screen max-w-md items-center p-6">
+  <section class="w-full">
+    <h1 class="text-3xl font-black">Verify your email</h1>
+    <p class="mt-2 text-slate-600">
+      Enter the code sent to <strong>{{ email }}</strong
+      >.
+    </p>
+    <form [formGroup]="form" (ngSubmit)="submit()" class="mt-6 space-y-4">
+      <label class="block"
+        >Verification code<input
+          formControlName="otp"
+          autocomplete="one-time-code"
+          class="mt-1 w-full rounded-xl border p-3"
+      /></label>
+      @if (error()) {
+        <p class="rounded-xl bg-red-50 p-3 text-red-700">{{ error() }}</p>
+      }
+      @if (message()) {
+        <p class="rounded-xl bg-green-50 p-3 text-green-700">{{ message() }}</p>
+      }
+      <button
+        [disabled]="form.invalid || submitting()"
+        class="w-full rounded-xl bg-orange-500 p-3 font-bold text-white"
+      >
+        {{ submitting() ? 'Verifying…' : 'Verify email' }}
+      </button>
+    </form>
+    <button
+      type="button"
+      [disabled]="resending()"
+      (click)="resend()"
+      class="mt-4 w-full text-orange-600"
+    >
+      {{ resending() ? 'Sending…' : 'Resend code' }}
+    </button>
+  </section>
+</main>

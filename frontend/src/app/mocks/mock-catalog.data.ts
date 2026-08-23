@@ -39,23 +39,103 @@ export const MOCK_RESTAURANTS = restaurantSeeds.map(([id, name, description, cat
 })) satisfies RestaurantResponse[];
 
 export const MOCK_RESTAURANT_CATEGORY_IDS: Readonly<Record<number, readonly number[]>> = {
-  1: [1], 2: [2], 3: [3], 4: [4], 5: [5], 6: [6, 7], 7: [7], 8: [8], 9: [1, 4], 10: [6, 8],
+  1: [1],
+  2: [2],
+  3: [3],
+  4: [4],
+  5: [5],
+  6: [6, 7],
+  7: [7],
+  8: [8],
+  9: [1, 4],
+  10: [6, 8],
 };
 
 const menus: readonly (readonly string[])[] = [
-  ['Classic Cheeseburger', 'Double Smash Burger', 'Spicy Chicken Burger', 'Loaded House Fries', 'Mushroom Swiss Burger', 'Crispy Onion Rings'],
-  ['Margherita Pizza', 'Pepperoni Pizza', 'Four Cheese Pizza', 'Chicken Ranch Pizza', 'Truffle Mushroom Pizza', 'Garlic Bread'],
-  ['Crispy Chicken Meal', 'Spicy Chicken Strips', 'Grilled Chicken Plate', 'Family Chicken Bucket', 'Chicken Wrap', 'Coleslaw Bowl'],
-  ['Chicken Shawarma', 'Mixed Grill Plate', 'Hummus & Bread', 'Fattoush Salad', 'Beef Kofta', 'Falafel Plate'],
-  ['Classic Kunafa', 'Chocolate Cake', 'Lotus Cheesecake', 'Pistachio Baklava', 'Milk Cake', 'Brownie Sundae'],
-  ['Iced Latte', 'Flat White', 'Spanish Latte', 'Cold Brew', 'Turkey Croissant', 'Blueberry Muffin'],
-  ['Egg & Cheese Sandwich', 'Halloumi Croissant', 'Shakshuka Plate', 'Pancake Stack', 'Granola Bowl'],
-  ['Chicken Protein Bowl', 'Quinoa Garden Salad', 'Salmon Avocado Bowl', 'Greek Salad', 'Green Detox Juice'],
-  ['Charcoal Burger', 'Shish Tawook Plate', 'Kofta Sandwich', 'Mixed Grill Feast', 'Seasoned Fries'],
-  ['Fresh Orange Juice', 'Mango Smoothie', 'Berry Blast', 'Avocado Honey Shake', 'Seasonal Fruit Cup'],
+  [
+    'Classic Cheeseburger',
+    'Double Smash Burger',
+    'Spicy Chicken Burger',
+    'Loaded House Fries',
+    'Mushroom Swiss Burger',
+    'Crispy Onion Rings',
+  ],
+  [
+    'Margherita Pizza',
+    'Pepperoni Pizza',
+    'Four Cheese Pizza',
+    'Chicken Ranch Pizza',
+    'Truffle Mushroom Pizza',
+    'Garlic Bread',
+  ],
+  [
+    'Crispy Chicken Meal',
+    'Spicy Chicken Strips',
+    'Grilled Chicken Plate',
+    'Family Chicken Bucket',
+    'Chicken Wrap',
+    'Coleslaw Bowl',
+  ],
+  [
+    'Chicken Shawarma',
+    'Mixed Grill Plate',
+    'Hummus & Bread',
+    'Fattoush Salad',
+    'Beef Kofta',
+    'Falafel Plate',
+  ],
+  [
+    'Classic Kunafa',
+    'Chocolate Cake',
+    'Lotus Cheesecake',
+    'Pistachio Baklava',
+    'Milk Cake',
+    'Brownie Sundae',
+  ],
+  [
+    'Iced Latte',
+    'Flat White',
+    'Spanish Latte',
+    'Cold Brew',
+    'Turkey Croissant',
+    'Blueberry Muffin',
+  ],
+  [
+    'Egg & Cheese Sandwich',
+    'Halloumi Croissant',
+    'Shakshuka Plate',
+    'Pancake Stack',
+    'Granola Bowl',
+  ],
+  [
+    'Chicken Protein Bowl',
+    'Quinoa Garden Salad',
+    'Salmon Avocado Bowl',
+    'Greek Salad',
+    'Green Detox Juice',
+  ],
+  [
+    'Charcoal Burger',
+    'Shish Tawook Plate',
+    'Kofta Sandwich',
+    'Mixed Grill Feast',
+    'Seasoned Fries',
+  ],
+  [
+    'Fresh Orange Juice',
+    'Mango Smoothie',
+    'Berry Blast',
+    'Avocado Honey Shake',
+    'Seasonal Fruit Cup',
+  ],
 ] as const;
 
-function menuItem(restaurantId: number, sectionId: number, index: number, name: string): MenuItemResponse {
+function menuItem(
+  restaurantId: number,
+  sectionId: number,
+  index: number,
+  name: string,
+): MenuItemResponse {
   return {
     id: restaurantId * 100 + index + 1,
     name,
@@ -66,7 +146,9 @@ function menuItem(restaurantId: number, sectionId: number, index: number, name: 
 }
 
 export const MOCK_RESTAURANT_DETAILS = MOCK_RESTAURANTS.map((restaurant, restaurantIndex) => {
-  const allItems = menus[restaurantIndex].map((name, index) => menuItem(restaurant.id, restaurant.id * 10 + 1, index, name));
+  const allItems = menus[restaurantIndex].map((name, index) =>
+    menuItem(restaurant.id, restaurant.id * 10 + 1, index, name),
+  );
   const splitAt = Math.ceil(allItems.length / 2);
   return {
     id: restaurant.id,
@@ -74,8 +156,18 @@ export const MOCK_RESTAURANT_DETAILS = MOCK_RESTAURANTS.map((restaurant, restaur
     description: restaurant.description,
     logoUrl: restaurant.logoUrl,
     menuSections: [
-      { id: restaurant.id * 10 + 1, name: 'Popular', description: 'Most ordered favorites', menuItems: allItems.slice(0, splitAt) },
-      { id: restaurant.id * 10 + 2, name: 'More to explore', description: 'More from the menu', menuItems: allItems.slice(splitAt) },
+      {
+        id: restaurant.id * 10 + 1,
+        name: 'Popular',
+        description: 'Most ordered favorites',
+        menuItems: allItems.slice(0, splitAt),
+      },
+      {
+        id: restaurant.id * 10 + 2,
+        name: 'More to explore',
+        description: 'More from the menu',
+        menuItems: allItems.slice(splitAt),
+      },
     ],
   };
 }) satisfies RestaurantDetailsResponse[];

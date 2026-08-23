@@ -3,5 +3,8 @@ import { CanActivateFn, Router } from '@angular/router';
 import { TokenService } from '../services/token.service';
 
 export const authGuard: CanActivateFn = (route, state) => {
-  return inject(TokenService).isValid() || inject(Router).createUrlTree(['/auth/login'], { queryParams: { returnUrl: state.url } });
+  return (
+    inject(TokenService).isValid() ||
+    inject(Router).createUrlTree(['/auth/login'], { queryParams: { returnUrl: state.url } })
+  );
 };

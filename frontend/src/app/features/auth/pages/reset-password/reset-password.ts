@@ -1,1 +1,69 @@
-import{Component,DestroyRef,inject,signal}from'@angular/core';import{takeUntilDestroyed}from'@angular/core/rxjs-interop';import{AbstractControl,FormControl,FormGroup,ReactiveFormsModule,ValidationErrors,Validators}from'@angular/forms';import{ActivatedRoute,Router,RouterLink}from'@angular/router';import{finalize}from'rxjs';import{AuthService}from'../../services/auth.service';@Component({selector:'app-reset-password',imports:[ReactiveFormsModule,RouterLink],templateUrl:'./reset-password.html'})export class ResetPassword{private api=inject(AuthService);private route=inject(ActivatedRoute);private router=inject(Router);private destroy=inject(DestroyRef);readonly submitting=signal(false);readonly error=signal<string|null>(null);readonly form=new FormGroup({email:new FormControl(this.route.snapshot.queryParamMap.get('email')??'',{nonNullable:true,validators:[Validators.required,Validators.email]}),otp:new FormControl('',{nonNullable:true,validators:[Validators.required]}),password:new FormControl('',{nonNullable:true,validators:[Validators.required,Validators.minLength(8)]}),confirmPassword:new FormControl('',{nonNullable:true,validators:[Validators.required]})},{validators:[(c:AbstractControl):ValidationErrors|null=>c.get('password')?.value===c.get('confirmPassword')?.value?null:{passwordsMismatch:true}]});submit():void{if(this.form.invalid){this.form.markAllAsTouched();return}const v=this.form.getRawValue();this.submitting.set(true);this.api.resetPassword({email:v.email,otp:v.otp,newPassword:v.password}).pipe(finalize(()=>this.submitting.set(false)),takeUntilDestroyed(this.destroy)).subscribe({next:()=>void this.router.navigate(['/auth/login']),error:()=>this.error.set('Password reset failed.')})}}
+import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { finalize } from 'rxjs';
+import { AuthService } from '../../services/auth.service';
+@Component({
+  selector: 'app-reset-password',
+  imports: [ReactiveFormsModule, RouterLink],
+  templateUrl: './reset-password.html',
+})
+export class ResetPassword {
+  private api = inject(AuthService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private destroy = inject(DestroyRef);
+  readonly submitting = signal(false);
+  readonly error = signal<string | null>(null);
+  readonly form = new FormGroup(
+    {
+      email: new FormControl(this.route.snapshot.queryParamMap.get('email') ?? '', {
+        nonNullable: true,
+        validators: [Validators.required, Validators.email],
+      }),
+      otp: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
+      password: new FormControl('', {
+        nonNullable: true,
+        validators: [Validators.required, Validators.minLength(8)],
+      }),
+      confirmPassword: new FormControl('', {
+        nonNullable: true,
+        validators: [Validators.required],
+      }),
+    },
+    {
+      validators: [
+        (c: AbstractControl): ValidationErrors | null =>
+          c.get('password')?.value === c.get('confirmPassword')?.value
+            ? null
+            : { passwordsMismatch: true },
+      ],
+    },
+  );
+  submit(): void {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+    const v = this.form.getRawValue();
+    this.submitting.set(true);
+    this.api
+      .resetPassword({ email: v.email, otp: v.otp, newPassword: v.password })
+      .pipe(
+        finalize(() => this.submitting.set(false)),
+        takeUntilDestroyed(this.destroy),
+      )
+      .subscribe({
+        next: () => void this.router.navigate(['/auth/login']),
+        error: () => this.error.set('Password reset failed.'),
+      });
+  }
+}

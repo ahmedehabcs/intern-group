@@ -1,1 +1,39 @@
-import{HttpClient,HttpParams}from'@angular/common/http';import{inject,Injectable}from'@angular/core';import{Observable}from'rxjs';import{environment}from'../../../../environments/environment';import{MockDataStore}from'../../../mocks/mock-data.store';import{CustomerOrderDetailsResponse,CustomerOrderPageResponse,PlaceOrderRequest,PlaceOrderResponse}from'../models/order.models';@Injectable({providedIn:'root'})export class OrderService{private http=inject(HttpClient);private mock=inject(MockDataStore);private api=`${environment.apiUrl}/api/orders`;place(b:PlaceOrderRequest):Observable<PlaceOrderResponse>{return environment.mock.enabled?this.mock.placeOrder(b):this.http.post<PlaceOrderResponse>(this.api,b)}list(page=0,size=10):Observable<CustomerOrderPageResponse>{return environment.mock.enabled?this.mock.orders(page,size):this.http.get<CustomerOrderPageResponse>(this.api,{params:new HttpParams().set('page',page).set('size',size)})}get(id:number):Observable<CustomerOrderDetailsResponse>{return environment.mock.enabled?this.mock.order(id):this.http.get<CustomerOrderDetailsResponse>(`${this.api}/${id}`)}cancel(id:number,reason?:string):Observable<CustomerOrderDetailsResponse>{return environment.mock.enabled?this.mock.cancelOrder(id):this.http.put<CustomerOrderDetailsResponse>(`${this.api}/${id}/cancel`,{reason})}}
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { environment } from '../../../../environments/environment';
+import { MockDataStore } from '../../../mocks/mock-data.store';
+import {
+  CustomerOrderDetailsResponse,
+  CustomerOrderPageResponse,
+  PlaceOrderRequest,
+  PlaceOrderResponse,
+} from '../models/order.models';
+@Injectable({ providedIn: 'root' })
+export class OrderService {
+  private http = inject(HttpClient);
+  private mock = inject(MockDataStore);
+  private api = `${environment.apiUrl}/api/orders`;
+  place(b: PlaceOrderRequest): Observable<PlaceOrderResponse> {
+    return environment.mock.enabled
+      ? this.mock.placeOrder(b)
+      : this.http.post<PlaceOrderResponse>(this.api, b);
+  }
+  list(page = 0, size = 10): Observable<CustomerOrderPageResponse> {
+    return environment.mock.enabled
+      ? this.mock.orders(page, size)
+      : this.http.get<CustomerOrderPageResponse>(this.api, {
+          params: new HttpParams().set('page', page).set('size', size),
+        });
+  }
+  get(id: number): Observable<CustomerOrderDetailsResponse> {
+    return environment.mock.enabled
+      ? this.mock.order(id)
+      : this.http.get<CustomerOrderDetailsResponse>(`${this.api}/${id}`);
+  }
+  cancel(id: number, reason?: string): Observable<CustomerOrderDetailsResponse> {
+    return environment.mock.enabled
+      ? this.mock.cancelOrder(id)
+      : this.http.put<CustomerOrderDetailsResponse>(`${this.api}/${id}/cancel`, { reason });
+  }
+}

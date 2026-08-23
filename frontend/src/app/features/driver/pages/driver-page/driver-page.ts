@@ -43,7 +43,8 @@ export class DriverPage {
           ? this.delivery.active()
           : this.mode === 'history'
             ? this.delivery.history()
-            : this.feedbackApi.mine()) as Observable<unknown>;
+            : this.feedbackApi.mine()
+    ) as Observable<unknown>;
     req
       .pipe(
         finalize(() => this.loading.set(false)),
@@ -60,7 +61,15 @@ export class DriverPage {
       });
   }
   async action(id: number, a: 'accept' | 'pickup' | 'deliver' | 'cancel'): Promise<void> {
-    if (a === 'cancel' && !await this.confirmation.confirm('Cancel this assigned delivery?', 'Cancel delivery', 'Cancel delivery')) return;
+    if (
+      a === 'cancel' &&
+      !(await this.confirmation.confirm(
+        'Cancel this assigned delivery?',
+        'Cancel delivery',
+        'Cancel delivery',
+      ))
+    )
+      return;
     this.processingId.set(id);
     this.delivery
       .action(id, a)

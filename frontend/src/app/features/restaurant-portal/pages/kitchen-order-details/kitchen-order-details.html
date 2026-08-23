@@ -1,12 +1,176 @@
 <main class="p-4 sm:p-6 lg:p-8">
-  <a routerLink="/kitchen/orders" class="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-orange-600"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m15 18-6-6 6-6"/></svg>Active orders</a>
-  @if(loading()) {
-    <div class="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px]"><div class="h-96 animate-pulse rounded-xl bg-slate-200"></div><div class="h-72 animate-pulse rounded-xl bg-slate-200"></div></div>
-  } @else if(order();as orderValue) {
-    <header class="mt-5 flex flex-wrap items-start justify-between gap-4"><div><p class="text-xs uppercase tracking-[.16em] text-orange-600">Kitchen ticket</p><h2 class="mt-1 text-2xl font-medium text-slate-900">Order #{{orderValue.id}}</h2><p class="mt-1 text-sm text-slate-500">Received {{orderValue.createdAt | date:'medium'}}</p></div><app-status-badge [status]="orderValue.status"/></header>
+  <a
+    routerLink="/kitchen/orders"
+    class="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-orange-600"
+    ><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+      <path d="m15 18-6-6 6-6" /></svg
+    >Active orders</a
+  >
+  @if (loading()) {
+    <div class="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
+      <div class="h-96 animate-pulse rounded-xl bg-slate-200"></div>
+      <div class="h-72 animate-pulse rounded-xl bg-slate-200"></div>
+    </div>
+  } @else if (order(); as orderValue) {
+    <header class="mt-5 flex flex-wrap items-start justify-between gap-4">
+      <div>
+        <p class="text-xs uppercase tracking-[.16em] text-orange-600">Kitchen ticket</p>
+        <h2 class="mt-1 text-2xl font-medium text-slate-900">Order #{{ orderValue.id }}</h2>
+        <p class="mt-1 text-sm text-slate-500">
+          Received {{ orderValue.createdAt | date: 'medium' }}
+        </p>
+      </div>
+      <app-status-badge [status]="orderValue.status" />
+    </header>
     <div class="mt-6 grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
-      <div class="space-y-5"><section class="rounded-xl border border-slate-200 bg-white"><div class="border-b border-slate-200 px-5 py-4"><h3 class="font-medium text-slate-900">Kitchen items</h3><p class="mt-1 text-xs text-slate-500">Prepare each item according to its notes and add-ons.</p></div><div class="px-5">@for(item of orderValue.orderItems;track $index){<article class="grid grid-cols-[40px_minmax(0,1fr)_auto] gap-3 border-b border-slate-100 py-4 last:border-0"><span class="grid h-9 w-9 place-items-center rounded-lg bg-orange-50 text-sm font-medium text-orange-600">{{item.quantity}}×</span><div><h4 class="text-sm font-medium text-slate-900">{{item.productName}}</h4>@if(item.addons.length){<p class="mt-1 text-xs text-slate-500">@for(addon of item.addons;track $index){ {{addon.addonName}} @if(!$last){, } }</p>}@if(item.notes){<p class="mt-2 rounded-lg bg-amber-50 p-2 text-xs text-amber-700">Note: {{item.notes}}</p>}</div><span class="text-sm text-slate-600">EGP {{item.unitPrice * item.quantity}}</span></article>}</div></section><section class="rounded-xl border border-slate-200 bg-white p-5"><div class="flex items-start gap-3"><span class="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-blue-50 text-blue-700"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg></span><div><p class="text-xs uppercase tracking-wide text-slate-500">Delivery destination</p><p class="mt-1 text-sm text-slate-900">{{orderValue.deliveryAddress}}</p></div></div></section></div>
-      <aside class="space-y-4 lg:sticky lg:top-28"><section class="rounded-xl border border-slate-200 bg-white p-5"><h3 class="font-medium text-slate-900">Update progress</h3><label class="mt-4 block text-xs text-slate-500">Order status<select [formControl]="status" class="mt-2 w-full rounded-lg border p-2.5 text-sm">@for(value of ['PENDING','CONFIRMED','PREPARING','READY','ACCEPTED','PICKED_UP','DELIVERED','CANCELLED'];track value){<option [value]="value">{{value.replace('_',' ')}}</option>}</select></label><button type="button" (click)="update()" [disabled]="submitting()" class="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-orange-600 px-4 py-3 text-sm font-medium text-white"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m5 12 4 4L19 6"/></svg>Save status</button></section><section class="rounded-xl border border-red-200 bg-white p-5"><h3 class="font-medium text-slate-900">Cancel order</h3><p class="mt-1 text-xs text-slate-500">Use only when the kitchen cannot fulfill this order.</p><textarea [formControl]="reason" maxlength="255" rows="3" placeholder="Cancellation reason" class="mt-4 w-full rounded-lg border p-2.5 text-sm"></textarea><button type="button" (click)="cancel()" [disabled]="reason.invalid||submitting()" class="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-lg border border-red-200 px-4 py-3 text-sm text-red-600"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="m8.5 8.5 7 7m0-7-7 7"/></svg>Cancel order</button></section><section class="rounded-xl border border-slate-200 bg-white p-5 text-sm"><div class="flex justify-between text-slate-600"><span>Subtotal</span><span>EGP {{orderValue.subtotal}}</span></div><div class="mt-2 flex justify-between text-slate-600"><span>Delivery</span><span>EGP {{orderValue.deliveryFee}}</span></div><div class="mt-4 flex justify-between border-t border-slate-200 pt-4"><span>Total</span><span class="font-medium text-orange-600">EGP {{orderValue.totalPrice}}</span></div></section>@if(error()){<p class="rounded-lg bg-red-50 p-3 text-sm text-red-700">{{error()}}</p>}</aside>
+      <div class="space-y-5">
+        <section class="rounded-xl border border-slate-200 bg-white">
+          <div class="border-b border-slate-200 px-5 py-4">
+            <h3 class="font-medium text-slate-900">Kitchen items</h3>
+            <p class="mt-1 text-xs text-slate-500">
+              Prepare each item according to its notes and add-ons.
+            </p>
+          </div>
+          <div class="px-5">
+            @for (item of orderValue.orderItems; track $index) {
+              <article
+                class="grid grid-cols-[40px_minmax(0,1fr)_auto] gap-3 border-b border-slate-100 py-4 last:border-0"
+              >
+                <span
+                  class="grid h-9 w-9 place-items-center rounded-lg bg-orange-50 text-sm font-medium text-orange-600"
+                  >{{ item.quantity }}×</span
+                >
+                <div>
+                  <h4 class="text-sm font-medium text-slate-900">{{ item.productName }}</h4>
+                  @if (item.addons.length) {
+                    <p class="mt-1 text-xs text-slate-500">
+                      @for (addon of item.addons; track $index) {
+                        {{ addon.addonName }}
+                        @if (!$last) {
+                          ,
+                        }
+                      }
+                    </p>
+                  }
+                  @if (item.notes) {
+                    <p class="mt-2 rounded-lg bg-amber-50 p-2 text-xs text-amber-700">
+                      Note: {{ item.notes }}
+                    </p>
+                  }
+                </div>
+                <span class="text-sm text-slate-600">EGP {{ item.unitPrice * item.quantity }}</span>
+              </article>
+            }
+          </div>
+        </section>
+        <section class="rounded-xl border border-slate-200 bg-white p-5">
+          <div class="flex items-start gap-3">
+            <span
+              class="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-blue-50 text-blue-700"
+              ><svg
+                class="h-5 w-5"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+              >
+                <path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z" />
+                <circle cx="12" cy="10" r="2.5" /></svg
+            ></span>
+            <div>
+              <p class="text-xs uppercase tracking-wide text-slate-500">Delivery destination</p>
+              <p class="mt-1 text-sm text-slate-900">{{ orderValue.deliveryAddress }}</p>
+            </div>
+          </div>
+        </section>
+      </div>
+      <aside class="space-y-4 lg:sticky lg:top-28">
+        <section class="rounded-xl border border-slate-200 bg-white p-5">
+          <h3 class="font-medium text-slate-900">Update progress</h3>
+          <label class="mt-4 block text-xs text-slate-500"
+            >Order status<select
+              [formControl]="status"
+              class="mt-2 w-full rounded-lg border p-2.5 text-sm"
+            >
+              @for (
+                value of [
+                  'PENDING',
+                  'CONFIRMED',
+                  'PREPARING',
+                  'READY',
+                  'ACCEPTED',
+                  'PICKED_UP',
+                  'DELIVERED',
+                  'CANCELLED',
+                ];
+                track value
+              ) {
+                <option [value]="value">{{ value.replace('_', ' ') }}</option>
+              }
+            </select></label
+          ><button
+            type="button"
+            (click)="update()"
+            [disabled]="submitting()"
+            class="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-orange-600 px-4 py-3 text-sm font-medium text-white"
+          >
+            <svg
+              class="h-4 w-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+            >
+              <path d="m5 12 4 4L19 6" /></svg
+            >Save status
+          </button>
+        </section>
+        <section class="rounded-xl border border-red-200 bg-white p-5">
+          <h3 class="font-medium text-slate-900">Cancel order</h3>
+          <p class="mt-1 text-xs text-slate-500">
+            Use only when the kitchen cannot fulfill this order.
+          </p>
+          <textarea
+            [formControl]="reason"
+            maxlength="255"
+            rows="3"
+            placeholder="Cancellation reason"
+            class="mt-4 w-full rounded-lg border p-2.5 text-sm"
+          ></textarea
+          ><button
+            type="button"
+            (click)="cancel()"
+            [disabled]="reason.invalid || submitting()"
+            class="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-lg border border-red-200 px-4 py-3 text-sm text-red-600"
+          >
+            <svg
+              class="h-4 w-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+            >
+              <circle cx="12" cy="12" r="9" />
+              <path d="m8.5 8.5 7 7m0-7-7 7" /></svg
+            >Cancel order
+          </button>
+        </section>
+        <section class="rounded-xl border border-slate-200 bg-white p-5 text-sm">
+          <div class="flex justify-between text-slate-600">
+            <span>Subtotal</span><span>EGP {{ orderValue.subtotal }}</span>
+          </div>
+          <div class="mt-2 flex justify-between text-slate-600">
+            <span>Delivery</span><span>EGP {{ orderValue.deliveryFee }}</span>
+          </div>
+          <div class="mt-4 flex justify-between border-t border-slate-200 pt-4">
+            <span>Total</span
+            ><span class="font-medium text-orange-600">EGP {{ orderValue.totalPrice }}</span>
+          </div>
+        </section>
+        @if (error()) {
+          <p class="rounded-lg bg-red-50 p-3 text-sm text-red-700">{{ error() }}</p>
+        }
+      </aside>
     </div>
   }
 </main>

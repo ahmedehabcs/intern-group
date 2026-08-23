@@ -13,6 +13,11 @@ export function roleHome(role: Role | null): string {
 export const roleGuard: CanActivateFn = (route, state) => {
   const tokens = inject(TokenService);
   const allowed = (route.data['roles'] ?? []) as Role[];
-  if (!tokens.isValid()) return inject(Router).createUrlTree(['/auth/login'], { queryParams: { returnUrl: state.url } });
-  return allowed.length === 0 || (tokens.role() !== null && allowed.includes(tokens.role()!)) || inject(Router).createUrlTree([roleHome(tokens.role())]);
+  if (!tokens.isValid())
+    return inject(Router).createUrlTree(['/auth/login'], { queryParams: { returnUrl: state.url } });
+  return (
+    allowed.length === 0 ||
+    (tokens.role() !== null && allowed.includes(tokens.role()!)) ||
+    inject(Router).createUrlTree([roleHome(tokens.role())])
+  );
 };

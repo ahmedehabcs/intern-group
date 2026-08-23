@@ -12,6 +12,11 @@ export class AdminLayout {
   private readonly router = inject(Router);
   readonly menuOpen = signal(false);
 
-  closeMenu(): void { this.menuOpen.set(false); }
-  logout(): void { this.tokens.clear(); void this.router.navigate(['/auth/login']); }
+  closeMenu(): void {
+    this.menuOpen.set(false);
+  }
+  logout(): void {
+    this.tokens.clear();
+    void this.router.navigate(['/auth/login']);
+  }
 }

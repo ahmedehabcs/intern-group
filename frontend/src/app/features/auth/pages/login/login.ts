@@ -1,1 +1,57 @@
-import{HttpErrorResponse}from'@angular/common/http';import{Component,DestroyRef,inject,signal}from'@angular/core';import{takeUntilDestroyed}from'@angular/core/rxjs-interop';import{FormControl,FormGroup,ReactiveFormsModule,Validators}from'@angular/forms';import{ActivatedRoute,Router,RouterLink}from'@angular/router';import{finalize}from'rxjs';import{roleHome}from'../../../../core/auth/guards/role.guard';import{AuthService}from'../../services/auth.service';@Component({selector:'app-login',imports:[ReactiveFormsModule,RouterLink],templateUrl:'./login.html'})export class Login{private api=inject(AuthService);private router=inject(Router);private route=inject(ActivatedRoute);private destroy=inject(DestroyRef);readonly submitting=signal(false);readonly error=signal<string|null>(null);readonly form=new FormGroup({email:new FormControl('',{nonNullable:true,validators:[Validators.required,Validators.email]}),password:new FormControl('',{nonNullable:true,validators:[Validators.required,Validators.minLength(8)]})});submit():void{if(this.form.invalid){this.form.markAllAsTouched();return}this.submitting.set(true);this.error.set(null);this.api.login(this.form.getRawValue()).pipe(finalize(()=>this.submitting.set(false)),takeUntilDestroyed(this.destroy)).subscribe({next:r=>void this.router.navigateByUrl(this.route.snapshot.queryParamMap.get('returnUrl')||roleHome(r.role)),error:e=>this.error.set(e instanceof HttpErrorResponse?(e.error?.message??e.error?.error??'Login failed.'):'Login failed.')})}}
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { finalize } from 'rxjs';
+import { roleHome } from '../../../../core/auth/guards/role.guard';
+import { AuthService } from '../../services/auth.service';
+@Component({
+  selector: 'app-login',
+  imports: [ReactiveFormsModule, RouterLink],
+  templateUrl: './login.html',
+})
+export class Login {
+  private api = inject(AuthService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private destroy = inject(DestroyRef);
+  readonly submitting = signal(false);
+  readonly error = signal<string | null>(null);
+  readonly form = new FormGroup({
+    email: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required, Validators.email],
+    }),
+    password: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required, Validators.minLength(8)],
+    }),
+  });
+  submit(): void {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+    this.submitting.set(true);
+    this.error.set(null);
+    this.api
+      .login(this.form.getRawValue())
+      .pipe(
+        finalize(() => this.submitting.set(false)),
+        takeUntilDestroyed(this.destroy),
+      )
+      .subscribe({
+        next: (r) =>
+          void this.router.navigateByUrl(
+            this.route.snapshot.queryParamMap.get('returnUrl') || roleHome(r.role),
+          ),
+        error: (e) =>
+          this.error.set(
+            e instanceof HttpErrorResponse
+              ? (e.error?.message ?? e.error?.error ?? 'Login failed.')
+              : 'Login failed.',
+          ),
+      });
+  }
+}

@@ -8,9 +8,47 @@ import { SectionHeading } from '../../../../shared/components/section-heading/se
 import { SearchResponse } from '../../models/search.models';
 import { SearchService } from '../../services/search.service';
 
-@Component({ selector:'app-search-page',imports:[ReactiveFormsModule,RouterLink,RestaurantCard,SectionHeading],templateUrl:'./search-page.html' })
+@Component({
+  selector: 'app-search-page',
+  imports: [ReactiveFormsModule, RouterLink, RestaurantCard, SectionHeading],
+  templateUrl: './search-page.html',
+})
 export class SearchPage {
-  private api=inject(SearchService);private route=inject(ActivatedRoute);private router=inject(Router);private destroy=inject(DestroyRef);
-  readonly query=new FormControl(this.route.snapshot.queryParamMap.get('search')??'',{nonNullable:true});readonly result=signal<SearchResponse|null>(null);readonly loading=signal(false);readonly error=signal<string|null>(null);
-  constructor(){this.query.valueChanges.pipe(map(value=>value.trim()),debounceTime(250),distinctUntilChanged(),tap(query=>void this.router.navigate([], {relativeTo:this.route,queryParams:query?{search:query}:{},replaceUrl:true})),tap(()=>{this.loading.set(true);this.error.set(null)}),switchMap(query=>this.api.search(query).pipe(finalize(()=>this.loading.set(false)))),takeUntilDestroyed(this.destroy)).subscribe({next:value=>this.result.set(value),error:()=>this.error.set('Search is unavailable right now.')});this.query.setValue(this.query.value);}
+  private api = inject(SearchService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private destroy = inject(DestroyRef);
+  readonly query = new FormControl(this.route.snapshot.queryParamMap.get('search') ?? '', {
+    nonNullable: true,
+  });
+  readonly result = signal<SearchResponse | null>(null);
+  readonly loading = signal(false);
+  readonly error = signal<string | null>(null);
+  constructor() {
+    this.query.valueChanges
+      .pipe(
+        map((value) => value.trim()),
+        debounceTime(250),
+        distinctUntilChanged(),
+        tap(
+          (query) =>
+            void this.router.navigate([], {
+              relativeTo: this.route,
+              queryParams: query ? { search: query } : {},
+              replaceUrl: true,
+            }),
+        ),
+        tap(() => {
+          this.loading.set(true);
+          this.error.set(null);
+        }),
+        switchMap((query) => this.api.search(query).pipe(finalize(() => this.loading.set(false)))),
+        takeUntilDestroyed(this.destroy),
+      )
+      .subscribe({
+        next: (value) => this.result.set(value),
+        error: () => this.error.set('Search is unavailable right now.'),
+      });
+    this.query.setValue(this.query.value);
+  }
 }

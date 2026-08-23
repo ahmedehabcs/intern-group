@@ -7,7 +7,10 @@ import { catchError, finalize, map, of, switchMap } from 'rxjs';
 import { StatusBadge } from '../../../../shared/components/status-badge/status-badge';
 import { ImageFallbackDirective } from '../../../../shared/directives/image-fallback.directive';
 import { ConfirmationDialogService } from '../../../../shared/services/confirmation-dialog.service';
-import { RestaurantDetailsResponse, RestaurantResponse } from '../../../restaurants/models/restaurant.models';
+import {
+  RestaurantDetailsResponse,
+  RestaurantResponse,
+} from '../../../restaurants/models/restaurant.models';
 import { RestaurantService } from '../../../restaurants/services/restaurant.service';
 import { CustomerOrderDetailsResponse } from '../../models/order.models';
 import { DeliveryFeedbackService } from '../../services/delivery-feedback.service';
@@ -32,53 +35,93 @@ export class OrderDetails {
   readonly processing = signal(false);
   readonly feedbackSent = signal(false);
   readonly error = signal<string | null>(null);
-  readonly rating = new FormControl(5, { nonNullable: true, validators: [Validators.required, Validators.min(1), Validators.max(5)] });
+  readonly rating = new FormControl(5, {
+    nonNullable: true,
+    validators: [Validators.required, Validators.min(1), Validators.max(5)],
+  });
 
-  constructor() { this.load(); }
+  constructor() {
+    this.load();
+  }
 
   load(): void {
     const id = Number(this.route.snapshot.paramMap.get('orderId'));
-    this.api.get(id).pipe(
-      switchMap(order => this.restaurantsApi.restaurants().pipe(map(restaurants => ({ order, restaurant: restaurants.find(item => item.name === order.restaurantName) ?? null })))),
-      switchMap(context => context.restaurant
-        ? this.restaurantsApi.restaurant(context.restaurant.id).pipe(
-            map(details => ({ ...context, details })),
-            catchError(() => of({ ...context, details: null })),
-          )
-        : of({ ...context, details: null })),
-      finalize(() => this.loading.set(false)),
-      takeUntilDestroyed(this.destroy),
-    ).subscribe({
-      next: context => {
-        this.order.set(context.order);
-        this.restaurant.set(context.restaurant);
-        this.restaurantDetails.set(context.details);
-      },
-      error: () => this.error.set('Unable to load this order.'),
-    });
+    this.api
+      .get(id)
+      .pipe(
+        switchMap((order) =>
+          this.restaurantsApi
+            .restaurants()
+            .pipe(
+              map((restaurants) => ({
+                order,
+                restaurant: restaurants.find((item) => item.name === order.restaurantName) ?? null,
+              })),
+            ),
+        ),
+        switchMap((context) =>
+          context.restaurant
+            ? this.restaurantsApi.restaurant(context.restaurant.id).pipe(
+                map((details) => ({ ...context, details })),
+                catchError(() => of({ ...context, details: null })),
+              )
+            : of({ ...context, details: null }),
+        ),
+        finalize(() => this.loading.set(false)),
+        takeUntilDestroyed(this.destroy),
+      )
+      .subscribe({
+        next: (context) => {
+          this.order.set(context.order);
+          this.restaurant.set(context.restaurant);
+          this.restaurantDetails.set(context.details);
+        },
+        error: () => this.error.set('Unable to load this order.'),
+      });
   }
 
   itemImage(productName: string): string {
-    return this.restaurantDetails()?.menuSections
-      .flatMap(section => section.menuItems)
-      .find(item => item.name === productName)?.imageUrl || '/assets/images/talabaty-food-table.png';
+    return (
+      this.restaurantDetails()
+        ?.menuSections.flatMap((section) => section.menuItems)
+        .find((item) => item.name === productName)?.imageUrl ||
+      '/assets/images/talabaty-food-table.png'
+    );
   }
 
   async cancel(): Promise<void> {
     const order = this.order();
-    if (!order || !await this.confirmation.confirm('Cancel this order?', 'Cancel order', 'Cancel order')) return;
+    if (
+      !order ||
+      !(await this.confirmation.confirm('Cancel this order?', 'Cancel order', 'Cancel order'))
+    )
+      return;
     this.processing.set(true);
-    this.api.cancel(order.id)
-      .pipe(finalize(() => this.processing.set(false)), takeUntilDestroyed(this.destroy))
-      .subscribe({ next: value => this.order.set(value), error: () => this.error.set('The order could not be cancelled.') });
+    this.api
+      .cancel(order.id)
+      .pipe(
+        finalize(() => this.processing.set(false)),
+        takeUntilDestroyed(this.destroy),
+      )
+      .subscribe({
+        next: (value) => this.order.set(value),
+        error: () => this.error.set('The order could not be cancelled.'),
+      });
   }
 
   sendFeedback(): void {
     const order = this.order();
     if (!order || this.rating.invalid) return;
     this.processing.set(true);
-    this.feedbackApi.create(order.id, this.rating.value)
-      .pipe(finalize(() => this.processing.set(false)), takeUntilDestroyed(this.destroy))
-      .subscribe({ next: () => this.feedbackSent.set(true), error: () => this.error.set('Feedback could not be submitted.') });
+    this.feedbackApi
+      .create(order.id, this.rating.value)
+      .pipe(
+        finalize(() => this.processing.set(false)),
+        takeUntilDestroyed(this.destroy),
+      )
+      .subscribe({
+        next: () => this.feedbackSent.set(true),
+        error: () => this.error.set('Feedback could not be submitted.'),
+      });
   }
 }

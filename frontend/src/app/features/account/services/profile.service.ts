@@ -10,7 +10,9 @@ export class ProfileService {
   private mock = inject(MockDataStore);
   private api = `${environment.apiUrl}/api/profile`;
   get(): Observable<CustomerProfileResponse> {
-    return environment.mock.enabled ? this.mock.profile() : this.http.get<CustomerProfileResponse>(this.api);
+    return environment.mock.enabled
+      ? this.mock.profile()
+      : this.http.get<CustomerProfileResponse>(this.api);
   }
   update(b: CustomerProfileUpdateRequest): Observable<void> {
     return environment.mock.enabled ? this.mock.updateProfile(b) : this.http.put<void>(this.api, b);

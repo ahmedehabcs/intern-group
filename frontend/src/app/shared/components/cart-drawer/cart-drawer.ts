@@ -21,11 +21,23 @@ export class CartDrawer {
   updateQuantity(id: number, quantity: number): void {
     if (quantity < 1) return;
     this.processingId.set(id);
-    this.cart.quantity(id, quantity).pipe(finalize(() => this.processingId.set(null)), takeUntilDestroyed(this.destroyRef)).subscribe({ error: () => this.error.set('Could not update this item.') });
+    this.cart
+      .quantity(id, quantity)
+      .pipe(
+        finalize(() => this.processingId.set(null)),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe({ error: () => this.error.set('Could not update this item.') });
   }
 
   remove(id: number): void {
     this.processingId.set(id);
-    this.cart.remove(id).pipe(finalize(() => this.processingId.set(null)), takeUntilDestroyed(this.destroyRef)).subscribe({ error: () => this.error.set('Could not remove this item.') });
+    this.cart
+      .remove(id)
+      .pipe(
+        finalize(() => this.processingId.set(null)),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe({ error: () => this.error.set('Could not remove this item.') });
   }
 }
