@@ -4,13 +4,31 @@ ALTER TABLE reviews
 ALTER TABLE reviews
 ALTER COLUMN comment TYPE VARCHAR(500);
 
-ALTER TABLE reviews
-    ADD CONSTRAINT IF NOT EXISTS chk_reviews_rating
-        CHECK (rating BETWEEN 1 AND 5);
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.constraint_column_usage 
+        WHERE table_name = 'reviews' AND constraint_name = 'chk_reviews_rating'
+    ) THEN
+        ALTER TABLE reviews
+            ADD CONSTRAINT chk_reviews_rating
+                CHECK (rating BETWEEN 1 AND 5);
+    END IF;
+END
+$$;
 
-ALTER TABLE reviews
-    ADD CONSTRAINT IF NOT EXISTS uq_reviews_order_id
-        UNIQUE (order_id);
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.constraint_column_usage 
+        WHERE table_name = 'reviews' AND constraint_name = 'uq_reviews_order_id'
+    ) THEN
+        ALTER TABLE reviews
+            ADD CONSTRAINT uq_reviews_order_id
+                UNIQUE (order_id);
+    END IF;
+END
+$$;
 
 CREATE INDEX IF NOT EXISTS idx_reviews_restaurant_id
     ON reviews(restaurant_id);
