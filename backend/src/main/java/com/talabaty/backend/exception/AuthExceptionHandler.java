@@ -1,6 +1,8 @@
 package com.talabaty.backend.exception;
 
 import com.talabaty.backend.controller.AuthController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
@@ -13,12 +15,16 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+
 // Scoped to AuthController by type: the old "com.talabaty.backend.auth" package scope
 // no longer exists now that controllers live in com.talabaty.backend.controller.
 // Keeping it type-scoped preserves the previous behaviour — these auth-worded messages
 // must not leak onto other controllers as they are added.
 @RestControllerAdvice(assignableTypes = AuthController.class)
 public class AuthExceptionHandler {
+
+    private static final Logger logger = LoggerFactory.getLogger(AuthExceptionHandler.class);
+
 // handlers
     @ExceptionHandler(OtpException.class)
     public ResponseEntity<ProblemDetail> handleOtpException(OtpException exception) {
@@ -65,6 +71,9 @@ public class AuthExceptionHandler {
     public ResponseEntity<ProblemDetail> handleUnexpectedException(
             Exception exception
     ) {
+        // Log the full exception with stack trace so we can see the real cause
+        logger.error("Unexpected exception in AuthController: {}", exception.getMessage(), exception);
+
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
                 HttpStatus.INTERNAL_SERVER_ERROR,
                 "An unexpected authentication error occurred"
