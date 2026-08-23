@@ -9,4 +9,5 @@ export const environment = {
   // absolute URL here would bake one server's address into the bundle at build
   // time and reintroduce cross-origin requests.
   apiUrl: '',
+  mock: { enabled: false, delayMs: 0, forceError: false },
 } as const;

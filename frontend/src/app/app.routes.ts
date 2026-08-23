@@ -28,6 +28,10 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'menu-items/:menuItemId',
+        loadComponent: () => import('./features/restaurants/pages/menu-item-details/menu-item-details').then(m => m.MenuItemDetails),
+      },
+      {
         path: 'search',
         loadChildren: () =>
           import('./features/search/search.routes').then(({ SEARCH_ROUTES }) => SEARCH_ROUTES),
@@ -73,6 +77,10 @@ export const routes: Routes = [
       import('./features/admin/admin.routes').then(({ ADMIN_ROUTES }) => ADMIN_ROUTES),
   },
   {
+    path: 'driver',
+    loadChildren: () => import('./features/driver/driver.routes').then(m => m.DRIVER_ROUTES),
+  },
+  {
     path: 'restaurant-portal',
     loadComponent: () =>
       import('./layouts/restaurant-layout/restaurant-layout').then(
@@ -82,6 +90,11 @@ export const routes: Routes = [
       import('./features/restaurant-portal/restaurant-portal.routes').then(
         ({ RESTAURANT_PORTAL_ROUTES }) => RESTAURANT_PORTAL_ROUTES,
       ),
+  },
+  {
+    path: 'kitchen',
+    loadComponent: () => import('./layouts/restaurant-layout/restaurant-layout').then(({ RestaurantLayout }) => RestaurantLayout),
+    loadChildren: () => import('./features/restaurant-portal/restaurant-portal.routes').then(m => m.RESTAURANT_PORTAL_ROUTES),
   },
   {
     path: '**',

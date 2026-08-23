@@ -1,6 +1,16 @@
-<app-admin-navbar />
-<app-admin-sidebar />
-<app-admin-breadcrumbs />
-<main>
-  <router-outlet />
-</main>
+<div class="min-h-screen bg-slate-100 text-slate-900">
+  <aside class="fixed inset-y-0 left-0 z-50 w-72 border-r border-slate-800 bg-slate-950 text-slate-200 transition-transform lg:translate-x-0" [class.-translate-x-full]="!menuOpen()" [class.translate-x-0]="menuOpen()">
+    <div class="flex h-20 items-center justify-between border-b border-slate-800 px-5"><a routerLink="/admin" class="flex items-center gap-3" (click)="closeMenu()"><span class="grid h-10 w-10 place-items-center rounded-xl bg-orange-600 text-lg font-medium text-white">T</span><span><span class="block text-base font-medium text-white">Talabaty</span><small class="text-xs text-slate-400">Administration</small></span></a><button type="button" class="grid h-9 w-9 place-items-center rounded-lg text-slate-400 lg:hidden" (click)="closeMenu()" aria-label="Close navigation">×</button></div>
+    <nav class="space-y-1 p-4" aria-label="Admin navigation">
+      @for(link of [{p:'categories',l:'Categories',i:'grid'},{p:'customers',l:'Customers',i:'users'},{p:'orders',l:'Orders',i:'orders'},{p:'restaurants',l:'Restaurants',i:'store'},{p:'riders',l:'Riders',i:'rider'},{p:'pending',l:'Pending riders',i:'pending'},{p:'feedback',l:'Delivery feedback',i:'star'}];track link.p){
+        <a [routerLink]="['/admin',link.p]" routerLinkActive="bg-orange-600 text-white" class="flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium text-slate-300 transition hover:bg-slate-800 hover:text-white" (click)="closeMenu()"><span class="grid h-8 w-8 place-items-center rounded-lg bg-white/5"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">@switch(link.i){@case('users'){<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8m13 18v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>}@case('orders'){<path d="M6 3h12v18l-3-2-3 2-3-2-3 2V3Zm3 5h6m-6 4h6"/>}@case('store'){<path d="M3 10h18M5 10v10h14V10M4 4h16l1 6H3l1-6Zm5 10h6"/>}@case('rider'){<circle cx="7" cy="17" r="3"/><circle cx="17" cy="17" r="3"/><path d="M10 17h4l2-8h-5l-2 4H5m7-7h3"/>}@case('pending'){<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>}@case('star'){<path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-2.9-5.6 2.9 1.1-6.2L3 9.6l6.2-.9L12 3Z"/>}@default{<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>}}</svg></span>{{link.l}}</a>
+      }
+    </nav>
+    <div class="absolute inset-x-4 bottom-4 border-t border-slate-800 pt-4"><a routerLink="/" class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-slate-400 hover:bg-slate-800 hover:text-white"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>Back to storefront</a></div>
+  </aside>
+  @if(menuOpen()){<button type="button" class="fixed inset-0 z-40 bg-slate-950/50 lg:hidden" (click)="closeMenu()" aria-label="Close navigation overlay"></button>}
+  <div class="lg:pl-72">
+    <header class="sticky top-0 z-30 flex h-20 items-center gap-4 border-b border-slate-200 bg-white/95 px-4 backdrop-blur sm:px-6 lg:px-8"><button type="button" class="grid h-10 w-10 place-items-center rounded-lg border border-slate-200 lg:hidden" (click)="menuOpen.set(true)" aria-label="Open navigation"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><div><p class="text-xs uppercase tracking-[.16em] text-orange-600">Operations center</p><h1 class="text-lg font-medium text-slate-900">Admin dashboard</h1></div><div class="ml-auto flex items-center gap-3"><span class="hidden rounded-lg bg-slate-100 px-3 py-2 text-xs text-slate-500 sm:block">Administrator</span><button type="button" class="rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-600" (click)="logout()">Sign out</button></div></header>
+    <main class="min-h-[calc(100vh-5rem)]"><router-outlet /></main>
+  </div>
+</div>

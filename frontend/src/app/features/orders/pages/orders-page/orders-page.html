@@ -1,0 +1,21 @@
+<main class="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
+  <header class="flex flex-wrap items-end justify-between gap-3 border-b border-slate-200 pb-5"><div><p class="text-xs uppercase tracking-[.16em] text-orange-600">My account</p><h1 class="mt-1 text-2xl font-medium text-slate-900">Order history</h1><p class="mt-1 text-sm text-slate-500">Track current deliveries and review previous orders.</p></div><a routerLink="/" class="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-600"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m3 11 9-8 9 8v9a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg>Home</a></header>
+  @if(loading()) {
+    <div class="mt-6 space-y-3">@for(item of [1,2,3];track item){<div class="h-28 animate-pulse rounded-xl bg-slate-100"></div>}</div>
+  } @else if(error()) {
+    <p class="mt-6 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">{{error()}}</p>
+  } @else if(data(); as pageData) {
+    <div class="mt-6 space-y-3">
+      @for(order of pageData.orders; track order.id) {
+        <a [routerLink]="[order.id]" class="group grid grid-cols-[64px_minmax(0,1fr)_auto] items-center gap-4 rounded-xl border border-slate-200 bg-white p-4 transition hover:border-orange-300 hover:shadow-sm">
+          <img appImageFallback class="h-16 w-16 rounded-lg object-cover" [src]="restaurant(order.restaurantName)?.logoUrl || '/assets/images/talabaty-food-table.png'" [alt]="order.restaurantName">
+          <div class="min-w-0"><div class="flex flex-wrap items-center gap-2"><h2 class="truncate text-base font-medium text-slate-900">{{order.restaurantName}}</h2><app-status-badge [status]="order.status"/></div><p class="mt-1 text-xs text-slate-500">Order #{{order.id}} · {{order.createdAt | date:'medium'}}</p><p class="mt-1 text-sm text-slate-600">{{order.itemCount}} {{order.itemCount === 1 ? 'item' : 'items'}}@if(restaurant(order.restaurantName)?.categories?.length){ · {{restaurant(order.restaurantName)?.categories?.join(', ')}}}</p></div>
+          <div class="flex items-center gap-3"><span class="hidden text-sm font-medium text-slate-900 sm:block">EGP {{order.totalPrice}}</span><span class="grid h-9 w-9 place-items-center rounded-lg bg-orange-50 text-orange-600"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></span></div>
+        </a>
+      } @empty {
+        <div class="rounded-xl border border-dashed border-slate-300 bg-white p-10 text-center"><span class="mx-auto grid h-12 w-12 place-items-center rounded-full bg-orange-50 text-orange-600"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2V3Zm3 5h6m-6 4h6"/></svg></span><p class="mt-3 text-sm text-slate-600">You have no orders yet.</p></div>
+      }
+    </div>
+    <nav class="mt-6 flex items-center justify-between border-t border-slate-200 pt-5"><button type="button" [disabled]="pageData.first" (click)="load(page()-1)" class="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm disabled:opacity-40"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m15 18-6-6 6-6"/></svg>Previous</button><span class="text-xs text-slate-500">Page {{pageData.page+1}} of {{pageData.totalPages||1}}</span><button type="button" [disabled]="pageData.last" (click)="load(page()+1)" class="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm disabled:opacity-40">Next<svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m9 18 6-6-6-6"/></svg></button></nav>
+  }
+</main>

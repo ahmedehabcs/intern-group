@@ -1,66 +1,60 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
-import { OTPRequestModel } from '../../models/otp.model';
 import { HttpErrorResponse } from '@angular/common/http';
-import { firstValueFrom } from 'rxjs';
-
+import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { finalize } from 'rxjs';
+import { AuthService } from '../../services/auth.service';
 @Component({
   selector: 'app-otp-verification',
-  imports: [CommonModule, FormsModule],
+  imports: [ReactiveFormsModule],
   templateUrl: './otp-verification.html',
-  styleUrl: './otp-verification.css',
 })
-export class OtpVerification implements OnInit {
-  email: string = '';
-  otp: string = '';
-  isSubmitting: boolean = false;
-  requestError: string | null = null;
-
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private authService: AuthService
-  ) {}
-
-  ngOnInit(): void {
-    this.route.queryParams.subscribe(params => {
-      this.email = params['email'] || '';
-    });
+export class OtpVerification {
+  private api = inject(AuthService);
+  private router = inject(Router);
+  private destroy = inject(DestroyRef);
+  readonly email = this.router.url
+    ? (inject(ActivatedRoute).snapshot.queryParamMap.get('email') ?? '')
+    : '';
+  readonly submitting = signal(false);
+  readonly resending = signal(false);
+  readonly message = signal<string | null>(null);
+  readonly error = signal<string | null>(null);
+  readonly form = new FormGroup({
+    otp: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
+  });
+  submit(): void {
+    if (this.form.invalid || !this.email) return;
+    this.submitting.set(true);
+    this.api
+      .verifyOtp({ email: this.email, otp: this.form.controls.otp.value.trim() })
+      .pipe(
+        finalize(() => this.submitting.set(false)),
+        takeUntilDestroyed(this.destroy),
+      )
+      .subscribe({
+        next: () => void this.router.navigate(['/auth/login']),
+        error: (e) =>
+          this.error.set(
+            e instanceof HttpErrorResponse
+              ? (e.error?.message ?? 'Verification failed.')
+              : 'Verification failed.',
+          ),
+      });
   }
-
-  async onSubmit(event: Event): Promise<void> {
-    event.preventDefault();
-    this.requestError = null;
-
-    if (!this.otp || this.otp.trim().length === 0) {
-      this.requestError = 'Please enter the verification code.';
-      return;
-    }
-
-    this.isSubmitting = true;
-
-    const request: OTPRequestModel = {
-      email: this.email,
-      otp: this.otp
-    };
-
-    try {
-      const response = await firstValueFrom(
-        this.authService.verifyOtp(request)
-      );
-      console.log('OTP verification response:', response);
-      this.router.navigate(['/auth/login']);
-    } catch (error: unknown) {
-      if (error instanceof HttpErrorResponse) {
-        this.requestError = error.error?.message ?? 'OTP verification failed.';
-      } else {
-        this.requestError = 'OTP verification failed.';
-      }
-    } finally {
-      this.isSubmitting = false;
-    }
+  resend(): void {
+    if (!this.email) return;
+    this.resending.set(true);
+    this.api
+      .resendOtp(this.email)
+      .pipe(
+        finalize(() => this.resending.set(false)),
+        takeUntilDestroyed(this.destroy),
+      )
+      .subscribe({
+        next: (r) => this.message.set(r || 'A new code was sent.'),
+        error: () => this.error.set('Unable to resend the code.'),
+      });
   }
 }
