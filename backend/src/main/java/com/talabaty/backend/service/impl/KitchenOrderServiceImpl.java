@@ -1,6 +1,7 @@
 package com.talabaty.backend.service.impl;
 
 import com.talabaty.backend.dto.response.KitchenOrderDetailsResponse;
+import com.talabaty.backend.dto.response.KitchenOrderPageResponse;
 import com.talabaty.backend.dto.response.KitchenOrderSummaryResponse;
 import com.talabaty.backend.mapper.OrderMapper;
 import com.talabaty.backend.model.KitchenManager;
@@ -12,10 +13,15 @@ import com.talabaty.backend.repository.KitchenOrderCancellationRepository;
 import com.talabaty.backend.repository.OrderRepository;
 import com.talabaty.backend.service.KitchenOrderService;
 import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -57,6 +63,52 @@ public class KitchenOrderServiceImpl implements KitchenOrderService {
                 );
 
         return orderMapper.toKitchenOrderSummaryResponseList(orders);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public KitchenOrderPageResponse getOrderHistory(
+            Long userId,
+            OrderStatus status,
+            LocalDate from,
+            LocalDate to,
+            int page,
+            int size,
+            String direction
+    ) {
+        validateDateRange(from, to);
+
+        Long restaurantId = getManagerRestaurantId(userId);
+        LocalDateTime start = from == null
+                ? LocalDateTime.of(1970, 1, 1, 0, 0)
+                : from.atStartOfDay();
+        LocalDateTime end = to == null
+                ? LocalDateTime.of(9999, 12, 31, 23, 59, 59)
+                : to.plusDays(1).atStartOfDay();
+
+        Sort.Direction sortDirection = parseSortDirection(direction);
+        PageRequest pageRequest = PageRequest.of(
+                page,
+                size,
+                Sort.by(sortDirection, "createdAt")
+        );
+
+        Page<Order> orders = status == null
+                ? orderRepository.findByRestaurantIdAndCreatedAtBetween(
+                        restaurantId,
+                        start,
+                        end,
+                        pageRequest
+                )
+                : orderRepository.findByRestaurantIdAndStatusAndCreatedAtBetween(
+                        restaurantId,
+                        status,
+                        start,
+                        end,
+                        pageRequest
+                );
+
+        return orderMapper.toKitchenOrderPageResponse(orders);
     }
 
     @Override
@@ -182,6 +234,30 @@ public class KitchenOrderServiceImpl implements KitchenOrderService {
                     "Cannot change order status from " + currentStatus + " to " + newStatus
             );
         }
+    }
+
+    private void validateDateRange(LocalDate from, LocalDate to) {
+        if (from != null && to != null && from.isAfter(to)) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "From date must not be after to date"
+            );
+        }
+    }
+
+    private Sort.Direction parseSortDirection(String direction) {
+        if (direction == null || direction.equalsIgnoreCase("desc")) {
+            return Sort.Direction.DESC;
+        }
+
+        if (direction.equalsIgnoreCase("asc")) {
+            return Sort.Direction.ASC;
+        }
+
+        throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST,
+                "Sort direction must be asc or desc"
+        );
     }
 
 }
