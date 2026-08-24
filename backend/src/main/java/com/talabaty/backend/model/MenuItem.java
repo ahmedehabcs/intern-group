@@ -22,6 +22,12 @@ public class MenuItem {
     @Column(nullable = false)
     private Double basePrice;
 
+
+    @Column(name = "is_deleted", nullable = false, columnDefinition = "boolean default false")
+    private Boolean isDeleted = false;
+
+
+
     private String imageUrl;
 
     @Column(nullable = false, columnDefinition = "boolean default true")
@@ -116,6 +122,13 @@ public class MenuItem {
         this.addonGroups = addonGroups;
     }
 
+    public Boolean getDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        isDeleted = deleted;
+    }
     @Override
     public String toString() {
         return "MenuItem{" +

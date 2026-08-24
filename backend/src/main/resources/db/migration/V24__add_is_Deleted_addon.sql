@@ -1,0 +1,5 @@
+ALTER TABLE addon_groups
+    ADD COLUMN is_deleted BOOLEAN NOT NULL DEFAULT FALSE;
+
+ALTER TABLE menu_item_addons
+    ADD COLUMN is_deleted BOOLEAN NOT NULL DEFAULT FALSE;

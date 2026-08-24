@@ -22,6 +22,9 @@ public class AddonGroup {
     @Column(nullable = false)
     private Integer maxSelections;
 
+    @Column(name = "is_deleted", nullable = false, columnDefinition = "boolean default false")
+    private Boolean isDeleted = false;
+
     @OneToMany(mappedBy = "addonGroup", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MenuItemAddon> addons = new ArrayList<>();
 
@@ -71,6 +74,14 @@ public class AddonGroup {
         this.maxSelections = maxSelections;
     }
 
+    public Boolean getDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        isDeleted = deleted;
+    }
+
     public List<MenuItemAddon> getAddons() {
         return addons;
     }
@@ -94,6 +105,7 @@ public class AddonGroup {
                 ", name='" + name + '\'' +
                 ", minSelections=" + minSelections +
                 ", maxSelections=" + maxSelections +
+                ", isDeleted=" + isDeleted +
                 ", addons=" + addons +
                 ", menuItems=" + menuItems +
                 '}';

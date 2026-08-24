@@ -1,9 +1,13 @@
 package com.talabaty.backend.service.impl;
 
+import com.talabaty.backend.dto.request.ChangeEmailRequest;
+import com.talabaty.backend.dto.request.ChangePasswordWithOtpRequest;
 import com.talabaty.backend.dto.request.CustomerSignupRequest;
 import com.talabaty.backend.dto.request.DriverSignupRequest;
-import com.talabaty.backend.service.LoginRateLimitService;
 import com.talabaty.backend.dto.request.LoginRequest;
+import com.talabaty.backend.dto.request.VerifyEmailChangeRequest;
+import com.talabaty.backend.dto.request.VerifyPasswordChangeRequest;
+import com.talabaty.backend.service.LoginRateLimitService;
 import com.talabaty.backend.dto.response.LoginResponse;
 import com.talabaty.backend.dto.response.RegisterResponse;
 import com.talabaty.backend.service.AuthService;
@@ -123,7 +127,13 @@ public class AuthServiceImpl implements AuthService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
+        if (user.getOtpAttemptCount() >= MAX_OTP_ATTEMPTS) {
+            throw new ResponseStatusException(HttpStatus.TOO_MANY_REQUESTS, "Too many failed attempts. Please request a new OTP.");
+        }
+
         if (user.getOtp() == null || !user.getOtp().equals(otp)) {
+            user.setOtpAttemptCount(user.getOtpAttemptCount() + 1);
+            userRepository.save(user);
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid OTP");
         }
 
@@ -138,6 +148,7 @@ public class AuthServiceImpl implements AuthService {
         user.setEmailVerified(true);
         user.setOtp(null);
         user.setOtpExpiration(null);
+        user.setOtpAttemptCount(0); // Clear on success
         userRepository.save(user);
     }
 
@@ -151,6 +162,7 @@ public class AuthServiceImpl implements AuthService {
         }
 
         generateAndSetOtp(user);
+        user.setOtpAttemptCount(0); // Reset attempt count on new OTP
         userRepository.save(user);
         emailService.sendOtpEmail(user.getEmail(), user.getOtp());
     }
@@ -163,6 +175,7 @@ public class AuthServiceImpl implements AuthService {
         String otp = generateNumericOtp();
         user.setPasswordResetToken(otp);
         user.setPasswordResetTokenExpiration(LocalDateTime.now().plusMinutes(15));
+        user.setPasswordResetAttemptCount(0); // Reset attempt count on new OTP
         userRepository.save(user);
 
         emailService.sendPasswordResetEmail(user.getEmail(), otp);
@@ -173,7 +186,14 @@ public class AuthServiceImpl implements AuthService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
+        // Check attempt count before validating OTP
+        if (user.getPasswordResetAttemptCount() >= MAX_OTP_ATTEMPTS) {
+            throw new ResponseStatusException(HttpStatus.TOO_MANY_REQUESTS, "Too many failed attempts. Please request a new OTP.");
+        }
+
         if (user.getPasswordResetToken() == null || !user.getPasswordResetToken().equals(otp)) {
+            user.setPasswordResetAttemptCount(user.getPasswordResetAttemptCount() + 1);
+            userRepository.save(user);
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid OTP");
         }
 
@@ -184,6 +204,7 @@ public class AuthServiceImpl implements AuthService {
         user.setPassword(passwordEncoder.encode(newPassword));
         user.setPasswordResetToken(null);
         user.setPasswordResetTokenExpiration(null);
+        user.setPasswordResetAttemptCount(0); // Clear on success
         userRepository.save(user);
     }
 
@@ -256,5 +277,124 @@ public class AuthServiceImpl implements AuthService {
                 "Bearer",
                 accessToken
         );
+    }
+
+    private static final int MAX_OTP_ATTEMPTS = 5;
+
+    @Override
+    @Transactional
+    public void requestEmailChange(Long userId, ChangeEmailRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Current password is incorrect");
+        }
+
+        if (userRepository.findByEmail(request.getNewEmail()).isPresent()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email already in use");
+        }
+
+        // Generate OTP for the NEW email
+        String otp = generateNumericOtp();
+        user.setEmailChangeToken(otp);
+        user.setEmailChangeTokenExpiration(LocalDateTime.now().plusMinutes(15));
+        user.setPendingEmail(request.getNewEmail());
+        user.setEmailChangeAttemptCount(0); // Reset attempt count on new OTP
+        userRepository.save(user);
+
+        // Send OTP to the NEW email
+        emailService.sendOtpEmail(request.getNewEmail(), otp);
+    }
+
+    @Override
+    @Transactional
+    public void verifyEmailChange(VerifyEmailChangeRequest request) {
+        // Find user by PENDING email (the new email they want to change to)
+        User user = userRepository.findByPendingEmail(request.getEmail())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No pending email change for this email"));
+
+        // Check attempt count before validating OTP
+        if (user.getEmailChangeAttemptCount() >= MAX_OTP_ATTEMPTS) {
+            throw new ResponseStatusException(HttpStatus.TOO_MANY_REQUESTS, "Too many failed attempts. Please request a new OTP.");
+        }
+
+        if (user.getEmailChangeToken() == null || !user.getEmailChangeToken().equals(request.getOtp())) {
+            // Increment attempt count on failed verification
+            user.setEmailChangeAttemptCount(user.getEmailChangeAttemptCount() + 1);
+            userRepository.save(user);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid OTP");
+        }
+
+        if (user.getEmailChangeTokenExpiration() == null ||
+                user.getEmailChangeTokenExpiration().isBefore(LocalDateTime.now())) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "This OTP has expired. Please request a new one."
+            );
+        }
+
+        // Update email - success, clear all tokens and attempt count
+        user.setEmail(user.getPendingEmail());
+        user.setEmailVerified(true);
+        user.setPendingEmail(null);
+        user.setEmailChangeToken(null);
+        user.setEmailChangeTokenExpiration(null);
+        user.setEmailChangeAttemptCount(0);
+        userRepository.save(user);
+    }
+
+    @Override
+    @Transactional
+    public void requestPasswordChange(Long userId, ChangePasswordWithOtpRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Current password is incorrect");
+        }
+
+        // Generate OTP for password change - use DEDICATED fields separate from forgot-password
+        String otp = generateNumericOtp();
+        user.setPasswordChangeToken(otp);
+        user.setPasswordChangeTokenExpiration(LocalDateTime.now().plusMinutes(15));
+        user.setPasswordChangeAttemptCount(0); // Reset attempt count on new OTP
+        userRepository.save(user);
+
+        emailService.sendPasswordResetEmail(user.getEmail(), otp);
+    }
+
+    @Override
+    @Transactional
+    public void verifyPasswordChange(VerifyPasswordChangeRequest request) {
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        // Check attempt count before validating OTP
+        if (user.getPasswordChangeAttemptCount() >= MAX_OTP_ATTEMPTS) {
+            throw new ResponseStatusException(HttpStatus.TOO_MANY_REQUESTS, "Too many failed attempts. Please request a new OTP.");
+        }
+
+        // Use DEDICATED password change fields (separate from forgot-password)
+        if (user.getPasswordChangeToken() == null || !user.getPasswordChangeToken().equals(request.getOtp())) {
+            // Increment attempt count on failed verification
+            user.setPasswordChangeAttemptCount(user.getPasswordChangeAttemptCount() + 1);
+            userRepository.save(user);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid OTP");
+        }
+
+        if (user.getPasswordChangeTokenExpiration() == null ||
+                user.getPasswordChangeTokenExpiration().isBefore(LocalDateTime.now())) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "This password change OTP has expired. Please request a new one."
+            );
+        }
+
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        user.setPasswordChangeToken(null);
+        user.setPasswordChangeTokenExpiration(null);
+        user.setPasswordChangeAttemptCount(0);
+        userRepository.save(user);
     }
 }

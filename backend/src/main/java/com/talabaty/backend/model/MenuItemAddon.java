@@ -19,6 +19,9 @@ public class MenuItemAddon {
     @Column(nullable = false, columnDefinition = "boolean default true")
     private Boolean isAvailable = true;
 
+    @Column(name = "is_deleted", nullable = false, columnDefinition = "boolean default false")
+    private Boolean isDeleted = false;
+
     // علاقة الإضافة بالمجموعة بتاعتها
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "addon_group_id", nullable = false)
@@ -66,6 +69,14 @@ public class MenuItemAddon {
         isAvailable = available;
     }
 
+    public Boolean getDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        isDeleted = deleted;
+    }
+
     public AddonGroup getAddonGroup() {
         return addonGroup;
     }
@@ -81,6 +92,7 @@ public class MenuItemAddon {
                 ", name='" + name + '\'' +
                 ", additionalPrice=" + additionalPrice +
                 ", isAvailable=" + isAvailable +
+                ", isDeleted=" + isDeleted +
                 ", addonGroup=" + addonGroup +
                 '}';
     }
