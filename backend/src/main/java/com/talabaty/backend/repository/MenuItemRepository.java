@@ -11,6 +11,13 @@ import java.util.Optional;
 @Repository
 public interface MenuItemRepository extends JpaRepository<MenuItem, Long> {
 
+    // in MenuItemRepository — add isDeleted checks to existing finder methods
+    List<MenuItem> findByMenuSectionRestaurantIdAndIsDeletedFalse(Long restaurantId);
+
+
+
+    @EntityGraph(attributePaths = "menuSection")
+    Optional<MenuItem> findByIdAndMenuSectionRestaurantIdAndIsDeletedFalse(Long id, Long restaurantId);
     List<MenuItem> findByMenuSectionIdAndIsAvailableTrueOrderByNameAsc(
             Long menuSectionId
     );

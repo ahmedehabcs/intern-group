@@ -4,6 +4,8 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,6 +21,8 @@ import java.io.IOException;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
+    private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
@@ -52,26 +56,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
 
         final String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+        logger.debug("Processing request: {} with Authorization header: {}", 
+            request.getServletPath(), 
+            authorizationHeader != null ? "present" : "missing");
 
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            logger.debug("No valid Bearer token found for {}", request.getServletPath());
             filterChain.doFilter(request, response);
             return;
         }
 
-//        final String token = authorizationHeader.substring(7);
-//        final String userEmail;
-//
-//        try {
-//            Jwt jwt = jwtService.validateAccessToken(token);
-//            userEmail = jwt.getSubject();
-//        } catch (JwtException e) {
-//            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-//            response.getWriter().write("Invalid or expired token");
-//            return;
-//        }
-//
-//        if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-//            UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
         final String token = authorizationHeader.substring(7);
         final Long userId;
 
@@ -79,24 +73,31 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             Jwt jwt = jwtService.validateAccessToken(token);
             Number userIdClaim = jwt.getClaim("userId");
             userId = userIdClaim != null ? userIdClaim.longValue() : null;
+            logger.debug("JWT validated successfully. userId: {}", userId);
         } catch (JwtException e) {
+            logger.error("JWT validation failed: {}", e.getMessage());
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().write("Invalid or expired token");
             return;
         }
 
         if (userId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails =
-                    this.userDetailsService.loadUserByUsername(userId.toString());
-
-
-            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                    userDetails,
-                    null,
-                    userDetails.getAuthorities()
-            );
-            authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            SecurityContextHolder.getContext().setAuthentication(authToken);
+            try {
+               UserDetails userDetails = this.userDetailsService.loadUserByUsername(userId.toString());
+               UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                       userDetails,
+                       null,
+                       userDetails.getAuthorities()
+               );
+               authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+               SecurityContextHolder.getContext().setAuthentication(authToken);
+               logger.debug("Authentication set for user: {}", userId);
+            } catch (Exception e) {
+               logger.error("Failed to load user details for userId {}: {}", userId, e.getMessage());
+               response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+               response.getWriter().write("User not found");
+               return;
+            }
         }
 
         filterChain.doFilter(request, response);

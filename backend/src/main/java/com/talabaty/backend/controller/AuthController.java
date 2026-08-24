@@ -6,6 +6,7 @@ import com.talabaty.backend.dto.request.VerifyPasswordChangeRequest;
 import com.talabaty.backend.dto.response.LoginResponse;
 import com.talabaty.backend.dto.response.RegisterResponse;
 import com.talabaty.backend.service.AuthService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -24,6 +25,7 @@ import jakarta.servlet.http.HttpServletRequest;
 )
 @RestController
 @RequestMapping("/api/auth")
+@SecurityRequirement(name = "bearerAuth")
 public class AuthController {
 
     private final AuthService authService;

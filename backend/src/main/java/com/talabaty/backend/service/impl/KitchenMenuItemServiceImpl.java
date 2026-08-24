@@ -63,9 +63,7 @@ public class KitchenMenuItemServiceImpl implements KitchenMenuItemService {
     public List<KitchenMenuItemResponse> getMenuItems(Long userId) {
         Long restaurantId = getManagerRestaurantId(userId);
         List<MenuItem> menuItems = menuItemRepository
-                .findByMenuSectionRestaurantIdOrderByMenuSectionNameAscNameAsc(
-                        restaurantId
-                );
+                .findByMenuSectionRestaurantIdAndIsDeletedFalse(restaurantId);
 
         return menuMapper.toKitchenMenuItemResponseList(menuItems);
     }
@@ -86,7 +84,7 @@ public class KitchenMenuItemServiceImpl implements KitchenMenuItemService {
 
         Long restaurantId = getManagerRestaurantId(userId);
         MenuItem menuItem = menuItemRepository
-                .findByIdAndMenuSectionRestaurantId(menuItemId, restaurantId)
+                .findByIdAndMenuSectionRestaurantIdAndIsDeletedFalse(menuItemId, restaurantId)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
                         "Menu item not found"
@@ -143,7 +141,7 @@ public class KitchenMenuItemServiceImpl implements KitchenMenuItemService {
         Long restaurantId = getManagerRestaurantId(userId);
 
         MenuItem menuItem = menuItemRepository
-                .findByIdAndMenuSectionRestaurantId(menuItemId, restaurantId)
+                .findByIdAndMenuSectionRestaurantIdAndIsDeletedFalse(menuItemId, restaurantId)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
                         "Menu item not found"
@@ -184,6 +182,7 @@ public class KitchenMenuItemServiceImpl implements KitchenMenuItemService {
         );
     }
 
+
     @Override
     @Transactional
     public void deleteMenuItem(Long userId, Long menuItemId) {
@@ -196,7 +195,9 @@ public class KitchenMenuItemServiceImpl implements KitchenMenuItemService {
                         "Menu item not found"
                 ));
 
-        menuItemRepository.delete(menuItem);
+        menuItem.setDeleted(true);
+        menuItem.setAvailable(false); // also hide it from ordering immediately
+        menuItemRepository.save(menuItem);
     }
 
     @Override

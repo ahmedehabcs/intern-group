@@ -99,6 +99,8 @@ public class SecurityConfig {
                                 "/api/auth/resend-otp",
                                 "/api/auth/forgot-password",
                                 "/api/auth/reset-password",
+                                "/api/auth/verify-email-change",
+                                "/api/auth/verify-password-change",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
                                 "/api/menu-items/**",
