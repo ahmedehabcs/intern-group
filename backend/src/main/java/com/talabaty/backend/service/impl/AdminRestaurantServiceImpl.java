@@ -115,11 +115,11 @@ public class AdminRestaurantServiceImpl implements AdminRestaurantService {
 
     @Override
     @Transactional
-    public RestaurantAdminResponse deactivateRestaurant(Long id) {
+    public RestaurantAdminResponse setRestaurantActive(Long id, boolean active) {
         Restaurant restaurant = restaurantRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Restaurant not found"));
 
-        restaurant.setActive(false);
+        restaurant.setActive(active);
         Restaurant saved = restaurantRepository.save(restaurant);
         return toAdminResponse(saved);
     }
