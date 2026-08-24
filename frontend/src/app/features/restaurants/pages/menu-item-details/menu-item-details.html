@@ -1,0 +1,103 @@
+<main class="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+  @if (loading()) {
+    <div class="grid animate-pulse gap-7 lg:grid-cols-[minmax(300px,0.8fr)_minmax(0,1.2fr)]">
+      <div class="h-80 rounded-2xl bg-slate-200"></div>
+      <div class="space-y-4 rounded-2xl bg-white p-8">
+        <div class="h-8 rounded bg-slate-200"></div>
+        <div class="h-24 rounded bg-slate-100"></div>
+      </div>
+    </div>
+  } @else if (item(); as menuItem) {
+    <a
+      [routerLink]="['/restaurants', menuItem.restaurantId]"
+      class="mb-4 inline-flex items-center gap-2 text-sm font-medium text-orange-700"
+      ><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="m15 18-6-6 6-6" /></svg
+      >Back to restaurant</a
+    >
+    <article
+      class="grid items-start gap-0 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm lg:grid-cols-[minmax(320px,0.8fr)_minmax(0,1.2fr)]"
+    >
+      <div class="flex items-center justify-center bg-orange-50 p-4 sm:p-6 lg:sticky lg:top-28">
+        <img
+          appImageFallback
+          class="h-64 w-full rounded-xl object-cover sm:h-80 lg:h-auto lg:max-h-[440px] lg:max-w-[520px]"
+          [src]="menuItem.imageUrl || '/assets/images/talabaty-food-table.png'"
+          [alt]="menuItem.name"
+        />
+      </div>
+      <form
+        [formGroup]="form"
+        (ngSubmit)="submit()"
+        class="border-t border-slate-200 p-5 sm:p-7 lg:border-l lg:border-t-0 lg:p-9"
+      >
+        <p class="text-xs font-medium uppercase tracking-[.18em] text-orange-600">
+          Customize your meal
+        </p>
+        <h1 class="mt-2 text-3xl font-medium tracking-tight text-slate-900">{{ menuItem.name }}</h1>
+        <p class="mt-3 max-w-2xl leading-6 text-slate-600">{{ menuItem.description }}</p>
+        <p class="mt-4 text-2xl font-medium text-orange-600">EGP {{ menuItem.basePrice }}</p>
+        <div class="my-6 border-t border-slate-200"></div>
+        @for (group of menuItem.addonGroups; track group.id) {
+          <fieldset class="mb-6">
+            <div class="flex items-center justify-between gap-3">
+              <legend class="font-medium text-slate-900">{{ group.name }}</legend>
+              <span class="rounded-md bg-slate-100 px-2 py-1 text-xs text-slate-500"
+                >Choose {{ group.minSelections }}–{{ group.maxSelections }}</span
+              >
+            </div>
+            <div class="mt-3 grid gap-2 sm:grid-cols-2">
+              @for (addon of group.addons; track addon.id) {
+                <label
+                  class="flex cursor-pointer items-center justify-between rounded-lg border border-slate-200 p-3 transition hover:border-orange-300"
+                  ><span class="flex items-center gap-3"
+                    ><input
+                      type="checkbox"
+                      class="accent-orange-600"
+                      (change)="toggle(addon.id, $any($event.target).checked)"
+                    />{{ addon.name }}</span
+                  ><span class="text-sm text-slate-600"
+                    >+ EGP {{ addon.additionalPrice }}</span
+                  ></label
+                >
+              }
+            </div>
+          </fieldset>
+        }
+        <div class="flex items-center justify-between">
+          <span class="font-medium text-slate-900">Quantity</span
+          ><app-quantity-selector
+            [value]="quantity()"
+            (change)="form.controls.quantity.setValue($event)"
+          />
+        </div>
+        <label class="mt-5 block"
+          ><span class="font-medium text-slate-900">Special instructions</span
+          ><textarea
+            formControlName="specialInstructions"
+            maxlength="500"
+            rows="3"
+            class="mt-2 w-full rounded-lg border border-slate-200 p-3 outline-none focus:border-orange-400"
+            placeholder="Allergies or preparation notes"
+          ></textarea>
+        </label>
+        @if (error()) {
+          <p class="mt-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">{{ error() }}</p>
+        }
+        @if (success()) {
+          <p class="mt-4 rounded-lg bg-emerald-50 p-3 text-sm text-emerald-700">
+            {{ success() }} <a routerLink="/cart" class="font-medium underline">View cart</a>
+          </p>
+        }
+        <button
+          [disabled]="submitting() || form.invalid"
+          class="mt-5 w-full rounded-lg bg-orange-600 p-4 font-medium text-white shadow-sm disabled:opacity-50"
+        >
+          {{ submitting() ? 'Adding…' : 'Add to cart · EGP ' + total() }}
+        </button>
+      </form>
+    </article>
+  } @else {
+    <p class="rounded-xl border border-red-200 bg-red-50 p-5 text-red-700">{{ error() }}</p>
+  }
+</main>

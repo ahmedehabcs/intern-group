@@ -1,5 +1,190 @@
-<app-restaurant-navbar />
-<app-restaurant-sidebar />
-<main>
-  <router-outlet />
-</main>
+<div class="min-h-screen bg-slate-100 text-slate-900">
+  <aside
+    class="fixed inset-y-0 left-0 z-50 w-72 border-r border-slate-200 bg-white text-slate-700 shadow-sm transition-transform lg:translate-x-0"
+    [class.-translate-x-full]="!menuOpen()"
+    [class.translate-x-0]="menuOpen()"
+  >
+    <div class="flex h-20 items-center justify-between border-b border-slate-200 px-5">
+      <a routerLink="/kitchen/dashboard" class="flex items-center gap-3" (click)="closeMenu()"
+        ><span class="grid h-10 w-10 place-items-center rounded-xl bg-orange-600 text-white">T</span
+        ><span
+          ><span class="block text-base font-medium text-slate-900">Talabaty</span
+          ><small class="text-xs text-slate-500">Kitchen operations</small></span
+        ></a
+      ><button
+        type="button"
+        class="grid h-9 w-9 place-items-center rounded-lg text-slate-500 hover:bg-slate-100 lg:hidden"
+        (click)="closeMenu()"
+        aria-label="Close navigation"
+      >
+        <svg
+          class="h-5 w-5"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+        >
+          <path d="m6 6 12 12M18 6 6 18" />
+        </svg>
+      </button>
+    </div>
+    <nav class="space-y-1 p-4" aria-label="Kitchen navigation">
+      @for (
+        link of [
+          { p: 'dashboard', l: 'Dashboard', i: 'dashboard' },
+          { p: 'orders', l: 'Active orders', i: 'orders' },
+          { p: 'history', l: 'Order history', i: 'history' },
+          { p: 'menu-items', l: 'Menu items', i: 'menu' },
+          { p: 'sections', l: 'Menu sections', i: 'sections' },
+          { p: 'addon-groups', l: 'Add-ons', i: 'addons' },
+        ];
+        track link.p
+      ) {
+        <a
+          [routerLink]="['/kitchen', link.p]"
+          routerLinkActive="kitchen-nav-active"
+          class="flex items-center gap-3 rounded-lg px-3 py-3 text-sm text-slate-600 transition hover:bg-slate-100 hover:text-orange-600"
+          (click)="closeMenu()"
+          ><span class="grid h-8 w-8 place-items-center rounded-lg bg-slate-100"
+            ><svg
+              class="h-4 w-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+            >
+              @switch (link.i) {
+                @case ('orders') {
+                  <path d="M6 3h12v18l-3-2-3 2-3-2-3 2V3Zm3 5h6m-6 4h6" />
+                }
+                @case ('history') {
+                  <circle cx="12" cy="12" r="9" />
+                  <path d="M12 7v5l3 2" />
+                }
+                @case ('menu') {
+                  <path d="M4 5h16M4 12h16M4 19h16" />
+                  <circle cx="7" cy="5" r="1" />
+                  <circle cx="7" cy="12" r="1" />
+                  <circle cx="7" cy="19" r="1" />
+                }
+                @case ('sections') {
+                  <rect x="3" y="4" width="18" height="6" rx="1" />
+                  <rect x="3" y="14" width="18" height="6" rx="1" />
+                }
+                @case ('addons') {
+                  <circle cx="12" cy="12" r="9" />
+                  <path d="M12 8v8M8 12h8" />
+                }
+                @default {
+                  <rect x="3" y="3" width="7" height="7" rx="1" />
+                  <rect x="14" y="3" width="7" height="7" rx="1" />
+                  <rect x="3" y="14" width="7" height="7" rx="1" />
+                  <rect x="14" y="14" width="7" height="7" rx="1" />
+                }
+              }</svg></span
+          >{{ link.l }}</a
+        >
+      }
+    </nav>
+    <div class="absolute inset-x-4 bottom-4 border-t border-slate-200 pt-4">
+      <a
+        routerLink="/"
+        class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-slate-500 hover:bg-slate-100 hover:text-orange-600"
+        ><svg
+          class="h-4 w-4"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+        >
+          <path d="m15 18-6-6 6-6" /></svg
+        >Storefront</a
+      >
+    </div>
+  </aside>
+  @if (menuOpen()) {
+    <button
+      type="button"
+      class="fixed inset-0 z-40 bg-slate-950/50 lg:hidden"
+      (click)="closeMenu()"
+      aria-label="Close navigation overlay"
+    ></button>
+  }
+  <div class="lg:pl-72">
+    <header
+      class="sticky top-0 z-30 flex h-20 items-center gap-4 border-b border-slate-200 bg-white/95 px-4 backdrop-blur sm:px-6 lg:px-8"
+    >
+      <button
+        type="button"
+        class="grid h-10 w-10 place-items-center rounded-lg border border-slate-200 lg:hidden"
+        (click)="menuOpen.set(true)"
+        aria-label="Open navigation"
+      >
+        <svg
+          class="h-5 w-5"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+        >
+          <path d="M4 7h16M4 12h16M4 17h16" />
+        </svg>
+      </button>
+      <div>
+        <p class="text-xs uppercase tracking-[.16em] text-orange-600">Restaurant operations</p>
+        <h1 class="text-lg font-medium text-slate-900">Kitchen dashboard</h1>
+      </div>
+      <div class="ml-auto flex items-center gap-3">
+        <button
+          type="button"
+          class="grid h-10 w-10 place-items-center rounded-lg border border-slate-200 bg-white text-slate-600"
+          (click)="toggleTheme()"
+          [attr.aria-label]="isDark() ? 'Use light theme' : 'Use dark theme'"
+          [title]="isDark() ? 'Use light theme' : 'Use dark theme'"
+        >
+          @if (isDark()) {
+            <svg
+              class="h-5 w-5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+            >
+              <circle cx="12" cy="12" r="4" />
+              <path
+                d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"
+              />
+            </svg>
+          } @else {
+            <svg
+              class="h-5 w-5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+            >
+              <path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8Z" />
+            </svg>
+          }</button
+        ><button
+          type="button"
+          class="grid h-10 w-10 place-items-center rounded-lg border border-slate-200 text-slate-600"
+          (click)="logout()"
+          aria-label="Sign out"
+          title="Sign out"
+        >
+          <svg
+            class="h-5 w-5"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+          >
+            <path d="M10 17l5-5-5-5M15 12H3M14 4h6a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-6" />
+          </svg>
+        </button>
+      </div>
+    </header>
+    <main class="min-h-[calc(100vh-5rem)]"><router-outlet /></main>
+  </div>
+</div>

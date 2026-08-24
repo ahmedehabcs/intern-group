@@ -1,0 +1,43 @@
+<main class="mx-auto max-w-2xl p-6">
+  <a routerLink="/driver/available" class="text-orange-600">← Deliveries</a>
+  <h1 class="mt-3 text-3xl font-black">Driver profile</h1>
+  @if (loading()) {
+    <p class="p-10 text-center">Loading…</p>
+  } @else {
+    <form [formGroup]="form" (ngSubmit)="submit()" class="mt-6 grid gap-4 sm:grid-cols-2">
+      <label class="sm:col-span-2"
+        >Email<input
+          [value]="email()"
+          readonly
+          class="mt-1 w-full rounded-xl border bg-slate-50 p-3" /></label
+      ><label>Name<input formControlName="name" class="mt-1 w-full rounded-xl border p-3" /></label
+      ><label
+        >Phone<input
+          formControlName="phoneNumber"
+          class="mt-1 w-full rounded-xl border p-3" /></label
+      ><label
+        >Vehicle type<input
+          formControlName="vehicleType"
+          class="mt-1 w-full rounded-xl border p-3" /></label
+      ><label
+        >License number<input
+          formControlName="licenseNumber"
+          class="mt-1 w-full rounded-xl border p-3" /></label
+      ><label class="sm:col-span-2"
+        >National ID<input formControlName="nationalId" class="mt-1 w-full rounded-xl border p-3"
+      /></label>
+      @if (error()) {
+        <p class="sm:col-span-2 bg-red-50 p-3 text-red-700">{{ error() }}</p>
+      }
+      @if (message()) {
+        <p class="sm:col-span-2 bg-green-50 p-3 text-green-700">{{ message() }}</p>
+      }
+      <button
+        [disabled]="form.invalid || submitting()"
+        class="sm:col-span-2 rounded-xl bg-orange-500 p-3 font-bold text-white"
+      >
+        {{ submitting() ? 'Saving…' : 'Save profile' }}
+      </button>
+    </form>
+  }
+</main>
