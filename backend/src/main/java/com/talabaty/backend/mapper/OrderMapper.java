@@ -9,6 +9,9 @@ import com.talabaty.backend.model.OrderItem;
 import org.mapstruct.Mapper;
 import com.talabaty.backend.dto.response.CustomerOrderDetailsResponse;
 import com.talabaty.backend.dto.response.CustomerOrderSummaryResponse;
+import com.talabaty.backend.dto.response.KitchenOrderDetailsResponse;
+import com.talabaty.backend.dto.response.KitchenOrderSummaryResponse;
+import com.talabaty.backend.dto.response.KitchenOrderPageResponse;
 import org.mapstruct.Mapping;
 import java.math.BigDecimal;
 import java.util.List;
@@ -41,6 +44,16 @@ public interface OrderMapper {
             List<Order> orders);
 
     CustomerOrderDetailsResponse toCustomerOrderDetailsResponse(Order order);
+
+    @Mapping(target = "itemCount", expression = "java(countItems(order))")
+    KitchenOrderSummaryResponse toKitchenOrderSummaryResponse(Order order);
+
+    List<KitchenOrderSummaryResponse> toKitchenOrderSummaryResponseList(
+            List<Order> orders
+    );
+
+    KitchenOrderDetailsResponse toKitchenOrderDetailsResponse(Order order);
+
     default Integer countItems(Order order) {
         if (order == null || order.getOrderItems() == null) {
             return 0;
@@ -62,6 +75,22 @@ public interface OrderMapper {
         return new CustomerOrderPageResponse(toCustomerOrderSummaryResponseList(orderPage.getContent()), orderPage.getNumber(),
                 orderPage.getSize(), orderPage.getTotalElements(), orderPage.getTotalPages(),
                 orderPage.isFirst(), orderPage.isLast()
+        );
+    }
+
+    default KitchenOrderPageResponse toKitchenOrderPageResponse(Page<Order> orderPage) {
+        if (orderPage == null) {
+            return null;
+        }
+
+        return new KitchenOrderPageResponse(
+                toKitchenOrderSummaryResponseList(orderPage.getContent()),
+                orderPage.getNumber(),
+                orderPage.getSize(),
+                orderPage.getTotalElements(),
+                orderPage.getTotalPages(),
+                orderPage.isFirst(),
+                orderPage.isLast()
         );
     }
 }

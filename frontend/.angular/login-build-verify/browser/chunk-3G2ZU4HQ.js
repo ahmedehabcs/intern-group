@@ -9,8 +9,8 @@ import {
   isTextualFormElement,
   selectValueAccessor,
   setNativeDomProperty,
-  ɵFORM_CONTROL_INTEGRATION
-} from "./chunk-PU67HFL7.js";
+  ɵFORM_CONTROL_INTEGRATION,
+} from './chunk-PU67HFL7.js';
 import {
   APP_ID,
   CSP_NONCE,
@@ -45,12 +45,9 @@ import {
   ɵɵdefineDirective,
   ɵɵdefineInjectable,
   ɵɵgetInheritedFactory,
-  ɵɵlistener
-} from "./chunk-XUN6663C.js";
-import {
-  __spreadProps,
-  __spreadValues
-} from "./chunk-GOMI4DH3.js";
+  ɵɵlistener,
+} from './chunk-XUN6663C.js';
+import { __spreadProps, __spreadValues } from './chunk-GOMI4DH3.js';
 
 // node_modules/@angular/forms/fesm2022/_validation_errors-chunk.mjs
 /**
@@ -58,7 +55,7 @@ import {
  * (c) 2010-2026 Google LLC. https://angular.dev/
  * License: MIT
  */
-var FIELD_TREE = /* @__PURE__ */ Symbol("FIELD_TREE");
+var FIELD_TREE = /* @__PURE__ */ Symbol('FIELD_TREE');
 var boundPathDepth = 0;
 function getBoundPathDepth() {
   return boundPathDepth;
@@ -83,7 +80,7 @@ function isArray(value) {
   return Array.isArray(value);
 }
 function isObject(value) {
-  return (typeof value === "object" || typeof value === "function") && value != null;
+  return (typeof value === 'object' || typeof value === 'function') && value != null;
 }
 var DYNAMIC = /* @__PURE__ */ Symbol();
 var IGNORED = /* @__PURE__ */ Symbol();
@@ -97,7 +94,9 @@ var AbstractLogic = class {
     this.fns.push(wrapWithPredicates(this.predicates, logicFn));
   }
   mergeIn(other) {
-    const fns = this.predicates ? other.fns.map((fn) => wrapWithPredicates(this.predicates, fn)) : other.fns;
+    const fns = this.predicates
+      ? other.fns.map((fn) => wrapWithPredicates(this.predicates, fn))
+      : other.fns;
     this.fns.push(...fns);
   }
   hasRules() {
@@ -133,7 +132,7 @@ var ArrayMergeIgnoreLogic = class _ArrayMergeIgnoreLogic extends AbstractLogic {
       if (value === void 0 || value === IGNORED) {
         return prev;
       } else if (isArray(value)) {
-        return [...prev, ...this.ignore ? value.filter((e) => !this.ignore(e)) : value];
+        return [...prev, ...(this.ignore ? value.filter((e) => !this.ignore(e)) : value)];
       } else {
         if (this.ignore && this.ignore(value)) {
           return prev;
@@ -208,7 +207,15 @@ var LogicContainer = class {
     this.asyncErrors = ArrayMergeIgnoreLogic.ignoreNull(predicates);
   }
   hasAnyLogic() {
-    return this.hidden.hasRules() || this.disabledReasons.hasRules() || this.readonly.hasRules() || this.syncErrors.hasRules() || this.syncTreeErrors.hasRules() || this.asyncErrors.hasRules() || this.metadata.size > 0;
+    return (
+      this.hidden.hasRules() ||
+      this.disabledReasons.hasRules() ||
+      this.readonly.hasRules() ||
+      this.syncErrors.hasRules() ||
+      this.syncTreeErrors.hasRules() ||
+      this.asyncErrors.hasRules() ||
+      this.metadata.size > 0
+    );
   }
   hasMetadata(key) {
     return this.metadata.has(key);
@@ -287,17 +294,13 @@ var LogicNodeBuilder = class _LogicNodeBuilder extends AbstractLogicNodeBuilder 
     if (this === builder) {
       return true;
     }
-    return this.all.some(({
-      builder: subBuilder
-    }) => subBuilder.hasLogic(builder));
+    return this.all.some(({ builder: subBuilder }) => subBuilder.hasLogic(builder));
   }
   hasRules() {
     return this.all.length > 0;
   }
   anyChildHasLogic() {
-    return this.all.some(({
-      builder
-    }) => builder.anyChildHasLogic());
+    return this.all.some(({ builder }) => builder.anyChildHasLogic());
   }
   mergeIn(other, predicate) {
     if (predicate) {
@@ -305,12 +308,12 @@ var LogicNodeBuilder = class _LogicNodeBuilder extends AbstractLogicNodeBuilder 
         builder: other,
         predicate: {
           fn: setBoundPathDepthForResolution(predicate.fn, this.depth),
-          path: predicate.path
-        }
+          path: predicate.path,
+        },
       });
     } else {
       this.all.push({
-        builder: other
+        builder: other,
       });
     }
     this.current = void 0;
@@ -319,7 +322,7 @@ var LogicNodeBuilder = class _LogicNodeBuilder extends AbstractLogicNodeBuilder 
     if (this.current === void 0) {
       this.current = new NonMergeableLogicNodeBuilder(this.depth);
       this.all.push({
-        builder: this.current
+        builder: this.current,
       });
     }
     return this.current;
@@ -392,16 +395,21 @@ var LeafLogicNode = class _LeafLogicNode {
     if (childBuilders.length === 0) {
       return new _LeafLogicNode(void 0, [], this.depth + 1);
     } else if (childBuilders.length === 1) {
-      const {
+      const { builder, predicates } = childBuilders[0];
+      return new _LeafLogicNode(
         builder,
-        predicates
-      } = childBuilders[0];
-      return new _LeafLogicNode(builder, [...this.predicates, ...predicates.map((p) => bindLevel(p, this.depth))], this.depth + 1);
+        [...this.predicates, ...predicates.map((p) => bindLevel(p, this.depth))],
+        this.depth + 1,
+      );
     } else {
-      const builtNodes = childBuilders.map(({
-        builder,
-        predicates
-      }) => new _LeafLogicNode(builder, [...this.predicates, ...predicates.map((p) => bindLevel(p, this.depth))], this.depth + 1));
+      const builtNodes = childBuilders.map(
+        ({ builder, predicates }) =>
+          new _LeafLogicNode(
+            builder,
+            [...this.predicates, ...predicates.map((p) => bindLevel(p, this.depth))],
+            this.depth + 1,
+          ),
+      );
       return new CompositeLogicNode(builtNodes);
     }
   }
@@ -443,57 +451,66 @@ var CompositeLogicNode = class _CompositeLogicNode {
 };
 function getAllChildBuilders(builder, key) {
   if (builder instanceof LogicNodeBuilder) {
-    return builder.all.flatMap(({
-      builder: builder2,
-      predicate
-    }) => {
+    return builder.all.flatMap(({ builder: builder2, predicate }) => {
       const children = getAllChildBuilders(builder2, key);
       if (predicate) {
-        return children.map(({
+        return children.map(({ builder: builder3, predicates }) => ({
           builder: builder3,
-          predicates
-        }) => ({
-          builder: builder3,
-          predicates: [...predicates, predicate]
+          predicates: [...predicates, predicate],
         }));
       }
       return children;
     });
   } else if (builder instanceof NonMergeableLogicNodeBuilder) {
-    return [...key !== DYNAMIC && builder.children.has(DYNAMIC) ? [{
-      builder: builder.getChild(DYNAMIC),
-      predicates: []
-    }] : [], ...builder.children.has(key) ? [{
-      builder: builder.getChild(key),
-      predicates: []
-    }] : []];
+    return [
+      ...(key !== DYNAMIC && builder.children.has(DYNAMIC)
+        ? [
+            {
+              builder: builder.getChild(DYNAMIC),
+              predicates: [],
+            },
+          ]
+        : []),
+      ...(builder.children.has(key)
+        ? [
+            {
+              builder: builder.getChild(key),
+              predicates: [],
+            },
+          ]
+        : []),
+    ];
   } else {
-    throw new RuntimeError(1909, ngDevMode && "Unknown LogicNodeBuilder type");
+    throw new RuntimeError(1909, ngDevMode && 'Unknown LogicNodeBuilder type');
   }
 }
 function createLogic(builder, predicates, depth) {
   const logic = new LogicContainer(predicates);
   if (builder instanceof LogicNodeBuilder) {
-    const builtNodes = builder.all.map(({
-      builder: builder2,
-      predicate
-    }) => new LeafLogicNode(builder2, predicate ? [...predicates, bindLevel(predicate, depth)] : predicates, depth));
+    const builtNodes = builder.all.map(
+      ({ builder: builder2, predicate }) =>
+        new LeafLogicNode(
+          builder2,
+          predicate ? [...predicates, bindLevel(predicate, depth)] : predicates,
+          depth,
+        ),
+    );
     for (const node of builtNodes) {
       logic.mergeIn(node.logic);
     }
   } else if (builder instanceof NonMergeableLogicNodeBuilder) {
     logic.mergeIn(builder.logic);
   } else {
-    throw new RuntimeError(1909, ngDevMode && "Unknown LogicNodeBuilder type");
+    throw new RuntimeError(1909, ngDevMode && 'Unknown LogicNodeBuilder type');
   }
   return logic;
 }
 function bindLevel(predicate, depth) {
   return __spreadProps(__spreadValues({}, predicate), {
-    depth
+    depth,
   });
 }
-var PATH = /* @__PURE__ */ Symbol("PATH");
+var PATH = /* @__PURE__ */ Symbol('PATH');
 var FieldPathNode = class _FieldPathNode {
   keys;
   parent;
@@ -540,7 +557,7 @@ var FIELD_PATH_PROXY_HANDLER = {
       return node;
     }
     return node.getChild(property).fieldPathProxy;
-  }
+  },
 };
 var currentCompilingNode = void 0;
 var compiledSchemas = /* @__PURE__ */ new Map();
@@ -586,11 +603,15 @@ var SchemaImpl = class _SchemaImpl {
   }
 };
 function isSchemaOrSchemaFn(value) {
-  return value instanceof SchemaImpl || typeof value === "function";
+  return value instanceof SchemaImpl || typeof value === 'function';
 }
 function assertPathIsCurrent(path) {
   if (currentCompilingNode !== FieldPathNode.unwrapFieldPath(path).root) {
-    throw new RuntimeError(1908, ngDevMode && `A FieldPath can only be used directly within the Schema that owns it, **not** outside of it or within a sub-schema.`);
+    throw new RuntimeError(
+      1908,
+      ngDevMode &&
+        `A FieldPath can only be used directly within the Schema that owns it, **not** outside of it or within a sub-schema.`,
+    );
   }
 }
 function metadata(path, key, logic) {
@@ -602,8 +623,8 @@ function metadata(path, key, logic) {
 var MetadataReducer = {
   list() {
     return {
-      reduce: (acc, item) => item === void 0 ? acc : [...acc, item],
-      getInitial: () => []
+      reduce: (acc, item) => (item === void 0 ? acc : [...acc, item]),
+      getInitial: () => [],
     };
   },
   min() {
@@ -614,7 +635,7 @@ var MetadataReducer = {
         }
         return item < acc ? item : acc;
       },
-      getInitial: () => void 0
+      getInitial: () => void 0,
     };
   },
   max() {
@@ -625,30 +646,30 @@ var MetadataReducer = {
         }
         return item > acc ? item : acc;
       },
-      getInitial: () => void 0
+      getInitial: () => void 0,
     };
   },
   or() {
     return {
       reduce: (prev, next) => prev || next,
-      getInitial: () => false
+      getInitial: () => false,
     };
   },
   and() {
     return {
       reduce: (prev, next) => prev && next,
-      getInitial: () => true
+      getInitial: () => true,
     };
   },
-  override
+  override,
 };
 function override(getInitial) {
   return {
     reduce: (_, item) => item,
-    getInitial: () => getInitial?.()
+    getInitial: () => getInitial?.(),
   };
 }
-var IS_ASYNC_VALIDATION_RESOURCE = /* @__PURE__ */ Symbol("IS_ASYNC_VALIDATION_RESOURCE");
+var IS_ASYNC_VALIDATION_RESOURCE = /* @__PURE__ */ Symbol('IS_ASYNC_VALIDATION_RESOURCE');
 var MetadataKey = class {
   reducer;
   create;
@@ -686,120 +707,285 @@ function shallowArrayEquals(a, b) {
 }
 function calculateValidationSelfStatus(state) {
   if (state.errors().length > 0) {
-    return "invalid";
+    return 'invalid';
   }
   if (state.pending()) {
-    return "unknown";
+    return 'unknown';
   }
-  return "valid";
+  return 'valid';
 }
 var FieldValidationState = class {
   node;
   constructor(node) {
     this.node = node;
   }
-  rawSyncTreeErrors = computed(() => {
-    if (this.shouldSkipValidation()) {
-      return [];
-    }
-    return [...this.node.logicNode.logic.syncTreeErrors.compute(this.node.context), ...this.node.structure.parent?.validationState.rawSyncTreeErrors() ?? []];
-  }, __spreadProps(__spreadValues({}, ngDevMode ? {
-    debugName: "rawSyncTreeErrors"
-  } : {}), {
-    equal: shallowArrayEquals
-  }));
-  syncErrors = computed(() => {
-    if (this.shouldSkipValidation()) {
-      return [];
-    }
-    return [...this.node.logicNode.logic.syncErrors.compute(this.node.context), ...this.syncTreeErrors(), ...normalizeErrors(this.node.submitState.submissionErrors())];
-  }, __spreadProps(__spreadValues({}, ngDevMode ? {
-    debugName: "syncErrors"
-  } : {}), {
-    equal: shallowArrayEquals
-  }));
-  syncValid = computed(() => {
-    if (this.shouldSkipValidation()) {
-      return true;
-    }
-    return this.node.structure.reduceChildren(this.syncErrors().length === 0, (child, value) => value && child.validationState.syncValid(), shortCircuitFalse);
-  }, ...ngDevMode ? [{
-    debugName: "syncValid"
-  }] : []);
-  syncTreeErrors = computed(() => this.rawSyncTreeErrors().filter((err) => err.fieldTree === this.node.fieldTree), __spreadProps(__spreadValues({}, ngDevMode ? {
-    debugName: "syncTreeErrors"
-  } : {}), {
-    equal: shallowArrayEquals
-  }));
-  rawAsyncErrors = computed(() => {
-    if (this.shouldSkipValidation()) {
-      return [];
-    }
-    return [...this.node.logicNode.logic.asyncErrors.compute(this.node.context), ...this.node.structure.parent?.validationState.rawAsyncErrors() ?? []];
-  }, __spreadProps(__spreadValues({}, ngDevMode ? {
-    debugName: "rawAsyncErrors"
-  } : {}), {
-    equal: shallowArrayEquals
-  }));
-  asyncErrors = computed(() => {
-    if (this.shouldSkipValidation()) {
-      return [];
-    }
-    return this.rawAsyncErrors().filter((err) => err === "pending" || err.fieldTree === this.node.fieldTree);
-  }, __spreadProps(__spreadValues({}, ngDevMode ? {
-    debugName: "asyncErrors"
-  } : {}), {
-    equal: shallowArrayEquals
-  }));
-  parseErrors = computed(() => this.node.formFieldBindings().flatMap((field) => field.parseErrors()), __spreadProps(__spreadValues({}, ngDevMode ? {
-    debugName: "parseErrors"
-  } : {}), {
-    equal: shallowArrayEquals
-  }));
-  errors = computed(() => [...this.parseErrors(), ...this.syncErrors(), ...this.asyncErrors().filter((err) => err !== "pending")], __spreadProps(__spreadValues({}, ngDevMode ? {
-    debugName: "errors"
-  } : {}), {
-    equal: shallowArrayEquals
-  }));
-  errorSummary = computed(() => {
-    const errors = this.node.structure.reduceChildren(this.errors(), (child, result) => [...result, ...child.errorSummary()]);
-    if (true) {
-      untracked(() => errors.sort(compareErrorPosition));
-    }
-    return errors;
-  }, __spreadProps(__spreadValues({}, ngDevMode ? {
-    debugName: "errorSummary"
-  } : {}), {
-    equal: shallowArrayEquals
-  }));
-  pending = computed(() => this.node.structure.reduceChildren(this.asyncErrors().includes("pending"), (child, value) => value || child.validationState.pending()), ...ngDevMode ? [{
-    debugName: "pending"
-  }] : []);
-  status = computed(() => {
-    if (this.shouldSkipValidation()) {
-      return "valid";
-    }
-    let ownStatus = calculateValidationSelfStatus(this);
-    return this.node.structure.reduceChildren(ownStatus, (child, value) => {
-      if (value === "invalid" || child.validationState.status() === "invalid") {
-        return "invalid";
-      } else if (value === "unknown" || child.validationState.status() === "unknown") {
-        return "unknown";
+  rawSyncTreeErrors = computed(
+    () => {
+      if (this.shouldSkipValidation()) {
+        return [];
       }
-      return "valid";
-    }, (v) => v === "invalid");
-  }, ...ngDevMode ? [{
-    debugName: "status"
-  }] : []);
-  valid = computed(() => this.status() === "valid", ...ngDevMode ? [{
-    debugName: "valid"
-  }] : []);
-  invalid = computed(() => this.status() === "invalid", ...ngDevMode ? [{
-    debugName: "invalid"
-  }] : []);
-  shouldSkipValidation = computed(() => this.node.hidden() || this.node.disabled() || this.node.readonly() || this.node.structure.isOrphaned(), ...ngDevMode ? [{
-    debugName: "shouldSkipValidation"
-  }] : []);
+      return [
+        ...this.node.logicNode.logic.syncTreeErrors.compute(this.node.context),
+        ...(this.node.structure.parent?.validationState.rawSyncTreeErrors() ?? []),
+      ];
+    },
+    __spreadProps(
+      __spreadValues(
+        {},
+        ngDevMode
+          ? {
+              debugName: 'rawSyncTreeErrors',
+            }
+          : {},
+      ),
+      {
+        equal: shallowArrayEquals,
+      },
+    ),
+  );
+  syncErrors = computed(
+    () => {
+      if (this.shouldSkipValidation()) {
+        return [];
+      }
+      return [
+        ...this.node.logicNode.logic.syncErrors.compute(this.node.context),
+        ...this.syncTreeErrors(),
+        ...normalizeErrors(this.node.submitState.submissionErrors()),
+      ];
+    },
+    __spreadProps(
+      __spreadValues(
+        {},
+        ngDevMode
+          ? {
+              debugName: 'syncErrors',
+            }
+          : {},
+      ),
+      {
+        equal: shallowArrayEquals,
+      },
+    ),
+  );
+  syncValid = computed(
+    () => {
+      if (this.shouldSkipValidation()) {
+        return true;
+      }
+      return this.node.structure.reduceChildren(
+        this.syncErrors().length === 0,
+        (child, value) => value && child.validationState.syncValid(),
+        shortCircuitFalse,
+      );
+    },
+    ...(ngDevMode
+      ? [
+          {
+            debugName: 'syncValid',
+          },
+        ]
+      : []),
+  );
+  syncTreeErrors = computed(
+    () => this.rawSyncTreeErrors().filter((err) => err.fieldTree === this.node.fieldTree),
+    __spreadProps(
+      __spreadValues(
+        {},
+        ngDevMode
+          ? {
+              debugName: 'syncTreeErrors',
+            }
+          : {},
+      ),
+      {
+        equal: shallowArrayEquals,
+      },
+    ),
+  );
+  rawAsyncErrors = computed(
+    () => {
+      if (this.shouldSkipValidation()) {
+        return [];
+      }
+      return [
+        ...this.node.logicNode.logic.asyncErrors.compute(this.node.context),
+        ...(this.node.structure.parent?.validationState.rawAsyncErrors() ?? []),
+      ];
+    },
+    __spreadProps(
+      __spreadValues(
+        {},
+        ngDevMode
+          ? {
+              debugName: 'rawAsyncErrors',
+            }
+          : {},
+      ),
+      {
+        equal: shallowArrayEquals,
+      },
+    ),
+  );
+  asyncErrors = computed(
+    () => {
+      if (this.shouldSkipValidation()) {
+        return [];
+      }
+      return this.rawAsyncErrors().filter(
+        (err) => err === 'pending' || err.fieldTree === this.node.fieldTree,
+      );
+    },
+    __spreadProps(
+      __spreadValues(
+        {},
+        ngDevMode
+          ? {
+              debugName: 'asyncErrors',
+            }
+          : {},
+      ),
+      {
+        equal: shallowArrayEquals,
+      },
+    ),
+  );
+  parseErrors = computed(
+    () => this.node.formFieldBindings().flatMap((field) => field.parseErrors()),
+    __spreadProps(
+      __spreadValues(
+        {},
+        ngDevMode
+          ? {
+              debugName: 'parseErrors',
+            }
+          : {},
+      ),
+      {
+        equal: shallowArrayEquals,
+      },
+    ),
+  );
+  errors = computed(
+    () => [
+      ...this.parseErrors(),
+      ...this.syncErrors(),
+      ...this.asyncErrors().filter((err) => err !== 'pending'),
+    ],
+    __spreadProps(
+      __spreadValues(
+        {},
+        ngDevMode
+          ? {
+              debugName: 'errors',
+            }
+          : {},
+      ),
+      {
+        equal: shallowArrayEquals,
+      },
+    ),
+  );
+  errorSummary = computed(
+    () => {
+      const errors = this.node.structure.reduceChildren(this.errors(), (child, result) => [
+        ...result,
+        ...child.errorSummary(),
+      ]);
+      if (true) {
+        untracked(() => errors.sort(compareErrorPosition));
+      }
+      return errors;
+    },
+    __spreadProps(
+      __spreadValues(
+        {},
+        ngDevMode
+          ? {
+              debugName: 'errorSummary',
+            }
+          : {},
+      ),
+      {
+        equal: shallowArrayEquals,
+      },
+    ),
+  );
+  pending = computed(
+    () =>
+      this.node.structure.reduceChildren(
+        this.asyncErrors().includes('pending'),
+        (child, value) => value || child.validationState.pending(),
+      ),
+    ...(ngDevMode
+      ? [
+          {
+            debugName: 'pending',
+          },
+        ]
+      : []),
+  );
+  status = computed(
+    () => {
+      if (this.shouldSkipValidation()) {
+        return 'valid';
+      }
+      let ownStatus = calculateValidationSelfStatus(this);
+      return this.node.structure.reduceChildren(
+        ownStatus,
+        (child, value) => {
+          if (value === 'invalid' || child.validationState.status() === 'invalid') {
+            return 'invalid';
+          } else if (value === 'unknown' || child.validationState.status() === 'unknown') {
+            return 'unknown';
+          }
+          return 'valid';
+        },
+        (v) => v === 'invalid',
+      );
+    },
+    ...(ngDevMode
+      ? [
+          {
+            debugName: 'status',
+          },
+        ]
+      : []),
+  );
+  valid = computed(
+    () => this.status() === 'valid',
+    ...(ngDevMode
+      ? [
+          {
+            debugName: 'valid',
+          },
+        ]
+      : []),
+  );
+  invalid = computed(
+    () => this.status() === 'invalid',
+    ...(ngDevMode
+      ? [
+          {
+            debugName: 'invalid',
+          },
+        ]
+      : []),
+  );
+  shouldSkipValidation = computed(
+    () =>
+      this.node.hidden() ||
+      this.node.disabled() ||
+      this.node.readonly() ||
+      this.node.structure.isOrphaned(),
+    ...(ngDevMode
+      ? [
+          {
+            debugName: 'shouldSkipValidation',
+          },
+        ]
+      : []),
+  );
 };
 function normalizeErrors(error) {
   if (error === void 0) {
@@ -822,10 +1008,18 @@ function addDefaultField(errors, fieldTree) {
 }
 function getFirstBoundElement(error) {
   if (error.formField) return error.formField.element;
-  return error.fieldTree().formFieldBindings().reduce((el, binding) => {
-    if (!el || !binding.element) return el ?? binding.element;
-    return el.compareDocumentPosition(binding.element) & Node.DOCUMENT_POSITION_PRECEDING ? binding.element : el;
-  }, void 0);
+  return error
+    .fieldTree()
+    .formFieldBindings()
+    .reduce(
+      (el, binding) => {
+        if (!el || !binding.element) return el ?? binding.element;
+        return el.compareDocumentPosition(binding.element) & Node.DOCUMENT_POSITION_PRECEDING
+          ? binding.element
+          : el;
+      },
+      void 0,
+    );
 }
 function compareErrorPosition(a, b) {
   const aEl = getFirstBoundElement(a);
@@ -845,27 +1039,41 @@ var FieldNodeContext = class {
   }
   resolve(target) {
     if (!this.cache.has(target)) {
-      const resolver = computed(() => {
-        const targetPathNode = FieldPathNode.unwrapFieldPath(target);
-        let field = this.node;
-        let stepsRemaining = getBoundPathDepth();
-        while (stepsRemaining > 0 || !field.structure.logic.hasLogic(targetPathNode.root.builder)) {
-          stepsRemaining--;
-          field = field.structure.parent;
-          if (field === void 0) {
-            throw new RuntimeError(1900, ngDevMode && "Path is not part of this field tree.");
+      const resolver = computed(
+        () => {
+          const targetPathNode = FieldPathNode.unwrapFieldPath(target);
+          let field = this.node;
+          let stepsRemaining = getBoundPathDepth();
+          while (
+            stepsRemaining > 0 ||
+            !field.structure.logic.hasLogic(targetPathNode.root.builder)
+          ) {
+            stepsRemaining--;
+            field = field.structure.parent;
+            if (field === void 0) {
+              throw new RuntimeError(1900, ngDevMode && 'Path is not part of this field tree.');
+            }
           }
-        }
-        for (let key of targetPathNode.keys) {
-          field = field.structure.getChild(key);
-          if (field === void 0) {
-            throw new RuntimeError(1901, ngDevMode && `Cannot resolve path .${targetPathNode.keys.join(".")} relative to field ${["<root>", ...this.node.structure.pathKeys()].join(".")}.`);
+          for (let key of targetPathNode.keys) {
+            field = field.structure.getChild(key);
+            if (field === void 0) {
+              throw new RuntimeError(
+                1901,
+                ngDevMode &&
+                  `Cannot resolve path .${targetPathNode.keys.join('.')} relative to field ${['<root>', ...this.node.structure.pathKeys()].join('.')}.`,
+              );
+            }
           }
-        }
-        return field.fieldTree;
-      }, ...ngDevMode ? [{
-        debugName: "resolver"
-      }] : []);
+          return field.fieldTree;
+        },
+        ...(ngDevMode
+          ? [
+              {
+                debugName: 'resolver',
+              },
+            ]
+          : []),
+      );
       this.cache.set(target, resolver);
     }
     return this.cache.get(target)();
@@ -885,15 +1093,25 @@ var FieldNodeContext = class {
   get pathKeys() {
     return this.node.structure.pathKeys;
   }
-  index = computed(() => {
-    const key = this.key();
-    if (!isArray(untracked(this.node.structure.parent.value))) {
-      throw new RuntimeError(1906, ngDevMode && "Cannot access index, parent field is not an array.");
-    }
-    return Number(key);
-  }, ...ngDevMode ? [{
-    debugName: "index"
-  }] : []);
+  index = computed(
+    () => {
+      const key = this.key();
+      if (!isArray(untracked(this.node.structure.parent.value))) {
+        throw new RuntimeError(
+          1906,
+          ngDevMode && 'Cannot access index, parent field is not an array.',
+        );
+      }
+      return Number(key);
+    },
+    ...(ngDevMode
+      ? [
+          {
+            debugName: 'index',
+          },
+        ]
+      : []),
+  );
   fieldTreeOf(p) {
     return this.resolve(p);
   }
@@ -903,7 +1121,11 @@ var FieldNodeContext = class {
   valueOf = (p) => {
     const result = this.resolve(p)().value();
     if (result instanceof AbstractControl) {
-      throw new RuntimeError(1907, ngDevMode && `Tried to read an 'AbstractControl' value from a 'form()'. Did you mean to use 'compatForm()' instead?`);
+      throw new RuntimeError(
+        1907,
+        ngDevMode &&
+          `Tried to read an 'AbstractControl' value from a 'form()'. Did you mean to use 'compatForm()' instead?`,
+      );
     }
     return result;
   };
@@ -921,15 +1143,20 @@ var FieldMetadataState = class {
     const wasInParams = isInParamsFunction();
     if (wasInParams) setInParamsFunction(false);
     try {
-      untracked(() => runInInjectionContext(this.node.structure.injector, () => {
-        for (const key of this.node.logicNode.logic.getMetadataKeys()) {
-          if (key.create) {
-            const logic = this.node.logicNode.logic.getMetadata(key);
-            const result = key.create(this.node, computed(() => logic.compute(this.node.context)));
-            this.metadata.set(key, result);
+      untracked(() =>
+        runInInjectionContext(this.node.structure.injector, () => {
+          for (const key of this.node.logicNode.logic.getMetadataKeys()) {
+            if (key.create) {
+              const logic = this.node.logicNode.logic.getMetadata(key);
+              const result = key.create(
+                this.node,
+                computed(() => logic.compute(this.node.context)),
+              );
+              this.metadata.set(key, result);
+            }
           }
-        }
-      }));
+        }),
+      );
     } finally {
       if (wasInParams) setInParamsFunction(true);
     }
@@ -938,10 +1165,13 @@ var FieldMetadataState = class {
     if (this.has(key)) {
       if (!this.metadata.has(key)) {
         if (key.create) {
-          throw new RuntimeError(1912, ngDevMode && "Managed metadata cannot be created lazily");
+          throw new RuntimeError(1912, ngDevMode && 'Managed metadata cannot be created lazily');
         }
         const logic = this.node.logicNode.logic.getMetadata(key);
-        this.metadata.set(key, computed(() => logic.compute(this.node.context)));
+        this.metadata.set(
+          key,
+          computed(() => logic.compute(this.node.context)),
+        );
       }
     }
     return this.metadata.get(key);
@@ -962,7 +1192,7 @@ var FIELD_PROXY_HANDLER = {
     }
     const value = untracked(tgt.value);
     if (isArray(value)) {
-      if (property === "length") {
+      if (property === 'length') {
         return tgt.value().length;
       }
       if (property === Symbol.iterator) {
@@ -993,8 +1223,8 @@ var FIELD_PROXY_HANDLER = {
   },
   ownKeys(getTgt) {
     const value = untracked(getTgt().value);
-    return typeof value === "object" && value !== null ? Reflect.ownKeys(value) : [];
-  }
+    return typeof value === 'object' && value !== null ? Reflect.ownKeys(value) : [];
+  },
 };
 function deepSignal(source, prop) {
   const read = computed(() => source()[prop()]);
@@ -1018,14 +1248,23 @@ function valueForWrite(sourceValue, newPropValue, prop) {
     return newValue;
   } else {
     return __spreadProps(__spreadValues({}, sourceValue), {
-      [prop]: newPropValue
+      [prop]: newPropValue,
     });
   }
 }
-var ORPHAN_TOKEN = /* @__PURE__ */ Symbol(typeof ngDevMode !== "undefined" && ngDevMode ? "ORPHAN_TOKEN" : "");
-var FALSE_SIGNAL = computed(() => false, ...ngDevMode ? [{
-  debugName: "FALSE_SIGNAL"
-}] : []);
+var ORPHAN_TOKEN = /* @__PURE__ */ Symbol(
+  typeof ngDevMode !== 'undefined' && ngDevMode ? 'ORPHAN_TOKEN' : '',
+);
+var FALSE_SIGNAL = computed(
+  () => false,
+  ...(ngDevMode
+    ? [
+        {
+          debugName: 'FALSE_SIGNAL',
+        },
+      ]
+    : []),
+);
 var FieldNodeStructure = class {
   logic;
   node;
@@ -1036,7 +1275,7 @@ var FieldNodeStructure = class {
   get injector() {
     this._injector ??= Injector.create({
       providers: [],
-      parent: this.fieldManager.injector
+      parent: this.fieldManager.injector,
     });
     return this._injector;
   }
@@ -1098,64 +1337,92 @@ var FieldNodeStructure = class {
     this.injector.destroy();
   }
   createKeyOrOrphanSignals(kind, identityInParent, initialKeyInParent) {
-    if (kind === "root") {
+    if (kind === 'root') {
       return {
         keyInParent: ROOT_KEY_IN_PARENT,
-        isOrphaned: FALSE_SIGNAL
+        isOrphaned: FALSE_SIGNAL,
       };
     }
     const parent = this.parent;
     let lastKnownKey = initialKeyInParent;
-    const keyOrOrphan = computed(() => {
-      if (parent.structure.isOrphaned()) {
-        return ORPHAN_TOKEN;
-      }
-      const map = parent.structure.childrenMap();
-      if (!map) {
-        return ORPHAN_TOKEN;
-      }
-      const lastKnownChild = map.byPropertyKey.get(lastKnownKey);
-      if (lastKnownChild && lastKnownChild.node === this.node) {
-        return lastKnownKey;
-      }
-      if (identityInParent === void 0) {
-        return ORPHAN_TOKEN;
-      } else {
-        for (const [key, child] of map.byPropertyKey) {
-          if (child.node === this.node) {
-            return lastKnownKey = key;
+    const keyOrOrphan = computed(
+      () => {
+        if (parent.structure.isOrphaned()) {
+          return ORPHAN_TOKEN;
+        }
+        const map = parent.structure.childrenMap();
+        if (!map) {
+          return ORPHAN_TOKEN;
+        }
+        const lastKnownChild = map.byPropertyKey.get(lastKnownKey);
+        if (lastKnownChild && lastKnownChild.node === this.node) {
+          return lastKnownKey;
+        }
+        if (identityInParent === void 0) {
+          return ORPHAN_TOKEN;
+        } else {
+          for (const [key, child] of map.byPropertyKey) {
+            if (child.node === this.node) {
+              return (lastKnownKey = key);
+            }
+          }
+          return ORPHAN_TOKEN;
+        }
+      },
+      ...(ngDevMode
+        ? [
+            {
+              debugName: 'keyOrOrphan',
+            },
+          ]
+        : []),
+    );
+    const isOrphaned = computed(
+      () => keyOrOrphan() === ORPHAN_TOKEN,
+      ...(ngDevMode
+        ? [
+            {
+              debugName: 'isOrphaned',
+            },
+          ]
+        : []),
+    );
+    const keyInParent = computed(
+      () => {
+        const key = keyOrOrphan();
+        if (key === ORPHAN_TOKEN) {
+          if (identityInParent === void 0) {
+            throw new RuntimeError(
+              -1902,
+              ngDevMode &&
+                `Orphan field, looking for property '${initialKeyInParent}' of ${getDebugName(parent)}`,
+            );
+          } else {
+            throw new RuntimeError(
+              1904,
+              ngDevMode && `Orphan field, can't find element in array ${getDebugName(parent)}`,
+            );
           }
         }
-        return ORPHAN_TOKEN;
-      }
-    }, ...ngDevMode ? [{
-      debugName: "keyOrOrphan"
-    }] : []);
-    const isOrphaned = computed(() => keyOrOrphan() === ORPHAN_TOKEN, ...ngDevMode ? [{
-      debugName: "isOrphaned"
-    }] : []);
-    const keyInParent = computed(() => {
-      const key = keyOrOrphan();
-      if (key === ORPHAN_TOKEN) {
-        if (identityInParent === void 0) {
-          throw new RuntimeError(-1902, ngDevMode && `Orphan field, looking for property '${initialKeyInParent}' of ${getDebugName(parent)}`);
-        } else {
-          throw new RuntimeError(1904, ngDevMode && `Orphan field, can't find element in array ${getDebugName(parent)}`);
-        }
-      }
-      return key;
-    }, ...ngDevMode ? [{
-      debugName: "keyInParent"
-    }] : []);
+        return key;
+      },
+      ...(ngDevMode
+        ? [
+            {
+              debugName: 'keyInParent',
+            },
+          ]
+        : []),
+    );
     return {
       keyInParent,
-      isOrphaned
+      isOrphaned,
     };
   }
   createChildrenMap() {
     return linkedSignal({
       source: this.value,
-      computation: (value, previous) => this.computeChildrenMap(value, previous?.value, false)
+      computation: (value, previous) => this.computeChildrenMap(value, previous?.value, false),
     });
   }
   computeChildrenMap(value, prevData, forceMaterialize) {
@@ -1168,7 +1435,7 @@ var FieldNodeStructure = class {
       }
     }
     prevData ??= {
-      byPropertyKey: /* @__PURE__ */ new Map()
+      byPropertyKey: /* @__PURE__ */ new Map(),
     };
     let materializedChildren;
     const parentIsArray = isArray(value);
@@ -1190,14 +1457,19 @@ var FieldNodeStructure = class {
         continue;
       }
       if (parentIsArray && isObject(childValue) && !isArray(childValue)) {
-        trackingKey = childValue[this.identitySymbol] ??= /* @__PURE__ */ Symbol(ngDevMode ? `id:${globalId++}` : "");
+        trackingKey = childValue[this.identitySymbol] ??= /* @__PURE__ */ Symbol(
+          ngDevMode ? `id:${globalId++}` : '',
+        );
       }
       let childNode;
       if (trackingKey) {
         if (!prevData.byTrackingKey?.has(trackingKey)) {
           materializedChildren ??= __spreadValues({}, prevData);
           materializedChildren.byTrackingKey ??= /* @__PURE__ */ new Map();
-          materializedChildren.byTrackingKey.set(trackingKey, this.createChildNode(key, trackingKey, parentIsArray));
+          materializedChildren.byTrackingKey.set(
+            trackingKey,
+            this.createChildNode(key, trackingKey, parentIsArray),
+          );
         }
         childNode = (materializedChildren ?? prevData).byTrackingKey.get(trackingKey);
       }
@@ -1206,7 +1478,7 @@ var FieldNodeStructure = class {
         materializedChildren ??= __spreadValues({}, prevData);
         materializedChildren.byPropertyKey.set(key, {
           reader: this.createReader(key),
-          node: childNode ?? this.createChildNode(key, trackingKey, parentIsArray)
+          node: childNode ?? this.createChildNode(key, trackingKey, parentIsArray),
         });
       } else if (childNode && childNode !== child.node) {
         materializedChildren ??= __spreadValues({}, prevData);
@@ -1260,28 +1532,49 @@ var ChildFieldNodeStructure = class extends FieldNodeStructure {
     this.logic = logic;
     this.parent = parent;
     this.root = this.parent.structure.root;
-    const signals = this.createKeyOrOrphanSignals("child", identityInParent, initialKeyInParent);
+    const signals = this.createKeyOrOrphanSignals('child', identityInParent, initialKeyInParent);
     this.isOrphaned = signals.isOrphaned;
     this.keyInParent = signals.keyInParent;
-    this.pathKeys = computed(() => [...parent.structure.pathKeys(), this.keyInParent()], ...ngDevMode ? [{
-      debugName: "pathKeys"
-    }] : []);
+    this.pathKeys = computed(
+      () => [...parent.structure.pathKeys(), this.keyInParent()],
+      ...(ngDevMode
+        ? [
+            {
+              debugName: 'pathKeys',
+            },
+          ]
+        : []),
+    );
     this.value = deepSignal(this.parent.structure.value, this.keyInParent);
     this.childrenMap = this.createChildrenMap();
     this.fieldManager.structures.add(this);
   }
 };
 var globalId = 0;
-var ROOT_PATH_KEYS = computed(() => [], ...ngDevMode ? [{
-  debugName: "ROOT_PATH_KEYS"
-}] : []);
-var ROOT_KEY_IN_PARENT = computed(() => {
-  throw new RuntimeError(1905, ngDevMode && "The top-level field in the form has no parent.");
-}, ...ngDevMode ? [{
-  debugName: "ROOT_KEY_IN_PARENT"
-}] : []);
+var ROOT_PATH_KEYS = computed(
+  () => [],
+  ...(ngDevMode
+    ? [
+        {
+          debugName: 'ROOT_PATH_KEYS',
+        },
+      ]
+    : []),
+);
+var ROOT_KEY_IN_PARENT = computed(
+  () => {
+    throw new RuntimeError(1905, ngDevMode && 'The top-level field in the form has no parent.');
+  },
+  ...(ngDevMode
+    ? [
+        {
+          debugName: 'ROOT_KEY_IN_PARENT',
+        },
+      ]
+    : []),
+);
 function getDebugName(node) {
-  return `<root>.${node.structure.pathKeys().join(".")}`;
+  return `<root>.${node.structure.pathKeys().join('.')}`;
 }
 function maybeRemoveStaleArrayFields(prevData, value, identitySymbol) {
   let data;
@@ -1320,24 +1613,48 @@ function maybeRemoveStaleObjectFields(prevData, value) {
 }
 var FieldSubmitState = class {
   node;
-  selfSubmitting = signal(false, ...ngDevMode ? [{
-    debugName: "selfSubmitting"
-  }] : []);
+  selfSubmitting = signal(
+    false,
+    ...(ngDevMode
+      ? [
+          {
+            debugName: 'selfSubmitting',
+          },
+        ]
+      : []),
+  );
   submissionErrors;
   constructor(node) {
     this.node = node;
-    this.submissionErrors = linkedSignal(__spreadProps(__spreadValues({}, ngDevMode ? {
-      debugName: "submissionErrors"
-    } : {}), {
-      source: this.node.structure.value,
-      computation: () => []
-    }));
+    this.submissionErrors = linkedSignal(
+      __spreadProps(
+        __spreadValues(
+          {},
+          ngDevMode
+            ? {
+                debugName: 'submissionErrors',
+              }
+            : {},
+        ),
+        {
+          source: this.node.structure.value,
+          computation: () => [],
+        },
+      ),
+    );
   }
-  submitting = computed(() => {
-    return this.selfSubmitting() || (this.node.structure.parent?.submitting() ?? false);
-  }, ...ngDevMode ? [{
-    debugName: "submitting"
-  }] : []);
+  submitting = computed(
+    () => {
+      return this.selfSubmitting() || (this.node.structure.parent?.submitting() ?? false);
+    },
+    ...(ngDevMode
+      ? [
+          {
+            debugName: 'submitting',
+          },
+        ]
+      : []),
+  );
 };
 var FieldNode = class {
   structure;
@@ -1349,7 +1666,7 @@ var FieldNode = class {
   controlValue;
   _context = void 0;
   get context() {
-    return this._context ??= new FieldNodeContext(this);
+    return (this._context ??= new FieldNodeContext(this));
   }
   fieldProxy = new Proxy(() => this, FIELD_PROXY_HANDLER);
   pathNode;
@@ -1368,19 +1685,34 @@ var FieldNode = class {
     this.getBindingForFocus()?.focus(options);
   }
   getBindingForFocus() {
-    const own = this.formFieldBindings().filter((b) => b.focus !== void 0).reduce(firstInDom, void 0);
+    const own = this.formFieldBindings()
+      .filter((b) => b.focus !== void 0)
+      .reduce(firstInDom, void 0);
     if (own) return own;
-    return this.structure.children().map((child) => child.getBindingForFocus()).reduce(firstInDom, void 0);
+    return this.structure
+      .children()
+      .map((child) => child.getBindingForFocus())
+      .reduce(firstInDom, void 0);
   }
-  pendingSync = linkedSignal(__spreadProps(__spreadValues({}, ngDevMode ? {
-    debugName: "pendingSync"
-  } : {}), {
-    source: () => this.value(),
-    computation: (_source, previous) => {
-      previous?.value?.abort();
-      return void 0;
-    }
-  }));
+  pendingSync = linkedSignal(
+    __spreadProps(
+      __spreadValues(
+        {},
+        ngDevMode
+          ? {
+              debugName: 'pendingSync',
+            }
+          : {},
+      ),
+      {
+        source: () => this.value(),
+        computation: (_source, previous) => {
+          previous?.value?.abort();
+          return void 0;
+        },
+      },
+    ),
+  );
   get fieldTree() {
     return this.fieldProxy;
   }
@@ -1584,7 +1916,22 @@ var FieldNode = class {
     return adapter.newRoot(fieldManager, value, pathNode, adapter);
   }
   createStructure(options) {
-    return options.kind === "root" ? new RootFieldNodeStructure(this, options.logic, options.fieldManager, options.value, this.newChild.bind(this)) : new ChildFieldNodeStructure(this, options.logic, options.parent, options.identityInParent, options.initialKeyInParent, this.newChild.bind(this));
+    return options.kind === 'root'
+      ? new RootFieldNodeStructure(
+          this,
+          options.logic,
+          options.fieldManager,
+          options.value,
+          this.newChild.bind(this),
+        )
+      : new ChildFieldNodeStructure(
+          this,
+          options.logic,
+          options.parent,
+          options.identityInParent,
+          options.initialKeyInParent,
+          this.newChild.bind(this),
+        );
   }
   newChild(key, trackingId, isArray2) {
     let childPath;
@@ -1597,22 +1944,36 @@ var FieldNode = class {
       childLogic = this.structure.logic.getChild(key);
     }
     return this.fieldAdapter.newChild({
-      kind: "child",
+      kind: 'child',
       parent: this,
       pathNode: childPath,
       logic: childLogic,
       initialKeyInParent: key,
       identityInParent: trackingId,
-      fieldAdapter: this.fieldAdapter
+      fieldAdapter: this.fieldAdapter,
     });
   }
 };
-var EMPTY = computed(() => [], ...ngDevMode ? [{
-  debugName: "EMPTY"
-}] : []);
-var FALSE = computed(() => false, ...ngDevMode ? [{
-  debugName: "FALSE"
-}] : []);
+var EMPTY = computed(
+  () => [],
+  ...(ngDevMode
+    ? [
+        {
+          debugName: 'EMPTY',
+        },
+      ]
+    : []),
+);
+var FALSE = computed(
+  () => false,
+  ...(ngDevMode
+    ? [
+        {
+          debugName: 'FALSE',
+        },
+      ]
+    : []),
+);
 function firstInDom(a, b) {
   if (!a) return b;
   if (!b) return a;
@@ -1621,12 +1982,26 @@ function firstInDom(a, b) {
 }
 var FieldNodeState = class {
   node;
-  selfTouched = signal(false, ...ngDevMode ? [{
-    debugName: "selfTouched"
-  }] : []);
-  selfDirty = signal(false, ...ngDevMode ? [{
-    debugName: "selfDirty"
-  }] : []);
+  selfTouched = signal(
+    false,
+    ...(ngDevMode
+      ? [
+          {
+            debugName: 'selfTouched',
+          },
+        ]
+      : []),
+  );
+  selfDirty = signal(
+    false,
+    ...(ngDevMode
+      ? [
+          {
+            debugName: 'selfDirty',
+          },
+        ]
+      : []),
+  );
   markAsTouched() {
     this.selfTouched.set(true);
   }
@@ -1639,72 +2014,163 @@ var FieldNodeState = class {
   markAsUntouched() {
     this.selfTouched.set(false);
   }
-  formFieldBindings = signal([], ...ngDevMode ? [{
-    debugName: "formFieldBindings"
-  }] : []);
+  formFieldBindings = signal(
+    [],
+    ...(ngDevMode
+      ? [
+          {
+            debugName: 'formFieldBindings',
+          },
+        ]
+      : []),
+  );
   constructor(node) {
     this.node = node;
   }
-  dirty = computed(() => {
-    const selfDirtyValue = this.selfDirty() && !this.isNonInteractive();
-    return this.node.structure.reduceChildren(selfDirtyValue, (child, value) => value || child.nodeState.dirty(), shortCircuitTrue);
-  }, ...ngDevMode ? [{
-    debugName: "dirty"
-  }] : []);
-  touched = computed(() => {
-    const selfTouchedValue = this.selfTouched() && !this.isNonInteractive();
-    return this.node.structure.reduceChildren(selfTouchedValue, (child, value) => value || child.nodeState.touched(), shortCircuitTrue);
-  }, ...ngDevMode ? [{
-    debugName: "touched"
-  }] : []);
-  disabledReasons = computed(() => [...this.node.structure.parent?.nodeState.disabledReasons() ?? [], ...this.node.logicNode.logic.disabledReasons.compute(this.node.context)], __spreadProps(__spreadValues({}, ngDevMode ? {
-    debugName: "disabledReasons"
-  } : {}), {
-    equal: shallowArrayEquals
-  }));
-  disabled = computed(() => !!this.disabledReasons().length, ...ngDevMode ? [{
-    debugName: "disabled"
-  }] : []);
-  readonly = computed(() => (this.node.structure.parent?.nodeState.readonly() || this.node.logicNode.logic.readonly.compute(this.node.context)) ?? false, ...ngDevMode ? [{
-    debugName: "readonly"
-  }] : []);
-  hidden = computed(() => (this.node.structure.parent?.nodeState.hidden() || this.node.logicNode.logic.hidden.compute(this.node.context)) ?? false, ...ngDevMode ? [{
-    debugName: "hidden"
-  }] : []);
-  name = computed(() => {
-    const parent = this.node.structure.parent;
-    if (!parent) {
-      return this.node.structure.fieldManager.rootName;
-    }
-    return `${parent.name()}.${this.node.structure.keyInParent()}`;
-  }, ...ngDevMode ? [{
-    debugName: "name"
-  }] : []);
-  debouncer = computed(() => {
-    if (this.node.logicNode.logic.hasMetadata(DEBOUNCER)) {
-      const debouncerLogic = this.node.logicNode.logic.getMetadata(DEBOUNCER);
-      const debouncer = debouncerLogic.compute(this.node.context);
-      if (debouncer) {
-        return (signal2) => debouncer(this.node.context, signal2);
+  dirty = computed(
+    () => {
+      const selfDirtyValue = this.selfDirty() && !this.isNonInteractive();
+      return this.node.structure.reduceChildren(
+        selfDirtyValue,
+        (child, value) => value || child.nodeState.dirty(),
+        shortCircuitTrue,
+      );
+    },
+    ...(ngDevMode
+      ? [
+          {
+            debugName: 'dirty',
+          },
+        ]
+      : []),
+  );
+  touched = computed(
+    () => {
+      const selfTouchedValue = this.selfTouched() && !this.isNonInteractive();
+      return this.node.structure.reduceChildren(
+        selfTouchedValue,
+        (child, value) => value || child.nodeState.touched(),
+        shortCircuitTrue,
+      );
+    },
+    ...(ngDevMode
+      ? [
+          {
+            debugName: 'touched',
+          },
+        ]
+      : []),
+  );
+  disabledReasons = computed(
+    () => [
+      ...(this.node.structure.parent?.nodeState.disabledReasons() ?? []),
+      ...this.node.logicNode.logic.disabledReasons.compute(this.node.context),
+    ],
+    __spreadProps(
+      __spreadValues(
+        {},
+        ngDevMode
+          ? {
+              debugName: 'disabledReasons',
+            }
+          : {},
+      ),
+      {
+        equal: shallowArrayEquals,
+      },
+    ),
+  );
+  disabled = computed(
+    () => !!this.disabledReasons().length,
+    ...(ngDevMode
+      ? [
+          {
+            debugName: 'disabled',
+          },
+        ]
+      : []),
+  );
+  readonly = computed(
+    () =>
+      (this.node.structure.parent?.nodeState.readonly() ||
+        this.node.logicNode.logic.readonly.compute(this.node.context)) ??
+      false,
+    ...(ngDevMode
+      ? [
+          {
+            debugName: 'readonly',
+          },
+        ]
+      : []),
+  );
+  hidden = computed(
+    () =>
+      (this.node.structure.parent?.nodeState.hidden() ||
+        this.node.logicNode.logic.hidden.compute(this.node.context)) ??
+      false,
+    ...(ngDevMode
+      ? [
+          {
+            debugName: 'hidden',
+          },
+        ]
+      : []),
+  );
+  name = computed(
+    () => {
+      const parent = this.node.structure.parent;
+      if (!parent) {
+        return this.node.structure.fieldManager.rootName;
       }
-    }
-    return this.node.structure.parent?.nodeState.debouncer?.();
-  }, ...ngDevMode ? [{
-    debugName: "debouncer"
-  }] : []);
-  isNonInteractive = computed(() => this.hidden() || this.disabled() || this.readonly(), ...ngDevMode ? [{
-    debugName: "isNonInteractive"
-  }] : []);
+      return `${parent.name()}.${this.node.structure.keyInParent()}`;
+    },
+    ...(ngDevMode
+      ? [
+          {
+            debugName: 'name',
+          },
+        ]
+      : []),
+  );
+  debouncer = computed(
+    () => {
+      if (this.node.logicNode.logic.hasMetadata(DEBOUNCER)) {
+        const debouncerLogic = this.node.logicNode.logic.getMetadata(DEBOUNCER);
+        const debouncer = debouncerLogic.compute(this.node.context);
+        if (debouncer) {
+          return (signal2) => debouncer(this.node.context, signal2);
+        }
+      }
+      return this.node.structure.parent?.nodeState.debouncer?.();
+    },
+    ...(ngDevMode
+      ? [
+          {
+            debugName: 'debouncer',
+          },
+        ]
+      : []),
+  );
+  isNonInteractive = computed(
+    () => this.hidden() || this.disabled() || this.readonly(),
+    ...(ngDevMode
+      ? [
+          {
+            debugName: 'isNonInteractive',
+          },
+        ]
+      : []),
+  );
 };
 var BasicFieldAdapter = class {
   newRoot(fieldManager, value, pathNode, adapter) {
     return new FieldNode({
-      kind: "root",
+      kind: 'root',
       fieldManager,
       value,
       pathNode,
       logic: pathNode.builder.build(),
-      fieldAdapter: adapter
+      fieldAdapter: adapter,
     });
   }
   newChild(options) {
@@ -1731,18 +2197,21 @@ var FormFieldManager = class {
   }
   structures = /* @__PURE__ */ new Set();
   createFieldManagementEffect(root) {
-    effect(() => {
-      const liveStructures = /* @__PURE__ */ new Set();
-      this.markStructuresLive(root, liveStructures);
-      for (const structure of this.structures) {
-        if (!liveStructures.has(structure)) {
-          this.structures.delete(structure);
-          untracked(() => structure.destroy());
+    effect(
+      () => {
+        const liveStructures = /* @__PURE__ */ new Set();
+        this.markStructuresLive(root, liveStructures);
+        for (const structure of this.structures) {
+          if (!liveStructures.has(structure)) {
+            this.structures.delete(structure);
+            untracked(() => structure.destroy());
+          }
         }
-      }
-    }, {
-      injector: this.injector
-    });
+      },
+      {
+        injector: this.injector,
+      },
+    );
   }
   markStructuresLive(structure, liveStructures) {
     liveStructures.add(structure);
@@ -1752,7 +2221,9 @@ var FormFieldManager = class {
   }
 };
 var nextFormId = 0;
-var REGISTER_WEBMCP_FORM = new InjectionToken(typeof ngDevMode !== "undefined" && ngDevMode ? "REGISTER_WEBMCP_FORM" : "");
+var REGISTER_WEBMCP_FORM = new InjectionToken(
+  typeof ngDevMode !== 'undefined' && ngDevMode ? 'REGISTER_WEBMCP_FORM' : '',
+);
 function normalizeFormArgs(args) {
   let model;
   let schema2;
@@ -1778,21 +2249,25 @@ function form(...args) {
   const adapter = options?.adapter ?? new BasicFieldAdapter();
   const fieldRoot = FieldNode.newRoot(fieldManager, model, pathNode, adapter);
   fieldManager.createFieldManagementEffect(fieldRoot.structure);
-  const {
-    experimentalWebMcpTool
-  } = options ?? {};
+  const { experimentalWebMcpTool } = options ?? {};
   if (experimentalWebMcpTool) {
-    const registerWebMcpForm = runInInjectionContext(injector, () => inject(REGISTER_WEBMCP_FORM, {
-      optional: true
-    }));
+    const registerWebMcpForm = runInInjectionContext(injector, () =>
+      inject(REGISTER_WEBMCP_FORM, {
+        optional: true,
+      }),
+    );
     if (registerWebMcpForm) {
-      runInInjectionContext(injector, () => registerWebMcpForm(fieldRoot.fieldTree, {
-        name: experimentalWebMcpTool.name,
-        description: experimentalWebMcpTool.description
-      }));
+      runInInjectionContext(injector, () =>
+        registerWebMcpForm(fieldRoot.fieldTree, {
+          name: experimentalWebMcpTool.name,
+          description: experimentalWebMcpTool.description,
+        }),
+      );
     } else {
-      if (typeof ngDevMode !== "undefined" && ngDevMode) {
-        throw new Error(`Cannot register form "${experimentalWebMcpTool.name}" as a WebMCP tool. Make sure to use \`provideExperimentalWebMcpForms()\` in your application bootstrap configuration.`);
+      if (typeof ngDevMode !== 'undefined' && ngDevMode) {
+        throw new Error(
+          `Cannot register form "${experimentalWebMcpTool.name}" as a WebMCP tool. Make sure to use \`provideExperimentalWebMcpForms()\` in your application bootstrap configuration.`,
+        );
       }
     }
   }
@@ -1806,14 +2281,21 @@ async function submit(form2, options) {
   const field = options === void 0 ? node.structure.root.fieldProxy : form2;
   const detail = {
     root: node.structure.root.fieldProxy,
-    submitted: form2
+    submitted: form2,
   };
-  options = typeof options === "function" ? {
-    action: options
-  } : options ?? node.structure.fieldManager.submitOptions;
+  options =
+    typeof options === 'function'
+      ? {
+          action: options,
+        }
+      : (options ?? node.structure.fieldManager.submitOptions);
   const action = options?.action;
   if (!action) {
-    throw new RuntimeError(1915, (typeof ngDevMode === "undefined" || ngDevMode) && "Cannot submit form with no submit action. Specify the action when creating the form, or as an additional argument to `submit()`.");
+    throw new RuntimeError(
+      1915,
+      (typeof ngDevMode === 'undefined' || ngDevMode) &&
+        'Cannot submit form with no submit action. Specify the action when creating the form, or as an additional argument to `submit()`.',
+    );
   }
   node.markAsTouched();
   const onInvalid = options?.onInvalid;
@@ -1823,7 +2305,7 @@ async function submit(form2, options) {
       node.submitState.selfSubmitting.set(true);
       const errors = await untracked(() => action?.(field, detail));
       errors && setSubmissionErrors(node, errors);
-      return !errors || isArray(errors) && errors.length === 0;
+      return !errors || (isArray(errors) && errors.length === 0);
     } else {
       untracked(() => onInvalid?.(field, detail));
     }
@@ -1834,9 +2316,9 @@ async function submit(form2, options) {
 }
 function shouldRunAction(node, ignoreValidators) {
   switch (ignoreValidators) {
-    case "all":
+    case 'all':
       return true;
-    case "none":
+    case 'none':
       return untracked(node.valid);
     default:
       return !untracked(node.invalid);
@@ -1862,16 +2344,12 @@ function setSubmissionErrors(submittedField, errors) {
   }
 }
 var CompatValidationError = class {
-  kind = "compat";
+  kind = 'compat';
   control;
   fieldTree;
   context;
   message;
-  constructor({
-    context,
-    kind,
-    control
-  }) {
+  constructor({ context, kind, control }) {
     this.context = context;
     this.kind = kind;
     this.control = control;
@@ -1895,7 +2373,7 @@ function reactiveErrorsToSignalErrors(errors, control) {
     return new CompatValidationError({
       context,
       kind,
-      control
+      control,
     });
   });
 }
@@ -1906,19 +2384,21 @@ function reactiveErrorsToSignalErrors(errors, control) {
  * (c) 2010-2026 Google LLC. https://angular.dev/
  * License: MIT
  */
-var SIGNAL_FORMS_CONFIG = new InjectionToken(typeof ngDevMode !== "undefined" && ngDevMode ? "SIGNAL_FORMS_CONFIG" : "");
+var SIGNAL_FORMS_CONFIG = new InjectionToken(
+  typeof ngDevMode !== 'undefined' && ngDevMode ? 'SIGNAL_FORMS_CONFIG' : '',
+);
 function getLengthOrSize(value) {
   const v = value;
-  return typeof v.length === "number" ? v.length : v.size;
+  return typeof v.length === 'number' ? v.length : v.size;
 }
 function getOption(opt, ctx) {
   return opt instanceof Function ? opt(ctx) : opt;
 }
 function isEmpty(value) {
-  if (typeof value === "number") {
+  if (typeof value === 'number') {
     return isNaN(value);
   }
-  return value === "" || value === false || value == null;
+  return value === '' || value === false || value == null;
 }
 function normalizeErrors2(error) {
   if (error === void 0) {
@@ -1950,7 +2430,7 @@ function emailError(options) {
 }
 var BaseNgValidationError = class {
   __brand = void 0;
-  kind = "";
+  kind = '';
   fieldTree;
   message;
   constructor(options) {
@@ -1960,11 +2440,11 @@ var BaseNgValidationError = class {
   }
 };
 var RequiredValidationError = class extends BaseNgValidationError {
-  kind = "required";
+  kind = 'required';
 };
 var MinLengthValidationError = class extends BaseNgValidationError {
   minLength;
-  kind = "minLength";
+  kind = 'minLength';
   constructor(minLength2, options) {
     super(options);
     this.minLength = minLength2;
@@ -1972,19 +2452,20 @@ var MinLengthValidationError = class extends BaseNgValidationError {
 };
 var PatternValidationError = class extends BaseNgValidationError {
   pattern;
-  kind = "pattern";
+  kind = 'pattern';
   constructor(pattern2, options) {
     super(options);
     this.pattern = pattern2;
   }
 };
 var EmailValidationError = class extends BaseNgValidationError {
-  kind = "email";
+  kind = 'email';
 };
 var NativeInputParseError = class extends BaseNgValidationError {
-  kind = "parse";
+  kind = 'parse';
 };
-var EMAIL_REGEXP = /^(?=.{1,254}$)(?=.{1,64}@)[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+var EMAIL_REGEXP =
+  /^(?=.{1,254}$)(?=.{1,64}@)[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
 function email(path, config) {
   validate(path, (ctx) => {
     if (config?.when && !config.when(ctx)) {
@@ -1998,7 +2479,7 @@ function email(path, config) {
         return getOption(config.error, ctx);
       } else {
         return emailError({
-          message: getOption(config?.message, ctx)
+          message: getOption(config?.message, ctx),
         });
       }
     }
@@ -2010,11 +2491,9 @@ function minLength(path, minLength2, config) {
     if (config?.when && !config.when(ctx)) {
       return void 0;
     }
-    return typeof minLength2 === "number" ? minLength2 : minLength2(ctx);
+    return typeof minLength2 === 'number' ? minLength2 : minLength2(ctx);
   });
-  metadata(path, MIN_LENGTH, ({
-    state
-  }) => state.metadata(MIN_LENGTH_MEMO)());
+  metadata(path, MIN_LENGTH, ({ state }) => state.metadata(MIN_LENGTH_MEMO)());
   validate(path, (ctx) => {
     if (isEmpty(ctx.value())) {
       return void 0;
@@ -2028,7 +2507,7 @@ function minLength(path, minLength2, config) {
         return getOption(config.error, ctx);
       } else {
         return minLengthError(minLength3, {
-          message: getOption(config?.message, ctx)
+          message: getOption(config?.message, ctx),
         });
       }
     }
@@ -2042,9 +2521,7 @@ function pattern(path, pattern2, config) {
     }
     return pattern2 instanceof RegExp ? pattern2 : pattern2(ctx);
   });
-  metadata(path, PATTERN, ({
-    state
-  }) => state.metadata(PATTERN_MEMO)());
+  metadata(path, PATTERN, ({ state }) => state.metadata(PATTERN_MEMO)());
   validate(path, (ctx) => {
     if (isEmpty(ctx.value())) {
       return void 0;
@@ -2058,7 +2535,7 @@ function pattern(path, pattern2, config) {
         return getOption(config.error, ctx);
       } else {
         return patternError(pattern3, {
-          message: getOption(config?.message, ctx)
+          message: getOption(config?.message, ctx),
         });
       }
     }
@@ -2066,17 +2543,17 @@ function pattern(path, pattern2, config) {
   });
 }
 function required(path, config) {
-  const REQUIRED_MEMO = metadata(path, createMetadataKey(), (ctx) => config?.when ? config.when(ctx) : true);
-  metadata(path, REQUIRED, ({
-    state
-  }) => state.metadata(REQUIRED_MEMO)());
+  const REQUIRED_MEMO = metadata(path, createMetadataKey(), (ctx) =>
+    config?.when ? config.when(ctx) : true,
+  );
+  metadata(path, REQUIRED, ({ state }) => state.metadata(REQUIRED_MEMO)());
   validate(path, (ctx) => {
     if (ctx.state.metadata(REQUIRED_MEMO)() && isEmpty(ctx.value())) {
       if (config?.error) {
         return getOption(config.error, ctx);
       } else {
         return requiredError({
-          message: getOption(config?.message, ctx)
+          message: getOption(config?.message, ctx),
         });
       }
     }
@@ -2084,13 +2561,23 @@ function required(path, config) {
   });
 }
 function createParser(getValue, setValue, parse) {
-  const errors = linkedSignal(__spreadProps(__spreadValues({}, ngDevMode ? {
-    debugName: "errors"
-  } : {}), {
-    source: getValue,
-    computation: () => [],
-    equal: shallowArrayEquals
-  }));
+  const errors = linkedSignal(
+    __spreadProps(
+      __spreadValues(
+        {},
+        ngDevMode
+          ? {
+              debugName: 'errors',
+            }
+          : {},
+      ),
+      {
+        source: getValue,
+        computation: () => [],
+        equal: shallowArrayEquals,
+      },
+    ),
+  );
   const setRawValue = (rawValue) => {
     const result = parse(rawValue);
     errors.set(normalizeErrors2(result.error));
@@ -2105,7 +2592,7 @@ function createParser(getValue, setValue, parse) {
   return {
     errors: errors.asReadonly(),
     setRawValue,
-    reset
+    reset,
   };
 }
 var InteropNgControl = class {
@@ -2149,18 +2636,18 @@ var InteropNgControl = class {
   }
   get status() {
     if (this.field().disabled()) {
-      return "DISABLED";
+      return 'DISABLED';
     }
     if (this.field().valid()) {
-      return "VALID";
+      return 'VALID';
     }
     if (this.field().invalid()) {
-      return "INVALID";
+      return 'INVALID';
     }
     if (this.field().pending()) {
-      return "PENDING";
+      return 'PENDING';
     }
-    throw new RuntimeError(1910, ngDevMode && "Unknown form control status");
+    throw new RuntimeError(1910, ngDevMode && 'Unknown form control status');
   }
   valueAccessor = null;
   hasValidator(validator) {
@@ -2169,26 +2656,25 @@ var InteropNgControl = class {
     }
     return false;
   }
-  updateValueAndValidity() {
-  }
+  updateValueAndValidity() {}
 };
 var FIELD_STATE_KEY_TO_CONTROL_BINDING = {
-  disabled: "disabled",
-  disabledReasons: "disabledReasons",
-  dirty: "dirty",
-  errors: "errors",
-  hidden: "hidden",
-  invalid: "invalid",
-  max: "max",
-  maxLength: "maxLength",
-  min: "min",
-  minLength: "minLength",
-  name: "name",
-  pattern: "pattern",
-  pending: "pending",
-  readonly: "readonly",
-  required: "required",
-  touched: "touched"
+  disabled: 'disabled',
+  disabledReasons: 'disabledReasons',
+  dirty: 'dirty',
+  errors: 'errors',
+  hidden: 'hidden',
+  invalid: 'invalid',
+  max: 'max',
+  maxLength: 'maxLength',
+  min: 'min',
+  minLength: 'minLength',
+  name: 'name',
+  pattern: 'pattern',
+  pending: 'pending',
+  readonly: 'readonly',
+  required: 'required',
+  touched: 'touched',
 };
 var CONTROL_BINDING_TO_FIELD_STATE_KEY = /* @__PURE__ */ (() => {
   const map = {};
@@ -2201,7 +2687,8 @@ function readFieldStateBindingValue(fieldState, key) {
   const property = CONTROL_BINDING_TO_FIELD_STATE_KEY[key];
   return fieldState[property]?.();
 }
-var CONTROL_BINDING_NAMES = /* @__PURE__ */ (() => Object.values(FIELD_STATE_KEY_TO_CONTROL_BINDING))();
+var CONTROL_BINDING_NAMES = /* @__PURE__ */ (() =>
+  Object.values(FIELD_STATE_KEY_TO_CONTROL_BINDING))();
 function createBindings() {
   return {};
 }
@@ -2216,104 +2703,109 @@ function getNativeControlValue(element, currentValue, validityMonitor) {
   let modelValue;
   if (isInput(element) && validityMonitor.isBadInput(element)) {
     return {
-      error: new NativeInputParseError()
+      error: new NativeInputParseError(),
     };
   }
   switch (element.type) {
-    case "checkbox":
+    case 'checkbox':
       return {
-        value: element.checked
+        value: element.checked,
       };
-    case "number":
-    case "range":
-    case "datetime-local":
+    case 'number':
+    case 'range':
+    case 'datetime-local':
       modelValue = untracked(currentValue);
-      if (typeof modelValue === "number" || modelValue === null) {
+      if (typeof modelValue === 'number' || modelValue === null) {
         return {
-          value: element.value === "" ? null : element.valueAsNumber
+          value: element.value === '' ? null : element.valueAsNumber,
         };
       }
       break;
-    case "date":
-    case "month":
-    case "time":
-    case "week":
+    case 'date':
+    case 'month':
+    case 'time':
+    case 'week':
       modelValue = untracked(currentValue);
       if (modelValue === null || modelValue instanceof Date) {
         return {
-          value: element.valueAsDate
+          value: element.valueAsDate,
         };
-      } else if (typeof modelValue === "number") {
+      } else if (typeof modelValue === 'number') {
         return {
-          value: element.valueAsNumber
+          value: element.valueAsNumber,
         };
       }
       break;
   }
-  if (element.tagName === "INPUT" && element.type === "text") {
+  if (element.tagName === 'INPUT' && element.type === 'text') {
     modelValue ??= untracked(currentValue);
-    if (typeof modelValue === "number" || modelValue === null) {
-      if (element.value === "") {
+    if (typeof modelValue === 'number' || modelValue === null) {
+      if (element.value === '') {
         return {
-          value: null
+          value: null,
         };
       }
       const parsed = Number(element.value);
       if (Number.isNaN(parsed)) {
         return {
-          error: new NativeInputParseError()
+          error: new NativeInputParseError(),
         };
       }
       return {
-        value: parsed
+        value: parsed,
       };
     }
   }
   return {
-    value: element.value
+    value: element.value,
   };
 }
 function setNativeControlValue(element, value) {
   switch (element.type) {
-    case "checkbox":
+    case 'checkbox':
       element.checked = value;
       return;
-    case "radio":
+    case 'radio':
       element.checked = value === element.value;
       return;
-    case "number":
-    case "range":
-    case "datetime-local":
-      if (typeof value === "number") {
+    case 'number':
+    case 'range':
+    case 'datetime-local':
+      if (typeof value === 'number') {
         setNativeNumberControlValue(element, value);
         return;
       } else if (value === null) {
-        element.value = "";
+        element.value = '';
         return;
       }
       break;
-    case "date":
-    case "month":
-    case "time":
-    case "week":
+    case 'date':
+    case 'month':
+    case 'time':
+    case 'week':
       if (value === null || value instanceof Date) {
         element.valueAsDate = value;
         return;
-      } else if (typeof value === "number") {
+      } else if (typeof value === 'number') {
         setNativeNumberControlValue(element, value);
         return;
       }
   }
-  if (element.tagName === "INPUT" && element.type === "text") {
-    if (typeof value === "number") {
-      element.value = isNaN(value) ? "" : String(value);
+  if (element.tagName === 'INPUT' && element.type === 'text') {
+    if (typeof value === 'number') {
+      element.value = isNaN(value) ? '' : String(value);
       return;
     }
     if (value === null) {
-      if (typeof ngDevMode !== "undefined" && ngDevMode) {
-        console.warn(formatRuntimeError(1921, `The text input ${element.name} received a null value. Text inputs should use empty strings to represent null values.  The input's value will be set to an empty string instead.`));
+      if (typeof ngDevMode !== 'undefined' && ngDevMode) {
+        console.warn(
+          formatRuntimeError(
+            1921,
+            `The text input ${element.name} received a null value. Text inputs should use empty strings to represent null values.  The input's value will be set to an empty string instead.`,
+          ),
+        );
       }
-      element.value = "";
+      element.value = '';
       return;
     }
   }
@@ -2321,46 +2813,56 @@ function setNativeControlValue(element, value) {
 }
 function setNativeNumberControlValue(element, value) {
   if (isNaN(value)) {
-    element.value = "";
+    element.value = '';
   } else {
     element.valueAsNumber = value;
   }
 }
 function isInput(element) {
-  return element.tagName === "INPUT";
+  return element.tagName === 'INPUT';
 }
 function inputRequiresValidityTracking(input2) {
-  return input2.type === "date" || input2.type === "datetime-local" || input2.type === "month" || input2.type === "time" || input2.type === "week";
+  return (
+    input2.type === 'date' ||
+    input2.type === 'datetime-local' ||
+    input2.type === 'month' ||
+    input2.type === 'time' ||
+    input2.type === 'week'
+  );
 }
 function formatDateForInput(date, type) {
   const year = date.getUTCFullYear();
-  const month = String(date.getUTCMonth() + 1).padStart(2, "0");
-  if (type === "month") {
+  const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+  if (type === 'month') {
     return `${year}-${month}`;
   }
-  const day = String(date.getUTCDate()).padStart(2, "0");
+  const day = String(date.getUTCDate()).padStart(2, '0');
   return `${year}-${month}-${day}`;
 }
 function formatDateForMinMax(name, value, type) {
-  if (value instanceof Date && (name === "min" || name === "max") && (type === "date" || type === "month")) {
+  if (
+    value instanceof Date &&
+    (name === 'min' || name === 'max') &&
+    (type === 'date' || type === 'month')
+  ) {
     return formatDateForInput(value, type);
   }
   return value;
 }
 function customControlCreate(host, parent) {
   host.listenToCustomControlModel((value) => parent.state().controlValue.set(value));
-  host.listenToCustomControlOutput("touch", () => parent.state().markAsTouched());
+  host.listenToCustomControlOutput('touch', () => parent.state().markAsTouched());
   parent.registerAsBinding(host.customControl);
   const bindings = createBindings();
   return () => {
     const state = parent.state();
     const controlValue = state.controlValue();
-    if (bindingUpdated(bindings, "controlValue", controlValue)) {
+    if (bindingUpdated(bindings, 'controlValue', controlValue)) {
       host.setCustomControlModelInput(controlValue);
     }
     for (const name of CONTROL_BINDING_NAMES) {
       let value;
-      if (name === "errors") {
+      if (name === 'errors') {
         value = parent.errors();
       } else {
         value = readFieldStateBindingValue(state, name);
@@ -2376,18 +2878,18 @@ function customControlCreate(host, parent) {
   };
 }
 function isValidatorObject(v) {
-  return typeof v === "object" && v !== null;
+  return typeof v === 'object' && v !== null;
 }
 function cvaControlCreate(host, parent) {
   const bindings = createBindings();
   parent.controlValueAccessor.registerOnChange((value) => {
-    bindings["controlValue"] = value;
+    bindings['controlValue'] = value;
     parent.state().controlValue.set(value);
   });
   parent.controlValueAccessor.registerOnTouched(() => parent.state().markAsTouched());
   const legacyValidators = parent.injector.get(NG_VALIDATORS, null, {
     optional: true,
-    self: true
+    self: true,
   });
   if (legacyValidators) {
     let version;
@@ -2399,35 +2901,44 @@ function cvaControlCreate(host, parent) {
         });
       }
     }
-    const validatorFns = legacyValidators.map((v) => typeof v === "function" ? v : v.validate.bind(v));
+    const validatorFns = legacyValidators.map((v) =>
+      typeof v === 'function' ? v : v.validate.bind(v),
+    );
     const mergedValidator = Validators.compose(validatorFns);
-    const parseErrors = computed(() => {
-      version?.();
-      const errors = mergedValidator ? mergedValidator(parent.interopNgControl.control) : null;
-      return reactiveErrorsToSignalErrors(errors, parent.interopNgControl.control);
-    }, ...ngDevMode ? [{
-      debugName: "parseErrors"
-    }] : []);
+    const parseErrors = computed(
+      () => {
+        version?.();
+        const errors = mergedValidator ? mergedValidator(parent.interopNgControl.control) : null;
+        return reactiveErrorsToSignalErrors(errors, parent.interopNgControl.control);
+      },
+      ...(ngDevMode
+        ? [
+            {
+              debugName: 'parseErrors',
+            },
+          ]
+        : []),
+    );
     parent.parseErrorsSource.set(parseErrors);
   }
   parent.registerAsBinding({
     reset: () => {
       const value = parent.state().value();
-      bindings["controlValue"] = value;
+      bindings['controlValue'] = value;
       untracked(() => parent.controlValueAccessor.writeValue(value));
-    }
+    },
   });
   return () => {
     const fieldState = parent.state();
     const controlValue = fieldState.controlValue();
-    if (bindingUpdated(bindings, "controlValue", controlValue)) {
+    if (bindingUpdated(bindings, 'controlValue', controlValue)) {
       untracked(() => parent.controlValueAccessor.writeValue(controlValue));
     }
     for (const name of CONTROL_BINDING_NAMES) {
       const value = readFieldStateBindingValue(fieldState, name);
       if (bindingUpdated(bindings, name, value)) {
         const propertyWasSet = host.setInputOnDirectives(name, value);
-        if (name === "disabled" && parent.controlValueAccessor.setDisabledState) {
+        if (name === 'disabled' && parent.controlValueAccessor.setDisabledState) {
           untracked(() => parent.controlValueAccessor.setDisabledState(value));
         } else if (!propertyWasSet && parent.elementAcceptsNativeProperty(name)) {
           setNativeDomProperty(parent.renderer, parent.nativeFormElement, name, value);
@@ -2437,7 +2948,7 @@ function cvaControlCreate(host, parent) {
   };
 }
 function observeSelectMutations(select, onMutation, destroyRef) {
-  if (typeof MutationObserver !== "function") {
+  if (typeof MutationObserver !== 'function') {
     return;
   }
   const observer = new MutationObserver((mutations) => {
@@ -2447,15 +2958,15 @@ function observeSelectMutations(select, onMutation, destroyRef) {
   });
   observer.observe(select, {
     attributes: true,
-    attributeFilter: ["value"],
+    attributeFilter: ['value'],
     characterData: true,
     childList: true,
-    subtree: true
+    subtree: true,
   });
   destroyRef.onDestroy(() => observer.disconnect());
 }
 function isRelevantSelectMutation(mutation) {
-  if (mutation.type === "childList" || mutation.type === "characterData") {
+  if (mutation.type === 'childList' || mutation.type === 'characterData') {
     if (mutation.target instanceof Comment) {
       return false;
     }
@@ -2471,7 +2982,7 @@ function isRelevantSelectMutation(mutation) {
     }
     return false;
   }
-  if (mutation.type === "attributes" && mutation.target instanceof HTMLOptionElement) {
+  if (mutation.type === 'attributes' && mutation.target instanceof HTMLOptionElement) {
     return true;
   }
   return false;
@@ -2479,27 +2990,35 @@ function isRelevantSelectMutation(mutation) {
 function nativeControlCreate(host, parent, parseErrorsSource, validityMonitor) {
   let updateMode = false;
   const input2 = parent.nativeFormElement;
-  const parser = createParser(() => parent.state().value(), (rawValue) => parent.state().controlValue.set(rawValue), (_rawValue) => getNativeControlValue(input2, parent.state().value, validityMonitor));
+  const parser = createParser(
+    () => parent.state().value(),
+    (rawValue) => parent.state().controlValue.set(rawValue),
+    (_rawValue) => getNativeControlValue(input2, parent.state().value, validityMonitor),
+  );
   parseErrorsSource.set(parser.errors);
   parent.onReset = () => {
     parser.reset();
     const value = parent.state().value();
-    bindings["controlValue"] = value;
+    bindings['controlValue'] = value;
     setNativeControlValue(input2, value);
   };
-  host.listenToDom("input", () => parser.setRawValue(void 0));
-  host.listenToDom("blur", () => parent.state().markAsTouched());
+  host.listenToDom('input', () => parser.setRawValue(void 0));
+  host.listenToDom('blur', () => parent.state().markAsTouched());
   if (isInput(input2) && inputRequiresValidityTracking(input2)) {
     validityMonitor.watchValidity(parent.destroyRef, input2, () => parser.setRawValue(void 0));
   }
   parent.registerAsBinding();
-  if (input2.tagName === "SELECT") {
-    observeSelectMutations(input2, () => {
-      if (!updateMode) {
-        return;
-      }
-      input2.value = parent.state().controlValue();
-    }, parent.destroyRef);
+  if (input2.tagName === 'SELECT') {
+    observeSelectMutations(
+      input2,
+      () => {
+        if (!updateMode) {
+          return;
+        }
+        input2.value = parent.state().controlValue();
+      },
+      parent.destroyRef,
+    );
   }
   const bindings = createBindings();
   return () => {
@@ -2515,35 +3034,45 @@ function nativeControlCreate(host, parent, parseErrorsSource, validityMonitor) {
       }
     }
     const controlValue = state.controlValue();
-    if (bindingUpdated(bindings, "controlValue", controlValue)) {
+    if (bindingUpdated(bindings, 'controlValue', controlValue)) {
       setNativeControlValue(input2, controlValue);
     }
     updateMode = true;
   };
 }
 var InputValidityMonitor = class _InputValidityMonitor {
-  static \u0275fac = function InputValidityMonitor_Factory(__ngFactoryType__) {
+  static ɵfac = function InputValidityMonitor_Factory(__ngFactoryType__) {
     return new (__ngFactoryType__ || _InputValidityMonitor)();
   };
-  static \u0275prov = /* @__PURE__ */ \u0275\u0275defineInjectable({
+  static ɵprov = /* @__PURE__ */ ɵɵdefineInjectable({
     token: _InputValidityMonitor,
-    factory: (__ngFactoryType__) => AnimationInputValidityMonitor.\u0275fac(__ngFactoryType__),
-    providedIn: "root"
+    factory: (__ngFactoryType__) => AnimationInputValidityMonitor.ɵfac(__ngFactoryType__),
+    providedIn: 'root',
   });
 };
 (() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(InputValidityMonitor, [{
-    type: Injectable,
-    args: [{
-      providedIn: "root",
-      useClass: forwardRef(() => AnimationInputValidityMonitor)
-    }]
-  }], null, null);
+  (typeof ngDevMode === 'undefined' || ngDevMode) &&
+    setClassMetadata(
+      InputValidityMonitor,
+      [
+        {
+          type: Injectable,
+          args: [
+            {
+              providedIn: 'root',
+              useClass: forwardRef(() => AnimationInputValidityMonitor),
+            },
+          ],
+        },
+      ],
+      null,
+      null,
+    );
 })();
 var AnimationInputValidityMonitor = class _AnimationInputValidityMonitor extends InputValidityMonitor {
   document = inject(DOCUMENT);
   cspNonce = inject(CSP_NONCE, {
-    optional: true
+    optional: true,
   });
   injectedStyles = /* @__PURE__ */ new WeakMap();
   watchValidity(destroyRef, element, callback) {
@@ -2556,20 +3085,23 @@ var AnimationInputValidityMonitor = class _AnimationInputValidityMonitor extends
     }
     const onAnimationStart = (event) => {
       const animationEvent = event;
-      if (animationEvent.animationName === "ng-valid" || animationEvent.animationName === "ng-invalid") {
+      if (
+        animationEvent.animationName === 'ng-valid' ||
+        animationEvent.animationName === 'ng-invalid'
+      ) {
         callback();
       }
     };
-    element.addEventListener("animationstart", onAnimationStart);
+    element.addEventListener('animationstart', onAnimationStart);
     destroyRef.onDestroy(() => {
-      element.removeEventListener("animationstart", onAnimationStart);
+      element.removeEventListener('animationstart', onAnimationStart);
     });
   }
   isBadInput(element) {
     return element.validity?.badInput ?? false;
   }
   createTransitionStyle(rootNode) {
-    const element = this.document.createElement("style");
+    const element = this.document.createElement('style');
     if (this.cspNonce) {
       element.nonce = this.cspNonce;
     }
@@ -2593,33 +3125,65 @@ var AnimationInputValidityMonitor = class _AnimationInputValidityMonitor extends
   ngOnDestroy() {
     this.injectedStyles.get(this.document)?.remove();
   }
-  static \u0275fac = /* @__PURE__ */ (() => {
-    let \u0275AnimationInputValidityMonitor_BaseFactory;
+  static ɵfac = /* @__PURE__ */ (() => {
+    let ɵAnimationInputValidityMonitor_BaseFactory;
     return function AnimationInputValidityMonitor_Factory(__ngFactoryType__) {
-      return (\u0275AnimationInputValidityMonitor_BaseFactory || (\u0275AnimationInputValidityMonitor_BaseFactory = \u0275\u0275getInheritedFactory(_AnimationInputValidityMonitor)))(__ngFactoryType__ || _AnimationInputValidityMonitor);
+      return (
+        ɵAnimationInputValidityMonitor_BaseFactory ||
+        (ɵAnimationInputValidityMonitor_BaseFactory = ɵɵgetInheritedFactory(
+          _AnimationInputValidityMonitor,
+        ))
+      )(__ngFactoryType__ || _AnimationInputValidityMonitor);
     };
   })();
-  static \u0275prov = /* @__PURE__ */ \u0275\u0275defineInjectable({
+  static ɵprov = /* @__PURE__ */ ɵɵdefineInjectable({
     token: _AnimationInputValidityMonitor,
-    factory: _AnimationInputValidityMonitor.\u0275fac
+    factory: _AnimationInputValidityMonitor.ɵfac,
   });
 };
 (() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(AnimationInputValidityMonitor, [{
-    type: Injectable
-  }], null, null);
+  (typeof ngDevMode === 'undefined' || ngDevMode) &&
+    setClassMetadata(
+      AnimationInputValidityMonitor,
+      [
+        {
+          type: Injectable,
+        },
+      ],
+      null,
+      null,
+    );
 })();
-var \u0275NgFieldDirective = /* @__PURE__ */ Symbol();
-var FORM_FIELD = new InjectionToken(typeof ngDevMode !== "undefined" && ngDevMode ? "FORM_FIELD" : "");
+var ɵNgFieldDirective = /* @__PURE__ */ Symbol();
+var FORM_FIELD = new InjectionToken(
+  typeof ngDevMode !== 'undefined' && ngDevMode ? 'FORM_FIELD' : '',
+);
 var FormField = class _FormField {
-  field = input.required(__spreadProps(__spreadValues({}, ngDevMode ? {
-    debugName: "field"
-  } : {}), {
-    alias: "formField"
-  }));
-  state = computed(() => this.field()(), ...ngDevMode ? [{
-    debugName: "state"
-  }] : []);
+  field = input.required(
+    __spreadProps(
+      __spreadValues(
+        {},
+        ngDevMode
+          ? {
+              debugName: 'field',
+            }
+          : {},
+      ),
+      {
+        alias: 'formField',
+      },
+    ),
+  );
+  state = computed(
+    () => this.field()(),
+    ...(ngDevMode
+      ? [
+          {
+            debugName: 'state',
+          },
+        ]
+      : []),
+  );
   renderer = inject(Renderer2);
   destroyRef = inject(DestroyRef);
   injector = inject(Injector);
@@ -2631,35 +3195,69 @@ var FormField = class _FormField {
   focuser = (options) => this.element.focus(options);
   controlValueAccessors = inject(NG_VALUE_ACCESSOR, {
     optional: true,
-    self: true
+    self: true,
   });
   config = inject(SIGNAL_FORMS_CONFIG, {
-    optional: true
+    optional: true,
   });
   validityMonitor = inject(InputValidityMonitor);
-  parseErrorsSource = signal(void 0, ...ngDevMode ? [{
-    debugName: "parseErrorsSource"
-  }] : []);
+  parseErrorsSource = signal(
+    void 0,
+    ...(ngDevMode
+      ? [
+          {
+            debugName: 'parseErrorsSource',
+          },
+        ]
+      : []),
+  );
   _interopNgControl;
   get interopNgControl() {
-    return this._interopNgControl ??= new InteropNgControl(this.state);
+    return (this._interopNgControl ??= new InteropNgControl(this.state));
   }
-  parseErrors = computed(() => this.parseErrorsSource()?.().map((err) => __spreadProps(__spreadValues({}, err), {
-    fieldTree: untracked(this.state).fieldTree,
-    formField: this
-  })) ?? [], __spreadProps(__spreadValues({}, ngDevMode ? {
-    debugName: "parseErrors"
-  } : {}), {
-    equal: shallowArrayEquals
-  }));
-  errors = computed(() => this.state().errors().filter((err) => !err.formField || err.formField === this), __spreadProps(__spreadValues({}, ngDevMode ? {
-    debugName: "errors"
-  } : {}), {
-    equal: shallowArrayEquals
-  }));
+  parseErrors = computed(
+    () =>
+      this.parseErrorsSource()?.().map((err) =>
+        __spreadProps(__spreadValues({}, err), {
+          fieldTree: untracked(this.state).fieldTree,
+          formField: this,
+        }),
+      ) ?? [],
+    __spreadProps(
+      __spreadValues(
+        {},
+        ngDevMode
+          ? {
+              debugName: 'parseErrors',
+            }
+          : {},
+      ),
+      {
+        equal: shallowArrayEquals,
+      },
+    ),
+  );
+  errors = computed(
+    () =>
+      this.state()
+        .errors()
+        .filter((err) => !err.formField || err.formField === this),
+    __spreadProps(
+      __spreadValues(
+        {},
+        ngDevMode
+          ? {
+              debugName: 'errors',
+            }
+          : {},
+      ),
+      {
+        equal: shallowArrayEquals,
+      },
+    ),
+  );
   isFieldBinding = false;
-  resetter = () => {
-  };
+  resetter = () => {};
   parseErrorsResetCallback;
   setParseErrors(source) {
     this.parseErrorsSource.set(source);
@@ -2677,27 +3275,33 @@ var FormField = class _FormField {
     return selectValueAccessor(this.interopNgControl, this.controlValueAccessors) ?? void 0;
   }
   installClassBindingEffect() {
-    const classes = Object.entries(this.config?.classes ?? {}).map(([className, computation]) => [className, computed(() => computation(this))]);
+    const classes = Object.entries(this.config?.classes ?? {}).map(([className, computation]) => [
+      className,
+      computed(() => computation(this)),
+    ]);
     if (classes.length === 0) {
       return;
     }
     const bindings = createBindings();
-    afterRenderEffect({
-      write: () => {
-        for (const [className, computation] of classes) {
-          const active = computation();
-          if (bindingUpdated(bindings, className, active)) {
-            if (active) {
-              this.renderer.addClass(this.element, className);
-            } else {
-              this.renderer.removeClass(this.element, className);
+    afterRenderEffect(
+      {
+        write: () => {
+          for (const [className, computation] of classes) {
+            const active = computation();
+            if (bindingUpdated(bindings, className, active)) {
+              if (active) {
+                this.renderer.addClass(this.element, className);
+              } else {
+                this.renderer.removeClass(this.element, className);
+              }
             }
           }
-        }
-      }
-    }, {
-      injector: this.injector
-    });
+        },
+      },
+      {
+        injector: this.injector,
+      },
+    );
   }
   focus(options) {
     this.focuser(options);
@@ -2708,7 +3312,12 @@ var FormField = class _FormField {
   }
   registerAsBinding(bindingOptions) {
     if (this.isFieldBinding) {
-      throw new RuntimeError(1913, typeof ngDevMode !== "undefined" && ngDevMode && "FormField already registered as a binding");
+      throw new RuntimeError(
+        1913,
+        typeof ngDevMode !== 'undefined' &&
+          ngDevMode &&
+          'FormField already registered as a binding',
+      );
     }
     this.isFieldBinding = true;
     this.installClassBindingEffect();
@@ -2718,123 +3327,183 @@ var FormField = class _FormField {
     if (bindingOptions?.reset) {
       this.resetter = () => bindingOptions.reset();
     }
-    effect((onCleanup) => {
-      const fieldNode = this.state();
-      fieldNode.nodeState.formFieldBindings.update((controls) => [...controls, this]);
-      onCleanup(() => {
-        fieldNode.nodeState.formFieldBindings.update((controls) => controls.filter((c) => c !== this));
-      });
-    }, {
-      injector: this.injector
-    });
-    if (typeof ngDevMode !== "undefined" && ngDevMode) {
-      effect(() => {
+    effect(
+      (onCleanup) => {
         const fieldNode = this.state();
-        if (fieldNode.hidden()) {
-          const path = fieldNode.structure.pathKeys().join(".") || "<root>";
-          console.warn(formatRuntimeError(1916, `Field '${path}' is hidden but is being rendered. Hidden fields should be removed from the DOM using @if.`));
-        }
-      }, {
-        injector: this.injector
-      });
+        fieldNode.nodeState.formFieldBindings.update((controls) => [...controls, this]);
+        onCleanup(() => {
+          fieldNode.nodeState.formFieldBindings.update((controls) =>
+            controls.filter((c) => c !== this),
+          );
+        });
+      },
+      {
+        injector: this.injector,
+      },
+    );
+    if (typeof ngDevMode !== 'undefined' && ngDevMode) {
+      effect(
+        () => {
+          const fieldNode = this.state();
+          if (fieldNode.hidden()) {
+            const path = fieldNode.structure.pathKeys().join('.') || '<root>';
+            console.warn(
+              formatRuntimeError(
+                1916,
+                `Field '${path}' is hidden but is being rendered. Hidden fields should be removed from the DOM using @if.`,
+              ),
+            );
+          }
+        },
+        {
+          injector: this.injector,
+        },
+      );
     }
   }
-  [\u0275NgFieldDirective];
-  \u0275ngControlCreate(host) {
+  [ɵNgFieldDirective];
+  ɵngControlCreate(host) {
     if (host.hasPassThrough) {
       return;
     }
     if (this.controlValueAccessor) {
-      this.\u0275ngControlUpdate = cvaControlCreate(host, this);
+      this.ɵngControlUpdate = cvaControlCreate(host, this);
     } else if (host.customControl) {
-      this.\u0275ngControlUpdate = customControlCreate(host, this);
+      this.ɵngControlUpdate = customControlCreate(host, this);
     } else if (this.elementIsNativeFormElement) {
-      this.\u0275ngControlUpdate = nativeControlCreate(host, this, this.parseErrorsSource, this.validityMonitor);
+      this.ɵngControlUpdate = nativeControlCreate(
+        host,
+        this,
+        this.parseErrorsSource,
+        this.validityMonitor,
+      );
     } else {
-      throw new RuntimeError(1914, typeof ngDevMode !== "undefined" && ngDevMode && `${host.descriptor} is an invalid [formField] directive host. The host must be a native form control (such as <input>', '<select>', or '<textarea>') or a custom form control with a 'value' or 'checked' model.`);
+      throw new RuntimeError(
+        1914,
+        typeof ngDevMode !== 'undefined' &&
+          ngDevMode &&
+          `${host.descriptor} is an invalid [formField] directive host. The host must be a native form control (such as <input>', '<select>', or '<textarea>') or a custom form control with a 'value' or 'checked' model.`,
+      );
     }
   }
-  \u0275ngControlUpdate;
+  ɵngControlUpdate;
   elementAcceptsNativeProperty(key) {
     if (!this.elementIsNativeFormElement) {
       return false;
     }
     switch (key) {
-      case "min":
-      case "max":
-        return this._elementAcceptsMinMax ??= elementAcceptsMinMax(this.element);
-      case "minLength":
-      case "maxLength":
+      case 'min':
+      case 'max':
+        return (this._elementAcceptsMinMax ??= elementAcceptsMinMax(this.element));
+      case 'minLength':
+      case 'maxLength':
         return this.elementAcceptsTextualValues;
-      case "disabled":
-      case "required":
-      case "readonly":
-      case "name":
+      case 'disabled':
+      case 'required':
+      case 'readonly':
+      case 'name':
         return true;
       default:
         return false;
     }
   }
-  static \u0275fac = function FormField_Factory(__ngFactoryType__) {
+  static ɵfac = function FormField_Factory(__ngFactoryType__) {
     return new (__ngFactoryType__ || _FormField)();
   };
-  static \u0275dir = /* @__PURE__ */ \u0275\u0275defineDirective({
+  static ɵdir = /* @__PURE__ */ ɵɵdefineDirective({
     type: _FormField,
-    selectors: [["", "formField", ""]],
+    selectors: [['', 'formField', '']],
     inputs: {
-      field: [1, "formField", "field"]
+      field: [1, 'formField', 'field'],
     },
-    exportAs: ["formField"],
-    features: [\u0275\u0275ProvidersFeature([{
-      provide: FORM_FIELD,
-      useExisting: _FormField
-    }, {
-      provide: NgControl,
-      useFactory: () => inject(_FormField).interopNgControl
-    }, {
-      provide: \u0275FORM_CONTROL_INTEGRATION,
-      useFactory: () => inject(FORM_FIELD, {
-        self: true
-      })
-    }]), \u0275\u0275ControlFeature("formField")]
+    exportAs: ['formField'],
+    features: [
+      ɵɵProvidersFeature([
+        {
+          provide: FORM_FIELD,
+          useExisting: _FormField,
+        },
+        {
+          provide: NgControl,
+          useFactory: () => inject(_FormField).interopNgControl,
+        },
+        {
+          provide: ɵFORM_CONTROL_INTEGRATION,
+          useFactory: () =>
+            inject(FORM_FIELD, {
+              self: true,
+            }),
+        },
+      ]),
+      ɵɵControlFeature('formField'),
+    ],
   });
 };
 (() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(FormField, [{
-    type: Directive,
-    args: [{
-      selector: "[formField]",
-      exportAs: "formField",
-      providers: [{
-        provide: FORM_FIELD,
-        useExisting: FormField
-      }, {
-        provide: NgControl,
-        useFactory: () => inject(FormField).interopNgControl
-      }, {
-        provide: \u0275FORM_CONTROL_INTEGRATION,
-        useFactory: () => inject(FORM_FIELD, {
-          self: true
-        })
-      }]
-    }]
-  }], null, {
-    field: [{
-      type: Input,
-      args: [{
-        isSignal: true,
-        alias: "formField",
-        required: true
-      }]
-    }]
-  });
+  (typeof ngDevMode === 'undefined' || ngDevMode) &&
+    setClassMetadata(
+      FormField,
+      [
+        {
+          type: Directive,
+          args: [
+            {
+              selector: '[formField]',
+              exportAs: 'formField',
+              providers: [
+                {
+                  provide: FORM_FIELD,
+                  useExisting: FormField,
+                },
+                {
+                  provide: NgControl,
+                  useFactory: () => inject(FormField).interopNgControl,
+                },
+                {
+                  provide: ɵFORM_CONTROL_INTEGRATION,
+                  useFactory: () =>
+                    inject(FORM_FIELD, {
+                      self: true,
+                    }),
+                },
+              ],
+            },
+          ],
+        },
+      ],
+      null,
+      {
+        field: [
+          {
+            type: Input,
+            args: [
+              {
+                isSignal: true,
+                alias: 'formField',
+                required: true,
+              },
+            ],
+          },
+        ],
+      },
+    );
 })();
 var FormRoot = class _FormRoot {
-  fieldTree = input.required(__spreadProps(__spreadValues({}, ngDevMode ? {
-    debugName: "fieldTree"
-  } : {}), {
-    alias: "formRoot"
-  }));
+  fieldTree = input.required(
+    __spreadProps(
+      __spreadValues(
+        {},
+        ngDevMode
+          ? {
+              debugName: 'fieldTree',
+            }
+          : {},
+      ),
+      {
+        alias: 'formRoot',
+      },
+    ),
+  );
   onSubmit(event) {
     event.preventDefault();
     untracked(() => {
@@ -2845,51 +3514,65 @@ var FormRoot = class _FormRoot {
       }
     });
   }
-  static \u0275fac = function FormRoot_Factory(__ngFactoryType__) {
+  static ɵfac = function FormRoot_Factory(__ngFactoryType__) {
     return new (__ngFactoryType__ || _FormRoot)();
   };
-  static \u0275dir = /* @__PURE__ */ \u0275\u0275defineDirective({
+  static ɵdir = /* @__PURE__ */ ɵɵdefineDirective({
     type: _FormRoot,
-    selectors: [["form", "formRoot", ""]],
-    hostAttrs: ["novalidate", ""],
+    selectors: [['form', 'formRoot', '']],
+    hostAttrs: ['novalidate', ''],
     hostBindings: function FormRoot_HostBindings(rf, ctx) {
       if (rf & 1) {
-        \u0275\u0275listener("submit", function FormRoot_submit_HostBindingHandler($event) {
+        ɵɵlistener('submit', function FormRoot_submit_HostBindingHandler($event) {
           return ctx.onSubmit($event);
         });
       }
     },
     inputs: {
-      fieldTree: [1, "formRoot", "fieldTree"]
-    }
+      fieldTree: [1, 'formRoot', 'fieldTree'],
+    },
   });
 };
 (() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(FormRoot, [{
-    type: Directive,
-    args: [{
-      selector: "form[formRoot]",
-      host: {
-        "novalidate": "",
-        "(submit)": "onSubmit($event)"
-      }
-    }]
-  }], null, {
-    fieldTree: [{
-      type: Input,
-      args: [{
-        isSignal: true,
-        alias: "formRoot",
-        required: true
-      }]
-    }]
-  });
+  (typeof ngDevMode === 'undefined' || ngDevMode) &&
+    setClassMetadata(
+      FormRoot,
+      [
+        {
+          type: Directive,
+          args: [
+            {
+              selector: 'form[formRoot]',
+              host: {
+                novalidate: '',
+                '(submit)': 'onSubmit($event)',
+              },
+            },
+          ],
+        },
+      ],
+      null,
+      {
+        fieldTree: [
+          {
+            type: Input,
+            args: [
+              {
+                isSignal: true,
+                alias: 'formRoot',
+                required: true,
+              },
+            ],
+          },
+        ],
+      },
+    );
 })();
 
 // src/environments/environment.ts
 var environment = {
   production: false,
-  apiUrl: "http://localhost:4000"
+  apiUrl: 'http://localhost:4000',
 };
 
 // src/app/features/auth/services/auth.service.ts
@@ -2902,30 +3585,34 @@ var AuthService = class _AuthService {
   login(data) {
     return this.http.post(`${this.baseUrl}/login`, data);
   }
-  static \u0275fac = function AuthService_Factory(__ngFactoryType__) {
+  static ɵfac = function AuthService_Factory(__ngFactoryType__) {
     return new (__ngFactoryType__ || _AuthService)();
   };
-  static \u0275prov = /* @__PURE__ */ \u0275\u0275defineInjectable({ token: _AuthService, factory: _AuthService.\u0275fac, providedIn: "root" });
+  static ɵprov = /* @__PURE__ */ ɵɵdefineInjectable({
+    token: _AuthService,
+    factory: _AuthService.ɵfac,
+    providedIn: 'root',
+  });
 };
 (() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(AuthService, [{
-    type: Injectable,
-    args: [{
-      providedIn: "root"
-    }]
-  }], null, null);
+  (typeof ngDevMode === 'undefined' || ngDevMode) &&
+    setClassMetadata(
+      AuthService,
+      [
+        {
+          type: Injectable,
+          args: [
+            {
+              providedIn: 'root',
+            },
+          ],
+        },
+      ],
+      null,
+      null,
+    );
 })();
 
-export {
-  form,
-  submit,
-  validate,
-  email,
-  minLength,
-  pattern,
-  required,
-  FormField,
-  AuthService
-};
+export { form, submit, validate, email, minLength, pattern, required, FormField, AuthService };
 //# debugId=a8a3f3a7-9750-5776-90ec-7cc8f663c7cc
 //# sourceMappingURL=chunk-3G2ZU4HQ.js.map

@@ -27,4 +27,13 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
             Long categoryId
     );
     Restaurant findByIdAndIsActiveTrue(Long id);
+
+
+    // Admin search: matches by name regardless of active status
+    @EntityGraph(attributePaths = "categories")
+    List<Restaurant> findByNameContainingIgnoreCaseOrderByNameAsc(String name);
+
+    // Admin "get all" (no search term, no active filter)
+    @EntityGraph(attributePaths = "categories")
+    List<Restaurant> findAllByOrderByNameAsc();
 }

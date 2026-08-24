@@ -9,6 +9,10 @@ import com.talabaty.backend.model.MenuSection;
 import com.talabaty.backend.dto.response.AddonGroupResponse;
 import com.talabaty.backend.dto.response.MenuItemAddonResponse;
 import com.talabaty.backend.dto.response.MenuItemDetailsResponse;
+import com.talabaty.backend.dto.response.KitchenMenuItemResponse;
+import com.talabaty.backend.dto.response.KitchenMenuSectionResponse;
+import com.talabaty.backend.dto.response.KitchenAddonGroupResponse;
+import com.talabaty.backend.dto.response.KitchenAddonResponse;
 import com.talabaty.backend.model.AddonGroup;
 import com.talabaty.backend.model.MenuItemAddon;
 import org.mapstruct.Mapper;
@@ -84,5 +88,28 @@ public interface MenuMapper {
     MenuItemDetailsResponse toMenuItemDetailsResponse(
             MenuItem menuItem,
             List<AddonGroupResponse> addonGroupResponses
+    );
+
+    @Mapping(target = "menuSectionId", source = "menuSection.id")
+    @Mapping(target = "menuSectionName", source = "menuSection.name")
+    KitchenMenuItemResponse toKitchenMenuItemResponse(MenuItem menuItem);
+
+    List<KitchenMenuItemResponse> toKitchenMenuItemResponseList(
+            List<MenuItem> menuItems
+    );
+
+    @Mapping(target = "active", source = "active")
+    KitchenMenuSectionResponse toKitchenMenuSectionResponse(MenuSection menuSection);
+
+    @Mapping(target = "minSelections", source = "minSelections")
+    @Mapping(target = "maxSelections", source = "maxSelections")
+    KitchenAddonGroupResponse toKitchenAddonGroupResponse(AddonGroup addonGroup);
+
+    @Mapping(target = "additionalPrice", source = "additionalPrice")
+    @Mapping(target = "available", source = "available")
+    KitchenAddonResponse toKitchenAddonResponse(MenuItemAddon menuItemAddon);
+
+    List<KitchenAddonResponse> toKitchenAddonResponseList(
+            List<MenuItemAddon> menuItemAddons
     );
 }

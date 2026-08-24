@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 public class LoginRequest {
     @Schema(
             description = "Verified account email address",
-            example = "customer@example.com",
+            example = "admin@gmail.com",
             requiredMode = Schema.RequiredMode.REQUIRED
     )
     @NotBlank(message = "Email is required")
@@ -14,7 +14,7 @@ public class LoginRequest {
     private String email;
     @Schema(
             description = "Account password",
-            example = "TestPassword123!",
+            example = "admin123",
             requiredMode = Schema.RequiredMode.REQUIRED
     )
     @NotBlank(message = "Password is required")

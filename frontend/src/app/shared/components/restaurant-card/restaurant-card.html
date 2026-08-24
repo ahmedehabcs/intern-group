@@ -1,0 +1,25 @@
+<a [routerLink]="['/restaurants', restaurant().id]"
+    class="group block overflow-hidden rounded-(--radius) border border-(--line) bg-(--surface) shadow-(--shadow-sm) transition hover:shadow-(--shadow-lg)">
+    <div class="aspect-video overflow-hidden bg-(--brand-soft)">
+        <img appImageFallback class="h-full w-full object-cover transition duration-300 group-hover:scale-[1.02]"
+            [src]="restaurant().logoUrl || fallback" [alt]="restaurant().name" />
+    </div>
+
+    <div class="p-4">
+        <h3 class="truncate text-base text-(--text)">
+            {{ restaurant().name }}
+        </h3>
+
+        <p class="mt-1 line-clamp-2 min-h-10 text-sm leading-5 text-(--text-soft)">
+            {{ restaurant().description }}
+        </p>
+
+        <div class="mt-3 flex flex-wrap gap-1.5">
+            @for (category of restaurant().categories.slice(0, 3); track category) {
+            <span class="rounded-md bg-(--brand-soft) px-2 py-1 text-xs text-(--brand)">
+                {{ category }}
+            </span>
+            }
+        </div>
+    </div>
+</a>

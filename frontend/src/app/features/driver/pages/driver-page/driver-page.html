@@ -1,0 +1,278 @@
+<main class="min-h-screen bg-(--background) px-4 py-6 sm:px-6 lg:px-8">
+  <div class="mx-auto max-w-6xl">
+
+    <!-- Header -->
+    <header class="flex flex-col gap-5 border-b border-(--line) pb-6 sm:flex-row sm:items-end sm:justify-between">
+      <div>
+        <p class="text-sm text-(--text-soft)">Delivery partner</p>
+        <h1 class="mt-1 text-2xl text-(--text)">Driver workspace</h1>
+      </div>
+
+      <button type="button" (click)="toggleOnline()"
+        class="inline-flex w-fit items-center gap-2 rounded-full border border-(--line) bg-(--surface) px-4 py-2 text-sm text-(--text)">
+        <span class="h-2 w-2 rounded-full" [class.bg-emerald-500]="online()" [class.bg-slate-300]="!online()"></span>
+        {{ online() ? 'Online' : 'Offline' }}
+      </button>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="mt-5 flex gap-6 overflow-x-auto border-b border-(--line)" aria-label="Driver navigation">
+      <a routerLink="/driver/available" routerLinkActive="border-(--brand) text-(--text)"
+        class="flex shrink-0 items-center gap-2 border-b-2 border-transparent pb-3 text-sm text-(--text-soft) transition hover:text-(--text)">
+        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <circle cx="12" cy="12" r="8" />
+          <path d="M12 8v8m-4-4h8" />
+        </svg>
+        Available
+      </a>
+
+      <a routerLink="/driver/active" routerLinkActive="border-(--brand) text-(--text)"
+        class="flex shrink-0 items-center gap-2 border-b-2 border-transparent pb-3 text-sm text-(--text-soft) transition hover:text-(--text)">
+        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M5 12h14" />
+          <path d="m13 6 6 6-6 6" />
+        </svg>
+        Active delivery
+      </a>
+
+      <a routerLink="/driver/history" routerLinkActive="border-(--brand) text-(--text)"
+        class="flex shrink-0 items-center gap-2 border-b-2 border-transparent pb-3 text-sm text-(--text-soft) transition hover:text-(--text)">
+        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M3 12a9 9 0 1 0 3-6.7" />
+          <path d="M3 4v5h5" />
+          <path d="M12 7v5l3 2" />
+        </svg>
+        History
+      </a>
+
+      <a routerLink="/driver/feedback" routerLinkActive="border-(--brand) text-(--text)"
+        class="flex shrink-0 items-center gap-2 border-b-2 border-transparent pb-3 text-sm text-(--text-soft) transition hover:text-(--text)">
+        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-2.9-5.6 2.9 1.1-6.2L3 9.6l6.2-.9L12 3Z" />
+        </svg>
+        Feedback
+      </a>
+
+      <a routerLink="/driver/profile" routerLinkActive="border-(--brand) text-(--text)"
+        class="flex shrink-0 items-center gap-2 border-b-2 border-transparent pb-3 text-sm text-(--text-soft) transition hover:text-(--text)">
+        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <circle cx="12" cy="8" r="3" />
+          <path d="M5 21a7 7 0 0 1 14 0" />
+        </svg>
+        Profile
+      </a>
+    </nav>
+
+    @if (loading()) {
+    <div class="mt-8 space-y-4">
+      <div class="h-5 w-40 animate-pulse rounded bg-(--surface-2)"></div>
+      <div class="h-24 animate-pulse rounded-(--radius) bg-(--surface-2)"></div>
+      <div class="h-24 animate-pulse rounded-(--radius) bg-(--surface-2)"></div>
+    </div>
+    } @else if (error()) {
+    <p class="mt-8 border-b border-(--line) py-4 text-sm text-(--brand)">
+      {{ error() }}
+    </p>
+    } @else {
+    <section class="mt-8">
+
+      @switch (mode) {
+
+      @case ('available') {
+      <div>
+        <div class="mb-5">
+          <h2 class="text-xl text-(--text)">Available deliveries</h2>
+          <p class="mt-1 text-sm text-(--text-soft)">
+            Choose a delivery you'd like to accept.
+          </p>
+        </div>
+
+        <div class="divide-y divide-(--line) border-y border-(--line)">
+          @for (order of available(); track order.id) {
+          <article class="py-5">
+            <div class="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+
+              <div class="min-w-0">
+                <p class="text-xs text-(--text-soft)">
+                  Order #{{ order.id }}
+                </p>
+
+                <h3 class="mt-1 text-base text-(--text)">
+                  {{ order.restaurantName }}
+                </h3>
+
+                <p class="mt-1 text-sm text-(--text-soft)">
+                  {{ order.deliveryAddress }}
+                </p>
+
+                <p class="mt-2 text-sm text-(--text-soft)">
+                  {{ order.itemCount }} items · EGP {{ order.totalPrice }}
+                </p>
+              </div>
+
+              <div class="flex items-center justify-between gap-5 sm:justify-end">
+                <div>
+                  <p class="text-xs text-(--text-soft)">Delivery fee</p>
+                  <p class="mt-1 text-sm text-(--brand)">
+                    EGP {{ order.deliveryFee }}
+                  </p>
+                </div>
+
+                <button type="button" (click)="action(order.id, 'accept')"
+                  class="rounded-(--radius) bg-(--brand) px-4 py-2.5 text-sm text-white transition hover:opacity-90">
+                  Accept
+                </button>
+              </div>
+
+            </div>
+          </article>
+          } @empty {
+          <div class="py-16 text-center">
+            <p class="text-sm text-(--text-soft)">
+              No available deliveries right now.
+            </p>
+          </div>
+          }
+        </div>
+      </div>
+      }
+
+      @case ('active') {
+      <div>
+        <div class="mb-6">
+          <h2 class="text-xl text-(--text)">Active delivery</h2>
+          <p class="mt-1 text-sm text-(--text-soft)">
+            Manage your current delivery.
+          </p>
+        </div>
+
+        @if (active(); as order) {
+        <article class="border-y border-(--line) py-6">
+
+          <div class="grid gap-8 lg:grid-cols-2">
+            <div>
+              <p class="text-xs text-(--text-soft)">
+                Order #{{ order.id }}
+              </p>
+
+              <h3 class="mt-2 text-xl text-(--text)">
+                {{ order.restaurantName }}
+              </h3>
+
+              <div class="mt-6">
+                <p class="text-xs text-(--text-soft)">Delivery address</p>
+                <p class="mt-1 text-sm leading-6 text-(--text)">
+                  {{ order.deliveryAddress }}
+                </p>
+              </div>
+            </div>
+
+            <div class="lg:border-l lg:border-(--line) lg:pl-8">
+              <p class="text-xs text-(--text-soft)">Actions</p>
+
+              <div class="mt-3 flex flex-col gap-2">
+                <button type="button" (click)="action(order.id, 'pickup')"
+                  class="w-full rounded-(--radius) bg-(--brand) px-4 py-3 text-sm text-white">
+                  Mark picked up
+                </button>
+
+                <button type="button" (click)="action(order.id, 'deliver')"
+                  class="w-full rounded-(--radius) border border-(--line) bg-(--surface) px-4 py-3 text-sm text-(--text)">
+                  Mark delivered
+                </button>
+
+                <button type="button" (click)="action(order.id, 'cancel')"
+                  class="w-full px-4 py-3 text-sm text-red-600">
+                  Cancel delivery
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </article>
+        } @else {
+        <div class="border-y border-(--line) py-16 text-center">
+          <p class="text-sm text-(--text-soft)">
+            No active delivery.
+          </p>
+        </div>
+        }
+      </div>
+      }
+
+      @case ('history') {
+      <div>
+        <div class="mb-5">
+          <h2 class="text-xl text-(--text)">Delivery history</h2>
+          <p class="mt-1 text-sm text-(--text-soft)">
+            Your completed deliveries and earnings.
+          </p>
+        </div>
+
+        <div class="divide-y divide-(--line) border-y border-(--line)">
+          @for (order of history(); track order.id) {
+          <article class="flex items-center justify-between gap-4 py-5">
+            <div>
+              <h3 class="text-sm text-(--text)">
+                {{ order.restaurantName }}
+              </h3>
+
+              <p class="mt-1 text-xs text-(--text-soft)">
+                {{ order.deliveredAt }}
+              </p>
+            </div>
+
+            <p class="text-sm text-(--brand)">
+              EGP {{ order.earnings }}
+            </p>
+          </article>
+          } @empty {
+          <div class="py-16 text-center">
+            <p class="text-sm text-(--text-soft)">No history.</p>
+          </div>
+          }
+        </div>
+      </div>
+      }
+
+      @case ('feedback') {
+      <div>
+        <div class="mb-5">
+          <h2 class="text-xl text-(--text)">Customer feedback</h2>
+          <p class="mt-1 text-sm text-(--text-soft)">
+            Feedback from your previous deliveries.
+          </p>
+        </div>
+
+        <div class="divide-y divide-(--line) border-y border-(--line)">
+          @for (item of feedback(); track item.orderId) {
+          <article class="py-5">
+            <div class="flex items-center gap-3">
+              <span class="text-sm text-(--brand)">
+                {{ item.rating }}/5
+              </span>
+
+              <span class="text-xs text-(--text-soft)">
+                Order #{{ item.orderId }}
+              </span>
+            </div>
+
+            <p class="mt-2 text-sm leading-6 text-(--text-soft)">
+              {{ item.comment }}
+            </p>
+          </article>
+          } @empty {
+          <div class="py-16 text-center">
+            <p class="text-sm text-(--text-soft)">No feedback.</p>
+          </div>
+          }
+        </div>
+      </div>
+      }
+
+      }
+
+    </section>
+    }
+  </div>
+</main>

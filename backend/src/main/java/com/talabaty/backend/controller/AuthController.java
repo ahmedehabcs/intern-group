@@ -1,11 +1,15 @@
 package com.talabaty.backend.controller;
 
 import com.talabaty.backend.dto.request.*;
+import com.talabaty.backend.dto.request.VerifyEmailChangeRequest;
+import com.talabaty.backend.dto.request.VerifyPasswordChangeRequest;
 import com.talabaty.backend.dto.response.LoginResponse;
 import com.talabaty.backend.dto.response.RegisterResponse;
 import com.talabaty.backend.service.AuthService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,6 +25,7 @@ import jakarta.servlet.http.HttpServletRequest;
 )
 @RestController
 @RequestMapping("/api/auth")
+@SecurityRequirement(name = "bearerAuth")
 public class AuthController {
 
     private final AuthService authService;
@@ -101,5 +106,59 @@ public class AuthController {
     public ResponseEntity<?> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
         authService.resetPassword(request.getEmail(), request.getOtp(), request.getNewPassword());
         return ResponseEntity.ok("Password reset successfully.");
+    }
+
+    // --- Email Change with OTP ---
+    @Operation(
+            summary = "Request email change (sends OTP to new email)",
+            description = "Authenticated user requests to change their email. OTP is sent to the NEW email address."
+    )
+    @PostMapping("/change-email")
+    public ResponseEntity<?> requestEmailChange(
+            Authentication authentication,
+            @Valid @RequestBody ChangeEmailRequest request
+    ) {
+        Long userId = Long.valueOf(authentication.getName());
+        authService.requestEmailChange(userId, request);
+        return ResponseEntity.ok("OTP sent to new email for verification.");
+    }
+
+    @Operation(
+            summary = "Verify email change OTP",
+            description = "Verifies OTP sent to the new email and updates the user's email."
+    )
+    @PostMapping("/verify-email-change")
+    public ResponseEntity<?> verifyEmailChange(
+            @Valid @RequestBody VerifyEmailChangeRequest request
+    ) {
+        authService.verifyEmailChange(request);
+        return ResponseEntity.ok("Email updated successfully.");
+    }
+
+    // --- Password Change with OTP ---
+    @Operation(
+            summary = "Request password change (sends OTP to current email)",
+            description = "Authenticated user requests to change password. OTP is sent to current email."
+    )
+    @PostMapping("/change-password")
+    public ResponseEntity<?> requestPasswordChange(
+            Authentication authentication,
+            @Valid @RequestBody ChangePasswordWithOtpRequest request
+    ) {
+        Long userId = Long.valueOf(authentication.getName());
+        authService.requestPasswordChange(userId, request);
+        return ResponseEntity.ok("OTP sent to email for password change verification.");
+    }
+
+    @Operation(
+            summary = "Verify password change OTP",
+            description = "Verifies OTP and updates the password."
+    )
+    @PostMapping("/verify-password-change")
+    public ResponseEntity<?> verifyPasswordChange(
+            @Valid @RequestBody VerifyPasswordChangeRequest request
+    ) {
+        authService.verifyPasswordChange(request);
+        return ResponseEntity.ok("Password updated successfully.");
     }
 }
