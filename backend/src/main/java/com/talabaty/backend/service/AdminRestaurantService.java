@@ -10,7 +10,6 @@ import java.util.List;
 public interface AdminRestaurantService {
     RestaurantAdminResponse createRestaurant(CreateRestaurantRequest request);
     RestaurantAdminResponse updateRestaurant(Long id, UpdateRestaurantRequest request);
-    RestaurantAdminResponse deactivateRestaurant(Long id);
-    List<RestaurantAdminResponse> searchRestaurants(String search);
+    RestaurantAdminResponse setRestaurantActive(Long id, boolean active);    List<RestaurantAdminResponse> searchRestaurants(String search);
     void assignKitchenManager(Long restaurantId, AssignKitchenManagerRequest request);
 }

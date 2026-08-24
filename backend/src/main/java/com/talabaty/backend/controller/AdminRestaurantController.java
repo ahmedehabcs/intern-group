@@ -40,9 +40,13 @@ public class AdminRestaurantController {
         return ResponseEntity.ok(adminRestaurantService.updateRestaurant(id, request));
     }
 
-    @PutMapping("/{id}/deactivate")
-    public ResponseEntity<RestaurantAdminResponse> deactivateRestaurant(@PathVariable Long id) {
-        return ResponseEntity.ok(adminRestaurantService.deactivateRestaurant(id));
+
+    @PutMapping("/{id}/status")
+    public ResponseEntity<RestaurantAdminResponse> setRestaurantActive(
+            @PathVariable Long id,
+            @RequestParam boolean active
+    ) {
+        return ResponseEntity.ok(adminRestaurantService.setRestaurantActive(id, active));
     }
 
     @PostMapping("/{restaurantId}/kitchen-manager")
