@@ -41,6 +41,7 @@ public class AddressServiceImpl implements AddressService {
     @Transactional(readOnly = true)
     public List<AddressResponse> getCustomerAddresses(Long userId) {
         CustomerProfile customer = requireCustomer(userId);
+
         List<Address> addresses = addressRepository
                 .findAllByCustomerIdOrderByIsDefaultDescIdAsc(customer.getId());
 
@@ -59,66 +60,111 @@ public class AddressServiceImpl implements AddressService {
     @Override
     @Transactional
     public AddressResponse createAddress(Long userId, AddressRequest request) {
+
         CustomerProfile customer = requireCustomer(userId);
-        Governorate governorate = requireGovernorate(request.getGovernorateId());
+
+        // Get governorate automatically from governorate name
+        Governorate governorate =
+                requireGovernorate(request.getGovernorate());
 
         Address address = addressMapper.toEntity(request);
+
         address.setCustomer(customer);
         address.setGovernorate(governorate);
-        address.setDefault(!addressRepository.existsByCustomerId(customer.getId()));
 
-        return addressMapper.toResponse(addressRepository.save(address));
+        address.setDefault(
+                !addressRepository.existsByCustomerId(customer.getId())
+        );
+
+        return addressMapper.toResponse(
+                addressRepository.save(address)
+        );
     }
 
     @Override
     @Transactional
-    public AddressResponse updateAddress(Long userId, Long addressId, AddressRequest request) {
+    public AddressResponse updateAddress(
+            Long userId,
+            Long addressId,
+            AddressRequest request
+    ) {
+
         CustomerProfile customer = requireCustomer(userId);
-        Address address = requireOwnedAddress(addressId, customer.getId());
-        Governorate governorate = requireGovernorate(request.getGovernorateId());
+
+        Address address =
+                requireOwnedAddress(addressId, customer.getId());
+
+        // Get governorate automatically from governorate name
+        Governorate governorate =
+                requireGovernorate(request.getGovernorate());
 
         addressMapper.updateEntity(request, address);
+
         address.setGovernorate(governorate);
 
-        return addressMapper.toResponse(addressRepository.save(address));
+        return addressMapper.toResponse(
+                addressRepository.save(address)
+        );
     }
 
     @Override
     @Transactional
-    public AddressResponse setDefaultAddress(Long userId, Long addressId) {
+    public AddressResponse setDefaultAddress(
+            Long userId,
+            Long addressId
+    ) {
+
         CustomerProfile customer = requireCustomer(userId);
-        Address newDefaultAddress = requireOwnedAddress(addressId, customer.getId());
+
+        Address newDefaultAddress =
+                requireOwnedAddress(addressId, customer.getId());
 
         if (newDefaultAddress.isDefault()) {
             return addressMapper.toResponse(newDefaultAddress);
         }
 
         addressRepository.findByCustomerIdAndIsDefaultTrue(customer.getId())
-                .ifPresent(currentDefaultAddress -> currentDefaultAddress.setDefault(false));
+                .ifPresent(currentDefaultAddress ->
+                        currentDefaultAddress.setDefault(false)
+                );
 
         addressRepository.flush();
+
         newDefaultAddress.setDefault(true);
 
-        return addressMapper.toResponse(addressRepository.save(newDefaultAddress));
+        return addressMapper.toResponse(
+                addressRepository.save(newDefaultAddress)
+        );
     }
 
     @Override
     @Transactional
     public void deleteAddress(Long userId, Long addressId) {
+
         CustomerProfile customer = requireCustomer(userId);
-        Address address = requireOwnedAddress(addressId, customer.getId());
-        boolean deletedAddressWasDefault = address.isDefault();
+
+        Address address =
+                requireOwnedAddress(addressId, customer.getId());
+
+        boolean deletedAddressWasDefault =
+                address.isDefault();
 
         addressRepository.delete(address);
+
         addressRepository.flush();
 
         if (deletedAddressWasDefault) {
-            addressRepository.findFirstByCustomerIdOrderByIdAsc(customer.getId())
-                    .ifPresent(nextDefaultAddress -> nextDefaultAddress.setDefault(true));
+
+            addressRepository
+                    .findFirstByCustomerIdOrderByIdAsc(customer.getId())
+                    .ifPresent(nextDefaultAddress ->
+                            nextDefaultAddress.setDefault(true)
+                    );
         }
     }
 
     private CustomerProfile requireCustomer(Long userId) {
+
         return customerProfileRepository.findById(userId)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.FORBIDDEN,
@@ -126,19 +172,28 @@ public class AddressServiceImpl implements AddressService {
                 ));
     }
 
-    private Address requireOwnedAddress(Long addressId, Long customerId) {
-        return addressRepository.findByIdAndCustomerId(addressId, customerId)
+    private Address requireOwnedAddress(
+            Long addressId,
+            Long customerId
+    ) {
+
+        return addressRepository
+                .findByIdAndCustomerId(addressId, customerId)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
                         "Address not found"
                 ));
     }
 
-    private Governorate requireGovernorate(Long governorateId) {
-        return governorateRepository.findById(governorateId)
+    private Governorate requireGovernorate(
+            String governorateName
+    ) {
+
+        return governorateRepository
+                .findByNameIgnoreCase(governorateName)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
-                        "Governorate not found"
+                        "Governorate not found: " + governorateName
                 ));
     }
 }
