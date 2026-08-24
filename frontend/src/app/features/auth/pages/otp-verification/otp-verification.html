@@ -1,37 +1,81 @@
-<main class="mx-auto flex min-h-screen max-w-md items-center p-6">
-  <section class="w-full">
-    <h1 class="text-3xl font-black">Verify your email</h1>
-    <p class="mt-2 text-slate-600">
-      Enter the code sent to <strong>{{ email }}</strong
-      >.
-    </p>
-    <form [formGroup]="form" (ngSubmit)="submit()" class="mt-6 space-y-4">
-      <label class="block"
-        >Verification code<input
-          formControlName="otp"
-          autocomplete="one-time-code"
-          class="mt-1 w-full rounded-xl border p-3"
-      /></label>
-      @if (error()) {
-        <p class="rounded-xl bg-red-50 p-3 text-red-700">{{ error() }}</p>
-      }
-      @if (message()) {
-        <p class="rounded-xl bg-green-50 p-3 text-green-700">{{ message() }}</p>
-      }
-      <button
-        [disabled]="form.invalid || submitting()"
-        class="w-full rounded-xl bg-orange-500 p-3 font-bold text-white"
-      >
-        {{ submitting() ? 'Verifying…' : 'Verify email' }}
-      </button>
-    </form>
-    <button
-      type="button"
-      [disabled]="resending()"
-      (click)="resend()"
-      class="mt-4 w-full text-orange-600"
+<main class="flex min-h-screen items-center justify-center bg-(--bg) px-6 py-12">
+  <section class="w-full max-w-110">
+
+    <!-- Header -->
+    <header class="mb-8">
+      <h1 class="text-3xl font-semibold tracking-tight text-(--text)">
+        Verify your email
+      </h1>
+
+      <p class="mt-2 text-sm leading-6 text-(--text-soft)">
+        Enter the code sent to
+        <strong class="font-semibold text-(--text)">{{ email }}</strong>.
+      </p>
+    </header>
+
+    <!-- Form Card -->
+    <div
+      class="rounded-(--radius) border border-(--line) bg-(--surface) p-7 shadow-(--shadow-sm) sm:p-8"
     >
-      {{ resending() ? 'Sending…' : 'Resend code' }}
-    </button>
+      <form [formGroup]="form" (ngSubmit)="submit()" class="space-y-6">
+
+        <!-- Verification Code -->
+        <div>
+          <label
+            for="otp"
+            class="mb-2 block text-sm font-medium text-(--text)"
+          >
+            Verification code
+          </label>
+
+          <input
+            id="otp"
+            formControlName="otp"
+            autocomplete="one-time-code"
+            inputmode="numeric"
+            placeholder="Enter verification code"
+            class="h-12 w-full rounded-(--radius) border border-(--line) bg-(--surface) px-4 text-sm tracking-widest text-(--text) outline-none transition placeholder:tracking-normal placeholder:text-(--muted) focus:border-(--brand) focus:ring-1 focus:ring-(--brand)"
+          />
+        </div>
+
+        <!-- Error -->
+        @if (error()) {
+          <p
+            class="rounded-(--radius) border border-(--line) bg-(--brand-soft) px-4 py-3 text-sm text-(--brand)"
+          >
+            {{ error() }}
+          </p>
+        }
+
+        <!-- Success -->
+        @if (message()) {
+          <p
+            class="rounded-(--radius) border border-(--line) bg-(--surface-2) px-4 py-3 text-sm text-(--success)"
+          >
+            {{ message() }}
+          </p>
+        }
+
+        <!-- Submit -->
+        <button
+          [disabled]="form.invalid || submitting()"
+          class="h-12 w-full rounded-(--radius) bg-(--brand) px-4 text-sm font-semibold text-white transition hover:bg-(--brand-hover) disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          {{ submitting() ? 'Verifying…' : 'Verify email' }}
+        </button>
+      </form>
+
+      <!-- Resend -->
+      <div class="mt-6 border-t border-(--line) pt-6 text-center">
+        <button
+          type="button"
+          [disabled]="resending()"
+          (click)="resend()"
+          class="text-sm font-medium text-(--brand) transition hover:text-(--brand-hover) disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          {{ resending() ? 'Sending…' : 'Resend code' }}
+        </button>
+      </div>
+    </div>
   </section>
 </main>
