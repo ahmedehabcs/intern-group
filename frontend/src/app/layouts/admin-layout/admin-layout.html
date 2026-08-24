@@ -1,18 +1,25 @@
-<div class="min-h-screen bg-slate-100 text-slate-900">
+<div class="min-h-screen bg-(--bg) text-(--text)">
   <aside
-    class="fixed inset-y-0 left-0 z-50 w-72 border-r border-slate-800 bg-slate-950 text-slate-200 transition-transform lg:translate-x-0"
+    class="fixed inset-y-0 left-0 z-50 w-72 border-r border-(--line) bg-(--surface) text-(--text) transition-transform lg:translate-x-0"
     [class.-translate-x-full]="!menuOpen()"
     [class.translate-x-0]="menuOpen()"
   >
-    <div class="flex h-20 items-center justify-between border-b border-slate-800 px-5">
-      <a routerLink="/admin" class="flex items-center gap-3" (click)="closeMenu()"
-        ><span
-          class="grid h-10 w-10 place-items-center rounded-xl bg-orange-600 text-lg font-medium text-white"
-          >T</span
-        ><span
-          ><span class="block text-base font-medium text-white">Talabaty</span
-          ><small class="text-xs text-slate-400">Administration</small></span
-        ></a
+    <div class="flex h-20 items-center justify-between border-b border-(--line) px-5">
+      <a routerLink="/admin" class="flex items-center gap-3" (click)="closeMenu()">
+        @if (isDark()) {
+          <img
+            class="h-9 w-28 object-contain object-left"
+            src="/albab-logo-light.webp"
+            alt="ALBAB"
+          />
+        } @else {
+          <img
+            class="h-9 w-28 object-contain object-left"
+            src="/albab-logo-dark.webp"
+            alt="ALBAB"
+          />
+        }
+        <small class="text-xs text-(--text-soft)">Administration</small></a
       ><button
         type="button"
         class="grid h-9 w-9 place-items-center rounded-lg text-slate-400 lg:hidden"
@@ -37,10 +44,10 @@
       ) {
         <a
           [routerLink]="['/admin', link.p]"
-          routerLinkActive="bg-orange-600 text-white"
-          class="flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium text-slate-300 transition hover:bg-slate-800 hover:text-white"
+          routerLinkActive="bg-(--brand) text-white"
+          class="flex items-center gap-3 rounded-(--radius) px-3 py-3 text-sm text-(--text-soft) transition hover:bg-(--surface-2) hover:text-(--text)"
           (click)="closeMenu()"
-          ><span class="grid h-8 w-8 place-items-center rounded-lg bg-white/5"
+          ><span class="grid h-8 w-8 place-items-center rounded-(--radius) bg-(--surface-2)"
             ><svg
               class="h-4 w-4"
               viewBox="0 0 24 24"
@@ -85,10 +92,10 @@
         >
       }
     </nav>
-    <div class="absolute inset-x-4 bottom-4 border-t border-slate-800 pt-4">
+    <div class="absolute inset-x-4 bottom-4 border-t border-(--line) pt-4">
       <a
         routerLink="/"
-        class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-slate-400 hover:bg-slate-800 hover:text-white"
+        class="flex items-center gap-3 rounded-(--radius) px-3 py-2.5 text-sm text-(--text-soft) hover:bg-(--surface-2) hover:text-(--text)"
         ><svg
           class="h-4 w-4"
           viewBox="0 0 24 24"
@@ -111,11 +118,11 @@
   }
   <div class="lg:pl-72">
     <header
-      class="sticky top-0 z-30 flex h-20 items-center gap-4 border-b border-slate-200 bg-white/95 px-4 backdrop-blur sm:px-6 lg:px-8"
+      class="sticky top-0 z-30 flex h-20 items-center gap-4 border-b border-(--line) bg-(--surface) px-4 sm:px-6 lg:px-8"
     >
       <button
         type="button"
-        class="grid h-10 w-10 place-items-center rounded-lg border border-slate-200 lg:hidden"
+        class="grid h-10 w-10 place-items-center rounded-(--radius) border border-(--line) lg:hidden"
         (click)="menuOpen.set(true)"
         aria-label="Open navigation"
       >
@@ -124,18 +131,60 @@
         </svg>
       </button>
       <div>
-        <p class="text-xs uppercase tracking-[.16em] text-orange-600">Operations center</p>
-        <h1 class="text-lg font-medium text-slate-900">Admin dashboard</h1>
+        <p class="text-xs uppercase tracking-[.16em] text-(--brand)">Operations center</p>
+        <h1 class="text-lg text-(--text)">Admin dashboard</h1>
       </div>
       <div class="ml-auto flex items-center gap-3">
-        <span class="hidden rounded-lg bg-slate-100 px-3 py-2 text-xs text-slate-500 sm:block"
+        <span
+          class="hidden rounded-(--radius) bg-(--surface-2) px-3 py-2 text-xs text-(--text-soft) sm:block"
           >Administrator</span
         ><button
           type="button"
-          class="rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-600"
-          (click)="logout()"
+          class="grid h-10 w-10 place-items-center rounded-(--radius) border border-(--line) text-(--text-soft)"
+          (click)="toggleTheme()"
+          [attr.aria-label]="isDark() ? 'Use light theme' : 'Use dark theme'"
+          [title]="isDark() ? 'Use light theme' : 'Use dark theme'"
         >
-          Sign out
+          @if (isDark()) {
+            <svg
+              class="h-5 w-5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+            >
+              <circle cx="12" cy="12" r="4" />
+              <path
+                d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"
+              />
+            </svg>
+          } @else {
+            <svg
+              class="h-5 w-5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+            >
+              <path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8Z" />
+            </svg>
+          }</button
+        ><button
+          type="button"
+          class="grid h-10 w-10 place-items-center rounded-(--radius) border border-(--line) text-(--text-soft)"
+          (click)="logout()"
+          aria-label="Sign out"
+          title="Sign out"
+        >
+          <svg
+            class="h-5 w-5"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+          >
+            <path d="M10 17l5-5-5-5M15 12H3M14 4h6a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-6" />
+          </svg>
         </button>
       </div>
     </header>

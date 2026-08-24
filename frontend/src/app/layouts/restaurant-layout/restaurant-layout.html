@@ -5,12 +5,21 @@
     [class.translate-x-0]="menuOpen()"
   >
     <div class="flex h-20 items-center justify-between border-b border-slate-200 px-5">
-      <a routerLink="/kitchen/dashboard" class="flex items-center gap-3" (click)="closeMenu()"
-        ><span class="grid h-10 w-10 place-items-center rounded-xl bg-orange-600 text-white">T</span
-        ><span
-          ><span class="block text-base font-medium text-slate-900">Talabaty</span
-          ><small class="text-xs text-slate-500">Kitchen operations</small></span
-        ></a
+      <a routerLink="/kitchen/dashboard" class="flex items-center gap-3" (click)="closeMenu()">
+        @if (isDark()) {
+          <img
+            class="h-9 w-28 object-contain object-left"
+            src="/albab-logo-light.webp"
+            alt="ALBAB"
+          />
+        } @else {
+          <img
+            class="h-9 w-28 object-contain object-left"
+            src="/albab-logo-dark.webp"
+            alt="ALBAB"
+          />
+        }
+        <span><small class="text-xs text-slate-500">Kitchen operations</small></span></a
       ><button
         type="button"
         class="grid h-9 w-9 place-items-center rounded-lg text-slate-500 hover:bg-slate-100 lg:hidden"

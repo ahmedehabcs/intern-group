@@ -30,13 +30,46 @@ const restaurantSeeds = [
   [10, 'Fresh Squeeze', 'Cold-pressed juices, smoothies and fruit cups', ['Drinks', 'Healthy']],
 ] as const;
 
-export const MOCK_RESTAURANTS = restaurantSeeds.map(([id, name, description, categories]) => ({
-  id,
-  name,
-  description,
-  logoUrl: '',
-  categories: [...categories],
-})) satisfies RestaurantResponse[];
+const image = (id: string) =>
+  'https://images.unsplash.com/' + id + '?auto=format&fit=crop&w=900&q=80';
+
+const restaurantImages = [
+  'photo-1568901346375-23c9450c58cd',
+  'photo-1574071318508-1cdbab80d002',
+  'photo-1598103442097-8b74394b95c6',
+  'photo-1547592180-85f173990554',
+  'photo-1578985545062-69928b1d9587',
+  'photo-1509042239860-f550ce710b93',
+  'photo-1533089860892-a7c6f0a88666',
+  'photo-1540420773420-3366772f4999',
+  'photo-1558030006-450675393462',
+  'photo-1622597467836-f3285f2131b8',
+] as const;
+
+const menuImages = [
+  'photo-1568901346375-23c9450c58cd',
+  'photo-1550547660-d9450f859349',
+  'photo-1572802419224-296b0aeee0d9',
+  'photo-1594212699903-ec8a3eca50f5',
+  'photo-1565299624946-b28f40a0ae38',
+  'photo-1579751626657-72bc17010498',
+  'photo-1562967914-608f82629710',
+  'photo-1569058242253-92a9c755a0ec',
+  'photo-1540189549336-e6e99c3679fe',
+  'photo-1547592180-85f173990554',
+  'photo-1578985545062-69928b1d9587',
+  'photo-1509042239860-f550ce710b93',
+] as const;
+
+export const MOCK_RESTAURANTS = restaurantSeeds.map(
+  ([id, name, description, categories], index) => ({
+    id,
+    name,
+    description,
+    logoUrl: image(restaurantImages[index]),
+    categories: [...categories],
+  }),
+) satisfies RestaurantResponse[];
 
 export const MOCK_RESTAURANT_CATEGORY_IDS: Readonly<Record<number, readonly number[]>> = {
   1: [1],
@@ -141,7 +174,7 @@ function menuItem(
     name,
     description: `Freshly prepared ${name.toLowerCase()} made to order with quality ingredients.`,
     basePrice: 55 + restaurantId * 4 + index * 13,
-    imageUrl: '',
+    imageUrl: image(menuImages[(restaurantId + index) % menuImages.length]),
   };
 }
 

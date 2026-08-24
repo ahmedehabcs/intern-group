@@ -65,17 +65,19 @@ export class Home {
         }),
         switchMap((query) =>
           query
-            ? this.searchApi.search(query).pipe(finalize(() => this.searching.set(false)))
+            ? this.searchApi.search(query).pipe(
+                catchError(() => {
+                  this.searchError.set('Search is unavailable right now.');
+                  return of(null);
+                }),
+                finalize(() => this.searching.set(false)),
+              )
             : of(null),
         ),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
         next: (result) => this.searchResult.set(result),
-        error: () => {
-          this.searching.set(false);
-          this.searchError.set('Search is unavailable right now.');
-        },
       });
   }
 

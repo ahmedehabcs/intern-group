@@ -24,6 +24,12 @@
   font-weight: 600;
   letter-spacing: -0.03em;
 }
+.brand img {
+  width: 112px;
+  height: 34px;
+  object-fit: contain;
+  object-position: left center;
+}
 .brand-mark {
   width: 38px;
   height: 38px;
