@@ -2,7 +2,17 @@ import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { debounceTime, distinctUntilChanged, finalize, map, switchMap, tap } from 'rxjs';
+import {
+  catchError,
+  debounceTime,
+  distinctUntilChanged,
+  finalize,
+  map,
+  of,
+  startWith,
+  switchMap,
+  tap,
+} from 'rxjs';
 import { RestaurantCard } from '../../../../shared/components/restaurant-card/restaurant-card';
 import { SectionHeading } from '../../../../shared/components/section-heading/section-heading';
 import { SearchResponse } from '../../models/search.models';
@@ -27,6 +37,7 @@ export class SearchPage {
   constructor() {
     this.query.valueChanges
       .pipe(
+        startWith(this.query.value),
         map((value) => value.trim()),
         debounceTime(250),
         distinctUntilChanged(),
@@ -42,13 +53,21 @@ export class SearchPage {
           this.loading.set(true);
           this.error.set(null);
         }),
-        switchMap((query) => this.api.search(query).pipe(finalize(() => this.loading.set(false)))),
+        switchMap((query) =>
+          query
+            ? this.api.search(query).pipe(
+                catchError(() => {
+                  this.error.set('Search is unavailable right now.');
+                  return of(null);
+                }),
+                finalize(() => this.loading.set(false)),
+              )
+            : of({ restaurants: [], menuItems: [] }).pipe(finalize(() => this.loading.set(false))),
+        ),
         takeUntilDestroyed(this.destroy),
       )
       .subscribe({
         next: (value) => this.result.set(value),
-        error: () => this.error.set('Search is unavailable right now.'),
       });
-    this.query.setValue(this.query.value);
   }
 }

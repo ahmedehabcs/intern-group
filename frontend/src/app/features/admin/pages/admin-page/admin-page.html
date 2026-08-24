@@ -1,15 +1,19 @@
-<main class="p-4 sm:p-6 lg:p-8">
+<main class="mx-auto max-w-7xl p-4 text-(--text) sm:p-6 lg:p-8" [attr.data-mode]="mode">
   <header class="mb-6">
-    <p class="text-xs font-medium uppercase tracking-[.16em] text-orange-600">Management</p>
-    <h2 class="mt-1 text-2xl font-medium capitalize text-slate-900">
+    <p class="text-xs uppercase tracking-[.16em] text-(--brand)">Management</p>
+    <h2 class="mt-1 text-2xl capitalize text-(--text)">
       {{ mode.replace('-', ' ') }}
     </h2>
-    <p class="mt-1 text-sm text-slate-500">Review records and manage marketplace operations.</p>
+    <p class="mt-1 text-sm text-(--text-soft)">Review records and manage marketplace operations.</p>
   </header>
   @if (loading()) {
     <p class="p-10 text-center">Loading…</p>
   } @else if (error()) {
-    <p class="mt-5 bg-red-50 p-4 text-red-700">{{ error() }}</p>
+    <p
+      class="mt-5 rounded-(--radius) border border-(--border) bg-(--brand-soft) p-4 text-(--brand)"
+    >
+      {{ error() }}
+    </p>
   } @else {
     <section class="mt-6 space-y-3">
       @if (mode === 'restaurants' || mode === 'riders') {
@@ -38,7 +42,7 @@
               class="rounded-lg border p-2"
             /><button
               [disabled]="categoryForm.invalid || processingId() === -1"
-              class="rounded-lg bg-orange-500 p-2 font-medium text-white"
+              class="rounded-(--radius) bg-(--brand) p-2 text-white"
             >
               {{ editingCategoryId() ? 'Save category' : 'Add category' }}
             </button>
@@ -130,7 +134,17 @@
             <article class="flex justify-between rounded-xl border p-4">
               <span>#{{ item.id }} · {{ item.restaurantName }} · {{ item.status }}</span>
               @if (item.status !== 'CANCELLED' && item.status !== 'DELIVERED') {
-                <button (click)="cancelOrder(item.id)" class="text-red-600">Cancel</button>
+                <button
+                  type="button"
+                  (click)="cancelOrder(item.id)"
+                  class="icon-action danger"
+                  aria-label="Cancel order"
+                  title="Cancel order"
+                >
+                  <svg viewBox="0 0 24 24">
+                    <path d="M3 6h18M8 6V4h8v2m-9 0 1 15h8l1-15M10 10v7m4-7v7" />
+                  </svg>
+                </button>
               }
             </article>
           } @empty {
@@ -182,7 +196,7 @@
               class="rounded-lg border p-2"
             /><button
               [disabled]="restaurantForm.invalid || processingId() === -1"
-              class="rounded-lg bg-orange-500 p-2 font-bold text-white sm:col-span-2"
+              class="rounded-(--radius) bg-(--brand) p-2 text-white sm:col-span-2"
             >
               Create restaurant
             </button>
@@ -218,7 +232,7 @@
               class="rounded-lg border p-2"
             /><button
               [disabled]="managerForm.invalid || processingId() === -1"
-              class="rounded-lg bg-slate-900 p-2 font-bold text-white"
+              class="rounded-(--radius) bg-(--brand) p-2 text-white"
             >
               Assign manager
             </button>
@@ -257,14 +271,29 @@
           @for (item of riders(); track item.id) {
             <article class="flex justify-between rounded-xl border p-4">
               <span>{{ item.name }} · {{ item.vehicleType }}</span
-              ><span
-                ><button (click)="riderAction(item.id, 'approve')" class="text-green-700">
-                  Approve
+              ><span class="flex gap-2"
+                ><button
+                  type="button"
+                  (click)="riderAction(item.id, 'approve')"
+                  class="icon-action"
+                  aria-label="Approve rider"
+                  title="Approve rider"
+                >
+                  <svg viewBox="0 0 24 24">
+                    <path d="m5 12 4 4L19 6" />
+                  </svg>
                 </button>
-                <button (click)="riderAction(item.id, 'reject')" class="text-red-600">
-                  Reject
-                </button></span
-              >
+                <button
+                  type="button"
+                  (click)="riderAction(item.id, 'reject')"
+                  class="icon-action danger"
+                  aria-label="Reject rider"
+                  title="Reject rider"
+                >
+                  <svg viewBox="0 0 24 24">
+                    <path d="m6 6 12 12M18 6 6 18" />
+                  </svg></button
+              ></span>
             </article>
           } @empty {
             <p>No pending riders.</p>

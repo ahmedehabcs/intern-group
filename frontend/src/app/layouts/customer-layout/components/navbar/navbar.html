@@ -9,9 +9,13 @@
     >
       <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
     </button>
-    <a class="brand" routerLink="/" aria-label="Talabaty home"
-      ><span class="brand-mark">T</span><span>Talabaty</span></a
-    >
+    <a class="brand" routerLink="/" aria-label="ALBAB home">
+      @if (isDark) {
+        <img src="/albab-logo-light.webp" alt="ALBAB" />
+      } @else {
+        <img src="/albab-logo-dark.webp" alt="ALBAB" />
+      }
+    </a>
     @if (!tokens.isValid() || tokens.role() === 'CUSTOMER') {
       <a class="location" routerLink="/account"
         ><svg viewBox="0 0 24 24">

@@ -31,27 +31,25 @@ export class Navbar implements OnInit {
     this.isDark = document.documentElement.dataset['theme'] === 'dark';
     if (this.tokens.isValid() && this.tokens.role() === 'CUSTOMER') {
       this.cart.load().subscribe({ error: () => void 0 });
-      this.addressesApi
-        .list()
-        .subscribe({
-          next: (addresses) =>
-            this.defaultAddress.set(
-              addresses.find((address) => address.isDefault) ?? addresses[0] ?? null,
-            ),
-          error: () => void 0,
-        });
+      this.addressesApi.list().subscribe({
+        next: (addresses) =>
+          this.defaultAddress.set(
+            addresses.find((address) => address.isDefault) ?? addresses[0] ?? null,
+          ),
+        error: () => void 0,
+      });
     }
   }
 
   submitSearch(): void {
     const query = this.search.value.trim();
-    void this.router.navigate(['/'], { queryParams: query ? { search: query } : {} });
+    void this.router.navigate(['/search'], { queryParams: query ? { search: query } : {} });
   }
 
   focusSearch(): void {
-    if (this.router.url.split('?')[0] !== '/') {
+    if (this.router.url.split('?')[0] !== '/search') {
       const query = this.search.value.trim();
-      void this.router.navigate(['/'], { queryParams: query ? { search: query } : {} });
+      void this.router.navigate(['/search'], { queryParams: query ? { search: query } : {} });
     }
   }
 

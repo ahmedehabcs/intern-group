@@ -11,9 +11,16 @@ export class AdminLayout {
   private readonly tokens = inject(TokenService);
   private readonly router = inject(Router);
   readonly menuOpen = signal(false);
+  readonly isDark = signal(document.documentElement.dataset['theme'] === 'dark');
 
   closeMenu(): void {
     this.menuOpen.set(false);
+  }
+  toggleTheme(): void {
+    this.isDark.update((value) => !value);
+    const theme = this.isDark() ? 'dark' : 'light';
+    document.documentElement.dataset['theme'] = theme;
+    localStorage.setItem('talabaty-theme', theme);
   }
   logout(): void {
     this.tokens.clear();

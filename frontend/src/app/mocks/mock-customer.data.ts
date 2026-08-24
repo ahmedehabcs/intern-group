@@ -57,7 +57,8 @@ export const INITIAL_MOCK_CART = {
       id: 1,
       menuItemId: 101,
       menuItemName: 'Classic Cheeseburger',
-      imageUrl: '',
+      imageUrl:
+        'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80',
       basePrice: 59,
       quantity: 2,
       specialInstructions: 'No onions',
@@ -78,7 +79,8 @@ export const INITIAL_MOCK_CART = {
       id: 2,
       menuItemId: 102,
       menuItemName: 'Double Smash Burger',
-      imageUrl: '',
+      imageUrl:
+        'https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=600&q=80',
       basePrice: 72,
       quantity: 2,
       specialInstructions: '',
@@ -99,7 +101,8 @@ export const INITIAL_MOCK_CART = {
       id: 3,
       menuItemId: 104,
       menuItemName: 'Loaded House Fries',
-      imageUrl: '',
+      imageUrl:
+        'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=600&q=80',
       basePrice: 64,
       quantity: 1,
       specialInstructions: 'Sauce on the side',
