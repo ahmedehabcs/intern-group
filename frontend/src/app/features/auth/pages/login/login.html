@@ -1,47 +1,77 @@
-<main class="grid min-h-screen lg:grid-cols-2">
-  <section
-    class="hidden bg-[url('/assets/images/talabaty-food-table.png')] bg-cover bg-center lg:block"
-    aria-hidden="true"
-  ></section>
-  <section class="flex items-center p-6 sm:p-12">
-    <div class="mx-auto w-full max-w-md">
-      <p class="font-bold uppercase tracking-widest text-orange-600">Talabaty</p>
-      <h1 class="mt-2 text-4xl font-black">Welcome back</h1>
-      <p class="mt-2 text-slate-600">Sign in to continue.</p>
-      <form [formGroup]="form" (ngSubmit)="submit()" class="mt-8 space-y-5">
-        <label class="block"
-          >Email<input
-            formControlName="email"
-            type="email"
-            autocomplete="email"
-            class="mt-1 w-full rounded-xl border p-3"
-        /></label>
-        @if (form.controls.email.touched && form.controls.email.invalid) {
-          <p class="text-sm text-red-600">Enter a valid email.</p>
-        }
-        <label class="block"
-          >Password<input
-            formControlName="password"
-            type="password"
-            autocomplete="current-password"
-            class="mt-1 w-full rounded-xl border p-3"
-        /></label>
-        @if (form.controls.password.touched && form.controls.password.invalid) {
-          <p class="text-sm text-red-600">Password must be at least 8 characters.</p>
-        }
+<main class="flex min-h-screen items-center justify-center bg-(--bg) px-6 py-12">
+  <section class="w-full max-w-110">
+
+    <!-- Header -->
+    <header class="mb-8">
+      <h1 class="text-3xl font-semibold tracking-tight text-(--text)">
+        Welcome back
+      </h1>
+
+      <p class="mt-2 text-sm text-(--text-soft)">
+        Sign in to continue to your account.
+      </p>
+    </header>
+
+    <!-- Form Card -->
+    <div class="rounded-(--radius) border border-(--line) bg-(--surface) p-7 shadow-(--shadow-sm) sm:p-8">
+      <form [formGroup]="form" (ngSubmit)="submit()" class="space-y-6">
+
+        <!-- Email -->
+        <div>
+          <label for="email" class="mb-2 block text-sm font-medium text-(--text)">
+            Email
+          </label>
+
+          <input id="email" formControlName="email" type="email" autocomplete="email" placeholder="you@example.com"
+            class="h-12 w-full rounded-(--radius) border border-(--line) bg-(--surface) px-4 text-sm text-(--text) outline-none transition placeholder:text-(--muted) focus:border-(--brand) focus:ring-1 focus:ring-(--brand)" />
+
+          @if (form.controls.email.touched && form.controls.email.invalid) {
+          <p class="mt-2 text-xs text-red-600">
+            Enter a valid email.
+          </p>
+          }
+        </div>
+
+        <!-- Password -->
+        <div>
+          <label for="password" class="mb-2 block text-sm font-medium text-(--text)">
+            Password
+          </label>
+
+          <input id="password" formControlName="password" type="password" autocomplete="current-password"
+            placeholder="Enter your password"
+            class="h-12 w-full rounded-(--radius) border border-(--line) bg-(--surface) px-4 text-sm text-(--text) outline-none transition placeholder:text-(--muted) focus:border-(--brand) focus:ring-1 focus:ring-(--brand)" />
+
+          @if (form.controls.password.touched && form.controls.password.invalid) {
+          <p class="mt-2 text-xs text-red-600">
+            Password must be at least 8 characters.
+          </p>
+          }
+        </div>
+
+        <!-- Error -->
         @if (error()) {
-          <p class="rounded-xl bg-red-50 p-3 text-red-700">{{ error() }}</p>
+        <p class="rounded-(--radius) border border-(--line) bg-(--brand-soft) px-4 py-3 text-sm text-(--brand)">
+          {{ error() }}
+        </p>
         }
-        <button
-          [disabled]="form.invalid || submitting()"
-          class="w-full rounded-xl bg-orange-500 p-3 font-bold text-white disabled:opacity-50"
-        >
+
+        <!-- Submit -->
+        <button [disabled]="form.invalid || submitting()"
+          class="h-12 w-full rounded-(--radius) bg-(--brand) px-4 text-sm font-semibold text-white transition hover:bg-(--brand-hover) disabled:cursor-not-allowed disabled:opacity-50">
           {{ submitting() ? 'Signing in…' : 'Sign in' }}
         </button>
       </form>
-      <div class="mt-5 flex justify-between text-sm">
-        <a routerLink="/auth/forgot-password" class="text-orange-600">Forgot password?</a
-        ><a routerLink="/auth/register" class="text-orange-600">Create account</a>
+
+      <!-- Links -->
+      <div class="mt-6 flex items-center justify-between border-t border-(--line) pt-6 text-sm">
+        <a routerLink="/auth/forgot-password" class="font-medium text-(--text-soft) transition hover:text-(--text)">
+          Forgot password?
+        </a>
+
+        <a routerLink="/auth/register" class="font-medium text-(--brand) transition hover:text-(--brand-hover)">
+          Create account
+        </a>
       </div>
     </div>
   </section>

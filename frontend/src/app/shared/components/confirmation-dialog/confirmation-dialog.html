@@ -1,0 +1,37 @@
+@if (dialog.request(); as request) {
+<div class="fixed inset-0 z-100 grid place-items-center bg-black/50 p-4" role="presentation"
+    (click)="dialog.close(false)">
+    <section role="alertdialog" aria-modal="true" [attr.aria-labelledby]="titleId"
+        class="w-full max-w-sm rounded-(--radius) border border-(--line) bg-(--surface) p-6 shadow-(--shadow-lg)"
+        (click)="$event.stopPropagation()">
+        <div class="grid h-10 w-10 place-items-center rounded-full bg-(--brand-soft) text-(--brand)">
+            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path
+                    d="M12 9v4m0 4h.01M10.3 3.6 2.4 18a2 2 0 0 0 1.8 3h15.6a2 2 0 0 0 1.8-3L13.7 3.6a2 2 0 0 0-3.4 0Z" />
+            </svg>
+        </div>
+
+        <h2 [id]="titleId" class="mt-4 text-lg text-(--text)">
+            {{ request.title }}
+        </h2>
+
+        <p class="mt-2 text-sm leading-6 text-(--text-soft)">
+            {{ request.message }}
+        </p>
+
+        <div class="mt-6 flex justify-end gap-3">
+            <button type="button"
+                class="rounded-(--radius) border border-(--line) px-4 py-2 text-sm text-(--text-soft) hover:bg-(--surface-2)"
+                (click)="dialog.close(false)">
+                Cancel
+            </button>
+
+            <button type="button"
+                class="rounded-(--radius) bg-(--brand) px-4 py-2 text-sm text-white hover:bg-(--brand-hover)"
+                (click)="dialog.close(true)">
+                {{ request.confirmLabel }}
+            </button>
+        </div>
+    </section>
+</div>
+}
