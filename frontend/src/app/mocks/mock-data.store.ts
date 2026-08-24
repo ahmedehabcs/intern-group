@@ -214,15 +214,16 @@ export class MockDataStore {
   search(query: string): Observable<SearchResponse> {
     return mockResponse(() => {
       const term = query.trim().toLowerCase();
-      if (!term) return { restaurants: this.restaurantsState(), menuItems: [] };
       const categoriesByRestaurant = this.restaurantsState();
       const restaurants = categoriesByRestaurant.filter((item) =>
-        [item.name, item.description, ...item.categories].some((value) =>
-          value.toLowerCase().includes(term),
-        ),
+        term
+          ? [item.name, item.description, ...item.categories].some((value) =>
+              value.toLowerCase().includes(term),
+            )
+          : true,
       );
       const menuItems = this.menuDetailsState()
-        .filter((item) => `${item.name} ${item.description}`.toLowerCase().includes(term))
+        .filter((item) => !term || `${item.name} ${item.description}`.toLowerCase().includes(term))
         .map((item) => {
           const restaurant = this.require(
             this.restaurantsState().find((entry) => entry.id === item.restaurantId),

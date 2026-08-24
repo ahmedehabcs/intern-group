@@ -1,4 +1,5 @@
-import { Component, HostListener, inject, OnInit, signal } from '@angular/core';
+import { Component, DestroyRef, HostListener, inject, OnInit, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router, RouterLink } from '@angular/router';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { TokenService } from '../../../../core/auth/services/token.service';
@@ -6,6 +7,7 @@ import { CartService } from '../../../../features/cart/services/cart.service';
 import { AddressResponse } from '../../../../features/account/models/account.models';
 import { AddressService } from '../../../../features/account/services/address.service';
 import { CartDrawer } from '../../../../shared/components/cart-drawer/cart-drawer';
+import { debounceTime, distinctUntilChanged, map } from 'rxjs';
 
 @Component({
   selector: 'app-navbar',
@@ -18,6 +20,7 @@ export class Navbar implements OnInit {
   readonly cart = inject(CartService);
   private readonly addressesApi = inject(AddressService);
   private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
   readonly search = new FormControl('', { nonNullable: true });
   isDark = false;
   readonly defaultAddress = signal<AddressResponse | null>(null);
@@ -27,7 +30,22 @@ export class Navbar implements OnInit {
 
   ngOnInit(): void {
     const current = this.router.parseUrl(this.router.url).queryParams['search'];
-    if (typeof current === 'string') this.search.setValue(current);
+    if (typeof current === 'string') this.search.setValue(current, { emitEvent: false });
+    this.search.valueChanges
+      .pipe(
+        map((value) => value.trim()),
+        debounceTime(300),
+        distinctUntilChanged(),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((query) => {
+        const onSearchPage = this.router.url.split('?')[0] === '/search';
+        if (!query && !onSearchPage) return;
+        void this.router.navigate(['/search'], {
+          queryParams: { search: query || null },
+          replaceUrl: onSearchPage,
+        });
+      });
     this.isDark = document.documentElement.dataset['theme'] === 'dark';
     if (this.tokens.isValid() && this.tokens.role() === 'CUSTOMER') {
       this.cart.load().subscribe({ error: () => void 0 });
@@ -44,13 +62,6 @@ export class Navbar implements OnInit {
   submitSearch(): void {
     const query = this.search.value.trim();
     void this.router.navigate(['/search'], { queryParams: query ? { search: query } : {} });
-  }
-
-  focusSearch(): void {
-    if (this.router.url.split('?')[0] !== '/search') {
-      const query = this.search.value.trim();
-      void this.router.navigate(['/search'], { queryParams: query ? { search: query } : {} });
-    }
   }
 
   toggleTheme(): void {
