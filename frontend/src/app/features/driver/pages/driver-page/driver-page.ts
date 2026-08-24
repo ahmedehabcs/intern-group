@@ -9,6 +9,7 @@ import {
 } from '../../models/driver.models';
 import { DeliveryFeedbackService } from '../../services/delivery-feedback.service';
 import { DeliveryService } from '../../services/delivery.service';
+import { DriverProfileService } from '../../services/driver-profile.service';
 import { ConfirmationDialogService } from '../../../../shared/services/confirmation-dialog.service';
 import { TokenService } from '../../../../core/auth/services/token.service';
 type Mode = 'available' | 'active' | 'history' | 'feedback';
@@ -19,6 +20,7 @@ type Mode = 'available' | 'active' | 'history' | 'feedback';
 })
 export class DriverPage {
   private delivery = inject(DeliveryService);
+  private profileApi = inject(DriverProfileService);
   private feedbackApi = inject(DeliveryFeedbackService);
   private route = inject(ActivatedRoute);
   private destroy = inject(DestroyRef);
@@ -37,6 +39,16 @@ export class DriverPage {
   readonly isDark = signal(document.documentElement.dataset['theme'] === 'dark');
   constructor() {
     this.load();
+
+    // Separate from load(), which only fetches the list for the current tab.
+    // The online flag belongs to the driver rather than to any one tab, so it
+    // is restored from the profile on every entry to the page - otherwise the
+    // signal's initial false silently misreports an online driver as offline
+    // after a refresh.
+    this.profileApi
+      .get()
+      .pipe(takeUntilDestroyed(this.destroy))
+      .subscribe({ next: (profile) => this.online.set(profile.online) });
   }
   load(): void {
     this.loading.set(true);

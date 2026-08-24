@@ -7,6 +7,8 @@ import { AddressResponse, CustomerProfileResponse } from '../../models/account.m
 import { AddressService } from '../../services/address.service';
 import { ProfileService } from '../../services/profile.service';
 import { ConfirmationDialogService } from '../../../../shared/services/confirmation-dialog.service';
+import { GovernorateService } from '../../../../core/services/governorate.service';
+import { GovernorateResponse } from '../../../../core/models/governorate.model';
 
 @Component({
   selector: 'app-account-page',
@@ -16,10 +18,12 @@ import { ConfirmationDialogService } from '../../../../shared/services/confirmat
 export class AccountPage {
   private addressApi = inject(AddressService);
   private profileApi = inject(ProfileService);
+  private governorateApi = inject(GovernorateService);
   private destroy = inject(DestroyRef);
   private confirmation = inject(ConfirmationDialogService);
 
   readonly addresses = signal<AddressResponse[]>([]);
+  readonly governorates = signal<GovernorateResponse[]>([]);
   readonly profile = signal<CustomerProfileResponse | null>(null);
   readonly profileExists = signal(false);
   readonly loading = signal(true);
@@ -81,6 +85,7 @@ export class AccountPage {
 
     forkJoin({
       addresses: this.addressApi.list(),
+      governorates: this.governorateApi.list(),
       profile: this.profileApi
         .get()
         .pipe(
@@ -96,6 +101,7 @@ export class AccountPage {
       .subscribe({
         next: (v) => {
           this.addresses.set(v.addresses);
+          this.governorates.set(v.governorates);
           this.profile.set(v.profile);
           this.profileExists.set(v.profile !== null);
 

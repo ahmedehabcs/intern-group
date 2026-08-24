@@ -76,11 +76,16 @@ public class AddressResponse {
         this.governorateName = governorateName;
     }
 
-    public boolean isDefault() {
+    // Named getIsDefault rather than isDefault so the field serializes as
+    // "isDefault". Jackson strips the "is" prefix from a primitive-boolean
+    // isXxx() getter, which published this flag as "default" - a name no
+    // client read, and one that disagreed with the isActive fields on the
+    // admin responses.
+    public boolean getIsDefault() {
         return isDefault;
     }
 
-    public void setDefault(boolean aDefault) {
-        isDefault = aDefault;
+    public void setIsDefault(boolean isDefault) {
+        this.isDefault = isDefault;
     }
 }

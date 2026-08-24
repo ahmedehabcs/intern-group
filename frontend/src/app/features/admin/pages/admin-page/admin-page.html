@@ -174,13 +174,15 @@
               formControlName="address"
               placeholder="Address"
               class="rounded-lg border p-2"
-            /><input
-              formControlName="governorateId"
-              type="number"
-              min="1"
-              placeholder="Governorate ID"
-              class="rounded-lg border p-2"
-            /><input
+            /><select formControlName="governorateId" class="rounded-lg border p-2">
+              <!-- ngValue, not value: value would coerce the control to a
+                   string, and CreateRestaurantRequest.governorateId is a number. -->
+              <option [ngValue]="0" disabled>Governorate</option>
+
+              @for (governorate of governorates(); track governorate.id) {
+              <option [ngValue]="governorate.id">{{ governorate.name }}</option>
+              }
+            </select><input
               formControlName="deliveryFee"
               type="number"
               min="0"

@@ -29,6 +29,7 @@ export const MOCK_DRIVER_PROFILE = {
   vehicleType: 'Motorcycle',
   licenseNumber: 'DL-48291',
   nationalId: '29801011234567',
+  online: true,
 } satisfies DriverProfileResponse;
 export const MOCK_AVAILABLE_DELIVERIES = [
   {

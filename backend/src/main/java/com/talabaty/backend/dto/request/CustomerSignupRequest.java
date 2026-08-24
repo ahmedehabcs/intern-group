@@ -26,6 +26,19 @@ public class CustomerSignupRequest {
     @NotBlank(message = "Name is required")
     private String name;
 
+    /**
+     * Optional, unlike the driver payload where it is mandatory.
+     * <p>
+     * A customer can finish signing up without one and add it later through
+     * PUT /api/profile, so requiring it here would reject registrations that
+     * the signup form already treats as valid. It is stored when supplied -
+     * previously the field did not exist at all, so a number typed into the
+     * form was dropped by Jackson and the profile came back with
+     * phoneNumber: null.
+     */
+    @Size(max = 20, message = "Phone number must not exceed 20 characters")
+    private String phoneNumber;
+
     // Getters and Setters
 
     public String getEmail() {
@@ -52,12 +65,21 @@ public class CustomerSignupRequest {
         this.name = name;
     }
 
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
     @Override
     public String toString() {
         return "CustomerSignupRequest{" +
                 "email='" + email + '\'' +
                 ", password='[PROTECTED]'" +
                 ", name='" + name + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
                 '}';
     }
 }

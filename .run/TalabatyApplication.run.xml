@@ -1,0 +1,61 @@
+<component name="ProjectRunConfigurationManager">
+  <!--
+    Runs the backend in the IDE. Committed on purpose: IntelliJ reads .run/ from
+    the repository, unlike .idea/, which is gitignored - so everyone gets a
+    working configuration instead of each person rediscovering the setup.
+
+    Database
+    --------
+    Deliberately sets no DB_* variables. It uses the defaults in
+    application.properties, which point at localhost:${DB_PORT:5432}. That is a
+    PostgreSQL installed on the machine, holding talabaty_db - no container
+    needed.
+
+    To run against the Postgres container instead of a local install:
+
+        docker compose up -d postgres
+
+    then add the variables its .env publishes it under, for example
+    DB_PORT=5433 and DB_PASSWORD=postgres. DB_PORT is enough to move the port,
+    because application.properties derives the JDBC URL from it.
+
+    Either way the container backend must be stopped first, or the two fight
+    over port 8080:  docker compose stop backend
+
+    OTP
+    ---
+    otp.enabled defaults to true, and signup then tries to send mail through
+    SMTP that is not configured locally. Note this does not make signup usable:
+    the account is still created unverified and login rejects it with 403, so
+    register a user and you still cannot log in as them. Use a seeded account.
+  -->
+  <configuration name="TalabatyApplication" type="SpringBootApplicationConfigurationType"
+                 factoryName="Spring Boot" nameIsGenerated="true">
+    <module name="backend" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="com.talabaty.backend.TalabatyApplication" />
+    <envs>
+      <env name="OTP_ENABLED" value="false" />
+
+      <!--
+        The account one-time passwords are sent from. An address is not a
+        secret, so it lives here; the password must not.
+
+        MAIL_PASSWORD stays empty in the committed file. It is a Google *app
+        password* - 16 characters from myaccount.google.com/apppasswords, with
+        2-Step Verification switched on; Gmail's SMTP refuses a normal account
+        password. Fill it in your own IntelliJ copy and do not commit it.
+
+        Order matters. Until MAIL_PASSWORD is set, leave OTP_ENABLED=false: a
+        username with no password makes the app treat mail as configured and
+        attempt a send that cannot authenticate, turning every signup into a
+        500. With OTP_ENABLED=false it keeps logging the code instead, which is
+        harmless. Set both together, then flip OTP_ENABLED to true.
+      -->
+      <env name="MAIL_USERNAME" value="20fares05@gmail.com" />
+      <env name="MAIL_PASSWORD" value="" />
+    </envs>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

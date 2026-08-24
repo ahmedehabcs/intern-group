@@ -63,9 +63,9 @@ public class AddressServiceImpl implements AddressService {
 
         CustomerProfile customer = requireCustomer(userId);
 
-        // Get governorate automatically from governorate name
+        // Resolve the governorate the request referenced by id
         Governorate governorate =
-                requireGovernorate(request.getGovernorate());
+                requireGovernorate(request.getGovernorateId());
 
         Address address = addressMapper.toEntity(request);
 
@@ -94,9 +94,9 @@ public class AddressServiceImpl implements AddressService {
         Address address =
                 requireOwnedAddress(addressId, customer.getId());
 
-        // Get governorate automatically from governorate name
+        // Resolve the governorate the request referenced by id
         Governorate governorate =
-                requireGovernorate(request.getGovernorate());
+                requireGovernorate(request.getGovernorateId());
 
         addressMapper.updateEntity(request, address);
 
@@ -186,14 +186,14 @@ public class AddressServiceImpl implements AddressService {
     }
 
     private Governorate requireGovernorate(
-            String governorateName
+            Long governorateId
     ) {
 
         return governorateRepository
-                .findByNameIgnoreCase(governorateName)
+                .findById(governorateId)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
-                        "Governorate not found: " + governorateName
+                        "Governorate not found: " + governorateId
                 ));
     }
 }

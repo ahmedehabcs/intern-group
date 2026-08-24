@@ -32,10 +32,12 @@ export class DeliveryService {
       ? this.mock.deliveryAction(id, a)
       : this.http.put<OrderSummaryResponse>(`${this.api}/orders/${id}/${a}`, null);
   }
-  status(_online: boolean): Observable<void> {
-    // TODO(api-contract): UpdateStatusRequest exists, but the endpoint itself documents no body.
+  status(online: boolean): Observable<void> {
+    // DeliveryProfileController.updateStatus takes a required @RequestBody
+    // UpdateStatusRequest{online}. Sending no body made every toggle a 400, so
+    // the flag was dropped on the floor rather than persisted.
     return environment.mock.enabled
-      ? this.mock.setDriverStatus(_online)
-      : this.http.put<void>(`${this.api}/profile/status`, null);
+      ? this.mock.setDriverStatus(online)
+      : this.http.put<void>(`${this.api}/profile/status`, { online });
   }
 }

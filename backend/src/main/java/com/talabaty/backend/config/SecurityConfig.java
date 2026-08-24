@@ -108,6 +108,8 @@ public class SecurityConfig {
                         ).permitAll()
                         // Public read-only endpoints
                         .requestMatchers(HttpMethod.GET, "/api/categories/**").permitAll()
+                        // Reference data for the address and restaurant forms.
+                        .requestMatchers(HttpMethod.GET, "/api/governorates").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/restaurants/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/reviews/restaurants/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/search").permitAll()

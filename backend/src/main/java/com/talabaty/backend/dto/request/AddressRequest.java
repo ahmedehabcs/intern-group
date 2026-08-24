@@ -1,6 +1,8 @@
 package com.talabaty.backend.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
 public class AddressRequest {
@@ -22,9 +24,12 @@ public class AddressRequest {
     @Size(max = 255, message = "City must not exceed 255 characters")
     private String city;
 
-    @NotBlank(message = "Governorate is required")
-    @Size(max = 255, message = "Governorate must not exceed 255 characters")
-    private String governorate;
+    // An id rather than a name, matching CreateRestaurantRequest and the
+    // governorateId that AddressResponse returns. Clients read the id/name
+    // pairs from GET /api/governorates.
+    @NotNull(message = "Governorate is required")
+    @Positive(message = "Governorate ID must be positive")
+    private Long governorateId;
 
 
     public String getStreet() {
@@ -67,11 +72,11 @@ public class AddressRequest {
         this.city = city;
     }
 
-    public String getGovernorate() {
-        return governorate;
+    public Long getGovernorateId() {
+        return governorateId;
     }
 
-    public void setGovernorate(String governorate) {
-        this.governorate = governorate;
+    public void setGovernorateId(Long governorateId) {
+        this.governorateId = governorateId;
     }
 }

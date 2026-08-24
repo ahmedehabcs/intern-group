@@ -6,6 +6,13 @@ import { Router, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
 type SignupRole = 'CUSTOMER' | 'DRIVER';
+
+// Both mirror the Bean Validation @Pattern constraints on the backend's
+// CustomerSignupRequest / DriverSignupRequest. They are duplicated here rather
+// than inferred so a rejected signup is a field-level message the user can act
+// on, instead of an opaque 400 surfaced in the form-wide error banner.
+const ALLOWED_EMAIL_DOMAINS = /^[a-zA-Z0-9._%+-]+@(gmail\.com|yahoo\.com|hotmail\.com|outlook\.com)$/i;
+const PASSWORD_COMPLEXITY = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*$/;
 @Component({
   selector: 'app-register',
   imports: [ReactiveFormsModule, RouterLink],
@@ -25,12 +32,17 @@ export class Register {
     }),
     email: new FormControl('', {
       nonNullable: true,
-      validators: [Validators.required, Validators.email],
+      validators: [Validators.required, Validators.email, Validators.pattern(ALLOWED_EMAIL_DOMAINS)],
     }),
     phoneNumber: new FormControl('', { nonNullable: true, validators: [Validators.maxLength(20)] }),
     password: new FormControl('', {
       nonNullable: true,
-      validators: [Validators.required, Validators.minLength(8), Validators.maxLength(100)],
+      validators: [
+        Validators.required,
+        Validators.minLength(8),
+        Validators.maxLength(100),
+        Validators.pattern(PASSWORD_COMPLEXITY),
+      ],
     }),
     vehicleType: new FormControl('', { nonNullable: true }),
     licenseNumber: new FormControl('', { nonNullable: true }),
@@ -42,8 +54,17 @@ export class Register {
       return;
     }
     const v = this.form.getRawValue();
-    if (v.role === 'DRIVER' && (!v.vehicleType || !v.licenseNumber || v.nationalId.length < 10)) {
-      this.error.set('Vehicle type, license number, and a valid national ID are required.');
+    // DriverSignupRequest marks phoneNumber @NotBlank, unlike the customer
+    // payload, so an empty phone here is a guaranteed 400 rather than an
+    // optional field. Checked alongside the other driver-only fields because
+    // the control itself is shared with the customer form.
+    if (
+      v.role === 'DRIVER' &&
+      (!v.phoneNumber || !v.vehicleType || !v.licenseNumber || v.nationalId.length < 10)
+    ) {
+      this.error.set(
+        'Phone number, vehicle type, license number, and a valid national ID are required.',
+      );
       return;
     }
     this.submitting.set(true);
@@ -54,7 +75,7 @@ export class Register {
             name: v.name,
             email: v.email,
             password: v.password,
-            phoneNumber: v.phoneNumber || undefined,
+            phoneNumber: v.phoneNumber,
             vehicleType: v.vehicleType,
             licenseNumber: v.licenseNumber,
             nationalId: v.nationalId,

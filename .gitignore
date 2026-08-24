@@ -23,6 +23,11 @@ target/
 .env.*
 !.env.example
 
+# Spring reads ./config/application.properties from the working directory and
+# lets it override the packaged one. It is where local credentials live - mail
+# passwords, anything machine-specific - so it must never be committed.
+config/
+
 # OS files
 .DS_Store
 Thumbs.db

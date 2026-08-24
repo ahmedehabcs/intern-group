@@ -79,7 +79,9 @@ import {
   MOCK_ADDRESSES,
   MOCK_CUSTOMER_ORDERS,
   MOCK_CUSTOMER_PROFILE,
+  MOCK_GOVERNORATES,
 } from './mock-customer.data';
+import { GovernorateResponse } from '../core/models/governorate.model';
 import {
   MOCK_ACTIVE_DELIVERY,
   MOCK_ADMIN_CATEGORIES,
@@ -313,6 +315,9 @@ export class MockDataStore {
 
   addresses(): Observable<AddressResponse[]> {
     return mockResponse(() => this.addressesState());
+  }
+  governorates(): Observable<GovernorateResponse[]> {
+    return mockResponse(() => cloneMock(MOCK_GOVERNORATES));
   }
   address(id: number): Observable<AddressResponse> {
     return mockResponse(() =>
@@ -556,7 +561,13 @@ export class MockDataStore {
     });
   }
   driverProfile(): Observable<DriverProfileResponse> {
-    return mockResponse(() => this.driverProfileState());
+    // online is layered on from driverOnlineState rather than read off the
+    // stored profile, so toggling status is reflected here the way the real
+    // API reflects it - both read the one value the toggle writes.
+    return mockResponse(() => ({
+      ...this.driverProfileState(),
+      online: this.driverOnlineState(),
+    }));
   }
   updateDriverProfile(request: DriverProfileUpdateRequest): Observable<void> {
     return mockResponse(() => {

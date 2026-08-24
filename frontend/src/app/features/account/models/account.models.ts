@@ -1,4 +1,3 @@
-// TODO(api-contract): no governorate lookup endpoint is documented, so the UI accepts the required ID.
 export interface AddressRequest {
   street: string;
   building?: string;

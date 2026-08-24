@@ -68,7 +68,12 @@ public Object getProfile(Long userId) {
                         deliveryProfile.getPhoneNumber(),
                         deliveryProfile.getVehicleType(),
                         deliveryProfile.getLicenseNumber(),
-                        deliveryProfile.getNationalId()
+                        deliveryProfile.getNationalId(),
+                        // Defaulted rather than passed through: the column is
+                        // nullable and older rows predate the flag, and a null
+                        // here would read as "unknown" to a client that only
+                        // understands online or offline.
+                        Boolean.TRUE.equals(deliveryProfile.getOnline())
                 );
             default:
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Profile retrieval is not supported for this user role.");

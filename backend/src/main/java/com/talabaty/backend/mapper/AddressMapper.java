@@ -14,6 +14,10 @@ public interface AddressMapper {
 
     @Mapping(target = "governorateId", source = "governorate.id")
     @Mapping(target = "governorateName", source = "governorate.name")
+    // Address exposes the flag as the bean property "default" (isDefault()),
+    // while AddressResponse now exposes "isDefault" (getIsDefault()), so the
+    // names no longer line up on their own.
+    @Mapping(target = "isDefault", source = "default")
     AddressResponse toResponse(Address address);
 
     List<AddressResponse> toResponseList(List<Address> addresses);

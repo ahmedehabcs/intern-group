@@ -25,6 +25,10 @@ export interface DriverProfileResponse {
   vehicleType: string;
   licenseNumber: string;
   nationalId: string;
+  // Persisted server-side and toggled via PUT /api/delivery/profile/status.
+  // Read on load so a refresh restores the driver's actual state instead of
+  // defaulting them to offline.
+  online: boolean;
 }
 export interface DriverProfileUpdateRequest {
   name?: string;

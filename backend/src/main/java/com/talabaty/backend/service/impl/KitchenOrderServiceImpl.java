@@ -220,10 +220,26 @@ public class KitchenOrderServiceImpl implements KitchenOrderService {
                 ));
     }
 
+    /**
+     * The kitchen's share of the order lifecycle: PENDING to CONFIRMED to
+     * PREPARING to READY. Everything from READY onwards belongs to the driver
+     * and is rejected here.
+     * <p>
+     * CONFIRMED may also go straight to READY. A small kitchen often confirms
+     * and cooks in one motion, and forcing a PREPARING call it does not mean
+     * only teaches people to click through a step that then records nothing
+     * true. The trade-off is that PREPARING stops being a complete record of
+     * what was cooked - an order that skips it is never counted as preparing,
+     * so dashboard counts and any cooking-time metric see only the orders that
+     * passed through it deliberately.
+     * <p>
+     * PENDING still cannot jump ahead: confirming an order is the point at
+     * which the restaurant accepts it, and nothing should bypass that.
+     */
     private void validateStatusTransition(OrderStatus currentStatus, OrderStatus newStatus) {
         boolean validTransition = switch (currentStatus) {
             case PENDING -> newStatus == OrderStatus.CONFIRMED;
-            case CONFIRMED -> newStatus == OrderStatus.PREPARING;
+            case CONFIRMED -> newStatus == OrderStatus.PREPARING || newStatus == OrderStatus.READY;
             case PREPARING -> newStatus == OrderStatus.READY;
             default -> false;
         };

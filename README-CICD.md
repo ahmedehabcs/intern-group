@@ -119,8 +119,9 @@ docker compose stop postgres      # stop, keeps data
 ```
 
 The container is `postgres:16-alpine`. On first start it creates the
-`talabaty_db` database, and the first application run applies all seven Flyway
-migrations, seed data included — there is nothing to import by hand.
+`talabaty_db` database, and the first application run applies every Flyway
+migration in `backend/src/main/resources/db/migration`, seed data included —
+there is nothing to import by hand.
 
 Data lives in the named volume `intern-group_postgres-data` and survives
 `stop`, `down`, and container recreation. To deliberately start clean:
@@ -134,26 +135,38 @@ docker compose down -v            # -v also deletes the volume
 Several machines on this team run a **natively installed PostgreSQL** as a
 Windows service, which already owns port 5432. Publishing the container on the
 same port fails with `port is already allocated`. So the host port is
-configurable via `DB_PORT`, and the committed `.env` sets it to **5433** — the
+configurable via `DB_PORT`, which you set to **5433** in your own `.env` — the
 container and the native service coexist, and no system change is needed.
+(`.env` is git-ignored, so this is a per-machine choice; `.env.example` ships
+the 5432 default and explains the override.)
 
 This only affects reaching the database *from the host*. Inside the compose
 network the backend container always talks to `postgres:5432`, so
 `docker compose up` is unaffected either way.
 
-Consequence worth knowing: `application.properties` still defaults to
-`localhost:5432`, which is the **native** server. Running the backend from your
-IDE therefore keeps using the native database unless you point it at the
-container:
+Consequence worth knowing: `application.properties` defaults to
+`localhost:${DB_PORT:5432}`. With `DB_PORT` unset that is 5432 — the **native**
+server — so running the backend from your IDE uses the native database unless
+you point it at the container. Because the URL is derived from `DB_PORT`, that
+is now a single variable:
 
 ```
-DB_URL=jdbc:postgresql://localhost:5433/talabaty_db
+DB_PORT=5433
 DB_USERNAME=postgres
 DB_PASSWORD=postgres
 ```
 
 Set those in the IntelliJ run configuration's environment variables. Spring does
-not read the root `.env` file — only `docker compose` does.
+not read the root `.env` file — only `docker compose` does, which is why the
+value has to be repeated here.
+
+The repository ships `.run/TalabatyApplication.run.xml`, which IntelliJ picks up
+automatically (`.run/` is committed; `.idea/` is not). Out of the box it sets
+only `OTP_ENABLED=false` and uses the local defaults above, so add the `DB_*`
+variables to it if you want the container rather than a native install.
+
+Whichever you run, only one backend can hold port 8080 — stop the container
+first with `docker compose stop backend`.
 
 If you would rather have the container simply *be* the database on 5432, stop
 the native service and set `DB_PORT=5432` in `.env`:

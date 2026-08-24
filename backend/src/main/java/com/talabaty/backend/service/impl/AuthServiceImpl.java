@@ -78,8 +78,11 @@ public class AuthServiceImpl implements AuthService {
             CustomerProfile customerProfile = new CustomerProfile();
             customerProfile.setUser(savedUser);
             customerProfile.setName(request.getName());
-            // The new spec for CustomerSignupRequest doesn't include a phone number.
-            customerProfile.setPhoneNumber(null);
+            // Null when the customer skipped the field - it is optional here,
+            // unlike driver signup. Previously hardcoded to null because the
+            // request had no such field, which silently discarded whatever the
+            // signup form collected.
+            customerProfile.setPhoneNumber(request.getPhoneNumber());
             customerProfileRepository.save(customerProfile);
 
             emailService.sendOtpEmail(savedUser.getEmail(), savedUser.getOtp());

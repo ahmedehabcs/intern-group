@@ -14,6 +14,8 @@ import {
 import { AdminApiService } from '../../services/admin-api.service';
 import { OrderStatus } from '../../../orders/models/order.models';
 import { ConfirmationDialogService } from '../../../../shared/services/confirmation-dialog.service';
+import { GovernorateService } from '../../../../core/services/governorate.service';
+import { GovernorateResponse } from '../../../../core/models/governorate.model';
 type Mode =
   'categories' | 'customers' | 'orders' | 'restaurants' | 'riders' | 'pending' | 'feedback';
 @Component({
@@ -23,10 +25,12 @@ type Mode =
 })
 export class AdminPage {
   private api = inject(AdminApiService);
+  private governorateApi = inject(GovernorateService);
   private route = inject(ActivatedRoute);
   private destroy = inject(DestroyRef);
   private confirmation = inject(ConfirmationDialogService);
   readonly mode = this.route.snapshot.data['mode'] as Mode;
+  readonly governorates = signal<GovernorateResponse[]>([]);
   readonly categories = signal<AdminCategoryResponse[]>([]);
   readonly customers = signal<CustomerAdminResponse[]>([]);
   readonly orders = signal<OrderAdminResponse[]>([]);
@@ -94,6 +98,16 @@ export class AdminPage {
   });
   constructor() {
     this.load();
+
+    // Only the restaurants screen renders the governorate picker, and the list
+    // is fetched once here rather than inside load() because load() re-runs on
+    // every search keystroke while this reference data never changes.
+    if (this.mode === 'restaurants') {
+      this.governorateApi
+        .list()
+        .pipe(takeUntilDestroyed(this.destroy))
+        .subscribe({ next: (v) => this.governorates.set(v) });
+    }
   }
   load(): void {
     this.loading.set(true);

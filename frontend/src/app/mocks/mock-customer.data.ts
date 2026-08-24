@@ -4,6 +4,15 @@ import {
 } from '../features/account/models/account.models';
 import { CartResponse } from '../features/cart/models/cart.models';
 import { CustomerOrderDetailsResponse } from '../features/orders/models/order.models';
+import { GovernorateResponse } from '../core/models/governorate.model';
+
+// Mirrors the rows seeded by V1__create_initial_tables.sql, so the ids the
+// address form submits in mock mode are the same ones the API would accept.
+export const MOCK_GOVERNORATES = [
+  { id: 1, name: 'Cairo' },
+  { id: 2, name: 'Giza' },
+  { id: 3, name: 'Alexandria' },
+] satisfies GovernorateResponse[];
 
 export const MOCK_ADDRESSES = [
   {
@@ -13,7 +22,7 @@ export const MOCK_ADDRESSES = [
     floor: '3',
     apartment: '8',
     city: 'Giza',
-    governorateId: 1,
+    governorateId: 2,
     governorateName: 'Giza',
     isDefault: true,
   },
@@ -24,7 +33,7 @@ export const MOCK_ADDRESSES = [
     floor: '2',
     apartment: '5',
     city: 'Cairo',
-    governorateId: 2,
+    governorateId: 1,
     governorateName: 'Cairo',
     isDefault: false,
   },

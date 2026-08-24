@@ -425,14 +425,20 @@
             </label>
 
             <label class="text-sm font-medium text-(--text)">
-              Governorate ID
+              Governorate
 
-              <input
+              <select
                 formControlName="governorateId"
-                type="number"
-                min="1"
                 class="mt-2 w-full rounded-(--radius) border border-(--line) bg-(--surface) p-3.5 text-(--text) transition focus:border-(--brand) focus:outline-none"
-              />
+              >
+                <!-- ngValue, not value: value would coerce the control to the
+                     string "2", and AddressRequest.governorateId is a number. -->
+                <option [ngValue]="0" disabled>Select a governorate</option>
+
+                @for (governorate of governorates(); track governorate.id) {
+                <option [ngValue]="governorate.id">{{ governorate.name }}</option>
+                }
+              </select>
             </label>
 
             <div class="flex items-end lg:col-span-3">

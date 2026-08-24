@@ -45,8 +45,14 @@
             Email
           </label>
 
-          <input id="email" formControlName="email" type="email" placeholder="you@example.com"
+          <input id="email" formControlName="email" type="email" placeholder="you@gmail.com"
             class="h-12 w-full rounded-(--radius) border border-(--line) bg-(--surface) px-4 text-sm text-(--text) outline-none transition placeholder:text-(--muted) focus:border-(--brand) focus:ring-1 focus:ring-(--brand)" />
+
+          @if (form.controls.email.touched && form.controls.email.hasError('pattern')) {
+          <p class="mt-2 text-xs text-(--brand)">
+            Use a gmail.com, yahoo.com, hotmail.com, or outlook.com address.
+          </p>
+          }
         </div>
 
         <!-- Phone -->
@@ -67,6 +73,14 @@
 
           <input id="password" formControlName="password" type="password" placeholder="Create a password"
             class="h-12 w-full rounded-(--radius) border border-(--line) bg-(--surface) px-4 text-sm text-(--text) outline-none transition placeholder:text-(--muted) focus:border-(--brand) focus:ring-1 focus:ring-(--brand)" />
+
+          @if (form.controls.password.touched && form.controls.password.hasError('minlength')) {
+          <p class="mt-2 text-xs text-(--brand)">Use at least 8 characters.</p>
+          } @else if (form.controls.password.touched && form.controls.password.hasError('pattern')) {
+          <p class="mt-2 text-xs text-(--brand)">
+            Include an uppercase letter, a lowercase letter, and a number.
+          </p>
+          }
         </div>
 
         <!-- Driver Fields -->
