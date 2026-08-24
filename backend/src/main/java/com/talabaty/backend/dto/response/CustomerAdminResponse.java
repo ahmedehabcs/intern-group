@@ -1,6 +1,9 @@
 package com.talabaty.backend.dto.response;
 
+import lombok.Getter;
 
+
+@Getter
 public class CustomerAdminResponse {
     private Long id;
     private String name;
@@ -14,8 +17,4 @@ public class CustomerAdminResponse {
         this.phoneNumber = phoneNumber;
     }
 
-    public Long getId() { return id; }
-    public String getName() { return name; }
-    public String getEmail() { return email; }
-    public String getPhoneNumber() { return phoneNumber; }
 }

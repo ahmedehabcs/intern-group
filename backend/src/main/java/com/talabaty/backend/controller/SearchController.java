@@ -1,5 +1,7 @@
 package com.talabaty.backend.controller;
 
+import lombok.RequiredArgsConstructor;
+
 import com.talabaty.backend.dto.response.SearchResponse;
 import com.talabaty.backend.service.SearchService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,13 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Search", description = "Search restaurants and menu items")
 @RestController
 @RequestMapping("/api/search")
+@RequiredArgsConstructor
 public class SearchController {
 
     private final SearchService searchService;
 
-    public SearchController(SearchService searchService) {
-        this.searchService = searchService;
-    }
 
     @Operation(
             summary = "Search restaurants and menu items",

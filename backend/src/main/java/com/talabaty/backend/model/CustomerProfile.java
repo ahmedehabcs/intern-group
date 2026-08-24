@@ -1,16 +1,24 @@
 package com.talabaty.backend.model;
+
+import lombok.Setter;
+
+import lombok.Getter;
 import jakarta.persistence.*;
 import java.util.List;
 import java.util.ArrayList;
 
 @Entity
 @Table(name = "customers")
+@Getter
 public class CustomerProfile {
 
     @Id
     private Long id;
+    @Setter
     private String name;
+    @Setter
     private Integer loyaltyPoints;
+    @Setter
     private String phoneNumber;
 
     // Foreign key to the associated User
@@ -18,10 +26,12 @@ public class CustomerProfile {
     @MapsId
 
     @JoinColumn(name = "id", referencedColumnName = "id", nullable = false)
+    @Setter
     private User user;
 
     // Foreign key to the associated User
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    @Setter
     private List<Order> orderHistory = new ArrayList<>();
 
 
@@ -30,6 +40,7 @@ public class CustomerProfile {
     // orphanRemoval = true automatically deletes an Address from the database
     // if it is removed from this collection.
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Setter
     private List<Address> addresses = new ArrayList<>();
 
     public CustomerProfile() {}
@@ -45,57 +56,18 @@ public class CustomerProfile {
 
     // Getters and Setters...
 
-    public Long getId() {
-        return id;
-    }
 
-    public String getName() {
-        return name;
-    }
 
-    public void setName(String name) {
-        this.name = name;
-    }
 
-    public Integer getLoyaltyPoints() {
-        return loyaltyPoints;
-    }
 
-    public void setLoyaltyPoints(Integer loyaltyPoints) {
-        this.loyaltyPoints = loyaltyPoints;
-    }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
 
-    public User getUser() {
-        return user;
-    }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
 
-    public List<Order> getOrderHistory() {
-        return orderHistory;
-    }
 
-    public void setOrderHistory(List<Order> orderHistory) {
-        this.orderHistory = orderHistory;
-    }
 
-    public List<Address> getAddresses() {
-        return addresses;
-    }
 
-    public void setAddresses(List<Address> addresses) {
-        this.addresses = addresses;
-    }
 
     @Override
     public String toString() {

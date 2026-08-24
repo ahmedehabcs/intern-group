@@ -1,4 +1,6 @@
 package com.talabaty.backend.controller;
+
+import lombok.RequiredArgsConstructor;
 import com.talabaty.backend.dto.request.AddressRequest;
 import com.talabaty.backend.dto.response.AddressResponse;
 import com.talabaty.backend.service.AddressService;
@@ -28,13 +30,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/addresses")
 @SecurityRequirement(name = "bearerAuth")
+@RequiredArgsConstructor
 public class AddressController {
 
     private final AddressService addressService;
 
-    public AddressController(AddressService addressService) {
-        this.addressService = addressService;
-    }
 
     @Operation(summary = "Get the authenticated customer's addresses")
     @GetMapping

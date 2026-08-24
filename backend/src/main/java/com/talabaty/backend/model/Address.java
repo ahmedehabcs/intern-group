@@ -1,8 +1,14 @@
 package com.talabaty.backend.model;
+
+import lombok.Setter;
+
+import lombok.Getter;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name="addresses")
+@Getter
+@Setter
 public class Address {
 
     @Id
@@ -43,77 +49,23 @@ public class Address {
         this.governorate = governorate;
     }
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
-    public String getStreet() {
-        return street;
-    }
 
-    public void setStreet(String street) {
-        this.street = street;
-    }
 
-    public String getBuilding() {
-        return building;
-    }
 
-    public void setBuilding(String building) {
-        this.building = building;
-    }
 
-    public String getFloor() {
-        return floor;
-    }
 
-    public void setFloor(String floor) {
-        this.floor = floor;
-    }
 
-    public String getApartment() {
-        return apartment;
-    }
 
-    public void setApartment(String apartment) {
-        this.apartment = apartment;
-    }
 
-    public CustomerProfile getCustomer() {
-        return customer;
-    }
 
-    public void setCustomer(CustomerProfile customer) {
-        this.customer = customer;
-    }
 
-    public Governorate getGovernorate() {
-        return governorate;
-    }
 
-    public void setGovernorate(Governorate governorate) {
-        this.governorate = governorate;
-    }
 
-    public String getCity() {
-        return city;
-    }
 
-    public void setCity(String city) {
-        this.city = city;
-    }
 
-    public boolean isDefault() {
-        return isDefault;
-    }
 
-    public void setDefault(boolean aDefault) {
-        isDefault = aDefault;
-    }
 
 
 

@@ -1,8 +1,13 @@
 package com.talabaty.backend.dto.request;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
+@Getter
+@Setter
 public class CustomerProfileUpdateRequest {
     @Size(min = 2, max = 50, message = "Name must be between 2 and 50 characters")
     private String name;
@@ -11,19 +16,7 @@ public class CustomerProfileUpdateRequest {
     private String phoneNumber;
 
     // Getters and Setters
-    public String getName() {
-        return name;
-    }
 
-    public void setName(String name) {
-        this.name = name;
-    }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
 }

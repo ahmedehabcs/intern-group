@@ -1,5 +1,7 @@
 package com.talabaty.backend.controller;
 
+import lombok.RequiredArgsConstructor;
+
 import com.talabaty.backend.dto.request.CancelKitchenOrderRequest;
 import com.talabaty.backend.dto.request.UpdateKitchenOrderStatusRequest;
 import com.talabaty.backend.dto.response.KitchenOrderDetailsResponse;
@@ -32,13 +34,11 @@ import java.util.List;
 @RequestMapping("/api/kitchen/orders")
 @Tag(name = "Kitchen Orders", description = "Manage restaurant kitchen orders")
 @SecurityRequirement(name = "bearerAuth")
+@RequiredArgsConstructor
 public class KitchenOrderController {
 
     private final KitchenOrderService kitchenOrderService;
 
-    public KitchenOrderController(KitchenOrderService kitchenOrderService) {
-        this.kitchenOrderService = kitchenOrderService;
-    }
 
     @Operation(summary = "Get active orders for the kitchen manager's restaurant")
     @GetMapping

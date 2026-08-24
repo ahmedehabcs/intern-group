@@ -1,10 +1,13 @@
 package com.talabaty.backend.model;
 
+import lombok.Getter;
+
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "order_cancellation_logs")
+@Getter
 public class OrderCancellationLog {
 
     @Id
@@ -32,9 +35,4 @@ public class OrderCancellationLog {
         this.cancelledAt = LocalDateTime.now();
     }
 
-    public Long getId() { return id; }
-    public Long getOrderId() { return orderId; }
-    public Long getRiderId() { return riderId; }
-    public String getReason() { return reason; }
-    public LocalDateTime getCancelledAt() { return cancelledAt; }
 }

@@ -1,4 +1,9 @@
 package com.talabaty.backend.model;
+
+import lombok.Setter;
+
+import lombok.Getter;
+import lombok.experimental.Accessors;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -7,6 +12,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "restaurants")
+@Getter
+@Setter
 public class Restaurant {
 
     @Id
@@ -36,6 +43,7 @@ public class Restaurant {
     private String logoUrl;
 
     @Column(nullable = false, columnDefinition = "boolean default true")
+    @Accessors(prefix = "is")
     private Boolean isActive = true;
 
     @Column(name = "delivery_fee", nullable = false, precision = 10, scale = 2)
@@ -58,101 +66,29 @@ public class Restaurant {
     public Restaurant() {
     }
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
-    public String getName() {
-        return name;
-    }
 
-    public void setName(String name) {
-        this.name = name;
-    }
 
-    public String getPhone() {
-        return phone;
-    }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
 
-    public String getEmail() {
-        return email;
-    }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
 
-    public String getAddress() {
-        return address;
-    }
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
 
-    public Governorate getGovernorate() {
-        return governorate;
-    }
 
-    public void setGovernorate(Governorate governorate) {
-        this.governorate = governorate;
-    }
 
-    public String getDescription() {
-        return description;
-    }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
 
-    public String getLogoUrl() {
-        return logoUrl;
-    }
 
-    public void setLogoUrl(String logoUrl) {
-        this.logoUrl = logoUrl;
-    }
 
-    public Boolean getActive() {
-        return isActive;
-    }
 
-    public void setActive(Boolean active) {
-        isActive = active;
-    }
 
-    public BigDecimal getDeliveryFee() {
-        return deliveryFee;
-    }
 
-    public void setDeliveryFee(BigDecimal deliveryFee) {
-        this.deliveryFee = deliveryFee;
-    }
 
-    public List<MenuSection> getMenuSections() {
-        return menuSections;
-    }
 
-    public void setMenuSections(List<MenuSection> menuSections) {
-        this.menuSections = menuSections;
-    }
 
-    public List<Category> getCategories() {
-        return categories;
-    }
 
-    public void setCategories(List<Category> categories) {
-        this.categories = categories;
-    }
 
     @Override
     public String toString() {

@@ -1,5 +1,10 @@
 package com.talabaty.backend.dto.response;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class RegisterResponse {
     private String message;
 
@@ -7,6 +12,4 @@ public class RegisterResponse {
 
     public RegisterResponse(String message) { this.message = message; }
 
-    public String getMessage() { return message; }
-    public void setMessage(String message) { this.message = message; }
 }

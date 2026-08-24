@@ -1,7 +1,12 @@
 package com.talabaty.backend.dto.response;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.List;
 
+@Getter
+@Setter
 public class MenuItemDetailsResponse {
 
     private Long id;
@@ -36,67 +41,19 @@ public class MenuItemDetailsResponse {
         this.addonGroups = addonGroups;
     }
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
-    public String getName() {
-        return name;
-    }
 
-    public void setName(String name) {
-        this.name = name;
-    }
 
-    public String getDescription() {
-        return description;
-    }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
 
-    public Double getBasePrice() {
-        return basePrice;
-    }
 
-    public void setBasePrice(Double basePrice) {
-        this.basePrice = basePrice;
-    }
 
-    public String getImageUrl() {
-        return imageUrl;
-    }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
 
-    public Long getRestaurantId() {
-        return restaurantId;
-    }
 
-    public void setRestaurantId(Long restaurantId) {
-        this.restaurantId = restaurantId;
-    }
 
-    public Long getMenuSectionId() {
-        return menuSectionId;
-    }
 
-    public void setMenuSectionId(Long menuSectionId) {
-        this.menuSectionId = menuSectionId;
-    }
 
-    public List<AddonGroupResponse> getAddonGroups() {
-        return addonGroups;
-    }
 
-    public void setAddonGroups(List<AddonGroupResponse> addonGroups) {
-        this.addonGroups = addonGroups;
-    }
 }

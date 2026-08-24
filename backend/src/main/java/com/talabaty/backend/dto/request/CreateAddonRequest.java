@@ -1,11 +1,16 @@
 package com.talabaty.backend.dto.request;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+@Getter
+@Setter
 public class CreateAddonRequest {
 
     @NotBlank(message = "Name is required")
@@ -22,27 +27,9 @@ public class CreateAddonRequest {
     public CreateAddonRequest() {
     }
 
-    public String getName() {
-        return name;
-    }
 
-    public void setName(String name) {
-        this.name = name;
-    }
 
-    public Double getAdditionalPrice() {
-        return additionalPrice;
-    }
 
-    public void setAdditionalPrice(Double additionalPrice) {
-        this.additionalPrice = additionalPrice;
-    }
 
-    public Boolean getAvailable() {
-        return available;
-    }
 
-    public void setAvailable(Boolean available) {
-        this.available = available;
-    }
 }

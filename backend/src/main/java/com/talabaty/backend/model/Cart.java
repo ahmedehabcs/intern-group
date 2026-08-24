@@ -1,10 +1,15 @@
 package com.talabaty.backend.model;
+
+import lombok.Getter;
+import lombok.Setter;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "carts")
+@Getter
+@Setter
 public class Cart {
 
     @Id
@@ -38,45 +43,15 @@ public class Cart {
         this.customer = customer;
     }
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
-    public CustomerProfile getCustomer() {
-        return customer;
-    }
 
-    public void setCustomer(CustomerProfile customer) {
-        this.customer = customer;
-    }
 
-    public Restaurant getRestaurant() {
-        return restaurant;
-    }
 
-    public void setRestaurant(Restaurant restaurant) {
-        this.restaurant = restaurant;
-    }
 
-    public Double getSubtotal() {
-        return subtotal;
-    }
 
-    public void setSubtotal(Double subtotal) {
-        this.subtotal = subtotal;
-    }
 
-    public List<CartItem> getItems() {
-        return items;
-    }
 
-    public void setItems(List<CartItem> items) {
-        this.items = items;
-    }
 
     @Override
     public String toString() {

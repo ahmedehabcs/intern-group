@@ -1,7 +1,12 @@
 package com.talabaty.backend.dto.response;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.List;
 
+@Getter
+@Setter
 public class KitchenOrderPageResponse {
     private List<KitchenOrderSummaryResponse> orders;
     private int page;
@@ -24,18 +29,4 @@ public class KitchenOrderPageResponse {
         this.last = last;
     }
 
-    public List<KitchenOrderSummaryResponse> getOrders() { return orders; }
-    public void setOrders(List<KitchenOrderSummaryResponse> orders) { this.orders = orders; }
-    public int getPage() { return page; }
-    public void setPage(int page) { this.page = page; }
-    public int getSize() { return size; }
-    public void setSize(int size) { this.size = size; }
-    public long getTotalElements() { return totalElements; }
-    public void setTotalElements(long totalElements) { this.totalElements = totalElements; }
-    public int getTotalPages() { return totalPages; }
-    public void setTotalPages(int totalPages) { this.totalPages = totalPages; }
-    public boolean isFirst() { return first; }
-    public void setFirst(boolean first) { this.first = first; }
-    public boolean isLast() { return last; }
-    public void setLast(boolean last) { this.last = last; }
 }

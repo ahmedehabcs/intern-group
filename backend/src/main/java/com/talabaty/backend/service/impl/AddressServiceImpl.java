@@ -1,5 +1,7 @@
 package com.talabaty.backend.service.impl;
 
+import lombok.RequiredArgsConstructor;
+
 import com.talabaty.backend.dto.request.AddressRequest;
 import com.talabaty.backend.dto.response.AddressResponse;
 import com.talabaty.backend.mapper.AddressMapper;
@@ -18,6 +20,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class AddressServiceImpl implements AddressService {
 
     private final AddressRepository addressRepository;
@@ -25,17 +28,6 @@ public class AddressServiceImpl implements AddressService {
     private final GovernorateRepository governorateRepository;
     private final AddressMapper addressMapper;
 
-    public AddressServiceImpl(
-            AddressRepository addressRepository,
-            CustomerProfileRepository customerProfileRepository,
-            GovernorateRepository governorateRepository,
-            AddressMapper addressMapper
-    ) {
-        this.addressRepository = addressRepository;
-        this.customerProfileRepository = customerProfileRepository;
-        this.governorateRepository = governorateRepository;
-        this.addressMapper = addressMapper;
-    }
 
     @Override
     @Transactional(readOnly = true)

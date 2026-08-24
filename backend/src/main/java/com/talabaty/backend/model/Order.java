@@ -1,6 +1,10 @@
 
 package com.talabaty.backend.model;
 
+import lombok.Setter;
+
+import lombok.Getter;
+
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -10,6 +14,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "orders")
+@Getter
 public class Order {
 
     @Id
@@ -19,52 +24,65 @@ public class Order {
     // Customer
     @ManyToOne
     @JoinColumn(name = "customer_id", nullable = false)
+    @Setter
     private CustomerProfile customer;
 
     // Restaurant
     @ManyToOne
     @JoinColumn(name = "restaurant_id", nullable = false)
+    @Setter
     private Restaurant restaurant;
 
     // Immutable restaurant-name snapshot
     @Column(name = "restaurant_name", nullable = false)
+    @Setter
     private String restaurantName;
 
     // Rider
     @ManyToOne
     @JoinColumn(name = "rider_id")
+    @Setter
     private DeliveryProfile rider;
 
     // Selected customer address
     @ManyToOne
     @JoinColumn(name = "address_id")
+    @Setter
     private Address address;
 
     // Immutable formatted delivery-address snapshot
     @Column(name = "delivery_address", nullable = false, columnDefinition = "TEXT")
+    @Setter
     private String deliveryAddress;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    @Setter
     private OrderStatus status = OrderStatus.PENDING;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "payment_method", nullable = false)
+    @Setter
     private PaymentMethod paymentMethod;
 
     @Column(nullable = false)
+    @Setter
     private BigDecimal subtotal;
 
     @Column(name = "delivery_fee", nullable = false)
+    @Setter
     private BigDecimal deliveryFee;
 
     @Column(name = "total_price", nullable = false)
+    @Setter
     private BigDecimal totalPrice;
 
     @Column(name = "created_at", nullable = false, updatable = false)
+    @Setter
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at", nullable = false)
+    @Setter
     private LocalDateTime updatedAt;
 
     @OneToMany(
@@ -72,6 +90,7 @@ public class Order {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
+    @Setter
     private List<OrderItem> orderItems = new ArrayList<>();
 
     public Order() {
@@ -95,121 +114,34 @@ public class Order {
 
     // Getters & Setters
 
-    public Long getId() {
-        return id;
-    }
 
-    public CustomerProfile getCustomer() {
-        return customer;
-    }
 
-    public void setCustomer(CustomerProfile customer) {
-        this.customer = customer;
-    }
 
-    public Restaurant getRestaurant() {
-        return restaurant;
-    }
 
-    public void setRestaurant(Restaurant restaurant) {
-        this.restaurant = restaurant;
-    }
 
-    public String getRestaurantName() {
-        return restaurantName;
-    }
 
-    public void setRestaurantName(String restaurantName) {
-        this.restaurantName = restaurantName;
-    }
 
-    public DeliveryProfile getRider() {
-        return rider;
-    }
 
-    public void setRider(DeliveryProfile rider) {
-        this.rider = rider;
-    }
 
-    public Address getAddress() {
-        return address;
-    }
 
-    public void setAddress(Address address) {
-        this.address = address;
-    }
 
-    public String getDeliveryAddress() {
-        return deliveryAddress;
-    }
 
-    public void setDeliveryAddress(String deliveryAddress) {
-        this.deliveryAddress = deliveryAddress;
-    }
 
-    public OrderStatus getStatus() {
-        return status;
-    }
 
-    public void setStatus(OrderStatus status) {
-        this.status = status;
-    }
 
-    public PaymentMethod getPaymentMethod() {
-        return paymentMethod;
-    }
 
-    public void setPaymentMethod(PaymentMethod paymentMethod) {
-        this.paymentMethod = paymentMethod;
-    }
 
-    public BigDecimal getSubtotal() {
-        return subtotal;
-    }
 
-    public void setSubtotal(BigDecimal subtotal) {
-        this.subtotal = subtotal;
-    }
 
-    public BigDecimal getDeliveryFee() {
-        return deliveryFee;
-    }
 
-    public void setDeliveryFee(BigDecimal deliveryFee) {
-        this.deliveryFee = deliveryFee;
-    }
 
-    public BigDecimal getTotalPrice() {
-        return totalPrice;
-    }
 
-    public void setTotalPrice(BigDecimal totalPrice) {
-        this.totalPrice = totalPrice;
-    }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
 
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
 
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
 
-    public List<OrderItem> getOrderItems() {
-        return orderItems;
-    }
 
-    public void setOrderItems(List<OrderItem> orderItems) {
-        this.orderItems = orderItems;
-    }
 
     @Override
     public String toString() {

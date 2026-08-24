@@ -1,5 +1,7 @@
 package com.talabaty.backend.controller;
 
+import lombok.RequiredArgsConstructor;
+
 import com.talabaty.backend.dto.request.AddCartItemRequest;
 import com.talabaty.backend.dto.request.ReplaceCartItemRequest;
 import com.talabaty.backend.dto.request.UpdateCartItemQuantityRequest;
@@ -31,13 +33,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/cart")
 @SecurityRequirement(name = "bearerAuth")
+@RequiredArgsConstructor
 public class CartController {
 
     private final CartService cartService;
 
-    public CartController(CartService cartService) {
-        this.cartService = cartService;
-    }
 
     @Operation(summary = "Get the current customer's cart")
     @ApiResponses({

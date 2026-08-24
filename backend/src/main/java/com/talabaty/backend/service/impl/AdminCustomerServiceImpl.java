@@ -1,5 +1,7 @@
 package com.talabaty.backend.service.impl;
 
+import lombok.RequiredArgsConstructor;
+
 import com.talabaty.backend.dto.response.CustomerAdminResponse;
 import com.talabaty.backend.model.CustomerProfile;
 import com.talabaty.backend.repository.CustomerProfileRepository;
@@ -11,13 +13,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class AdminCustomerServiceImpl implements AdminCustomerService {
 
     private final CustomerProfileRepository customerProfileRepository;
 
-    public AdminCustomerServiceImpl(CustomerProfileRepository customerProfileRepository) {
-        this.customerProfileRepository = customerProfileRepository;
-    }
 
     @Override
     @Transactional(readOnly = true)

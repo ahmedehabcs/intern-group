@@ -1,8 +1,13 @@
 package com.talabaty.backend.dto.request;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import com.talabaty.backend.model.OrderStatus;
 import jakarta.validation.constraints.NotNull;
 
+@Getter
+@Setter
 public class UpdateKitchenOrderStatusRequest {
 
     @NotNull(message = "Order status is required")
@@ -11,11 +16,5 @@ public class UpdateKitchenOrderStatusRequest {
     public UpdateKitchenOrderStatusRequest() {
     }
 
-    public OrderStatus getStatus() {
-        return status;
-    }
 
-    public void setStatus(OrderStatus status) {
-        this.status = status;
-    }
 }

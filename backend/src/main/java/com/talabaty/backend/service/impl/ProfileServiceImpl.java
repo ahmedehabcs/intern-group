@@ -1,5 +1,7 @@
 package com.talabaty.backend.service.impl;
 
+import lombok.RequiredArgsConstructor;
+
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
@@ -20,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service
+@RequiredArgsConstructor
 public class ProfileServiceImpl implements ProfileService {
 
     private final UserRepository userRepository;
@@ -27,13 +30,6 @@ public class ProfileServiceImpl implements ProfileService {
     private final DeliveryProfileRepository deliveryProfileRepository;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public ProfileServiceImpl(UserRepository userRepository,
-                              CustomerProfileRepository customerProfileRepository,
-                              DeliveryProfileRepository deliveryProfileRepository) {
-        this.userRepository = userRepository;
-        this.customerProfileRepository = customerProfileRepository;
-        this.deliveryProfileRepository = deliveryProfileRepository;
-    }
 
 //    @Override
 //    public Object getProfile(String userEmail) {

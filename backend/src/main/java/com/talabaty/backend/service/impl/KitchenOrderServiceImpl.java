@@ -1,5 +1,7 @@
 package com.talabaty.backend.service.impl;
 
+import lombok.RequiredArgsConstructor;
+
 import com.talabaty.backend.dto.response.KitchenOrderDetailsResponse;
 import com.talabaty.backend.dto.response.KitchenOrderPageResponse;
 import com.talabaty.backend.dto.response.KitchenOrderSummaryResponse;
@@ -25,6 +27,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class KitchenOrderServiceImpl implements KitchenOrderService {
 
     private static final List<OrderStatus> ACTIVE_STATUSES = List.of(
@@ -39,17 +42,6 @@ public class KitchenOrderServiceImpl implements KitchenOrderService {
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
 
-    public KitchenOrderServiceImpl(
-            KitchenManagerRepository kitchenManagerRepository,
-            KitchenOrderCancellationRepository kitchenOrderCancellationRepository,
-            OrderRepository orderRepository,
-            OrderMapper orderMapper
-    ) {
-        this.kitchenManagerRepository = kitchenManagerRepository;
-        this.kitchenOrderCancellationRepository = kitchenOrderCancellationRepository;
-        this.orderRepository = orderRepository;
-        this.orderMapper = orderMapper;
-    }
 
     @Override
     @Transactional(readOnly = true)

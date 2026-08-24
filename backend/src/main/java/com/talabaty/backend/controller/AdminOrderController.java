@@ -1,5 +1,7 @@
 package com.talabaty.backend.controller;
 
+import lombok.RequiredArgsConstructor;
+
 import com.talabaty.backend.dto.response.OrderAdminResponse;
 import com.talabaty.backend.model.OrderStatus;
 import com.talabaty.backend.service.AdminOrderService;
@@ -15,13 +17,11 @@ import java.util.List;
 @RequestMapping("/api/admin/orders")
 @PreAuthorize("hasRole('ADMIN')")
 @SecurityRequirement(name = "bearerAuth")
+@RequiredArgsConstructor
 public class AdminOrderController {
 
     private final AdminOrderService adminOrderService;
 
-    public AdminOrderController(AdminOrderService adminOrderService) {
-        this.adminOrderService = adminOrderService;
-    }
 
     @GetMapping
     public ResponseEntity<List<OrderAdminResponse>> getOrders(

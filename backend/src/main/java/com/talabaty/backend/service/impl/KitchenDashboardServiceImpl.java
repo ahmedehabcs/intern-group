@@ -1,5 +1,7 @@
 package com.talabaty.backend.service.impl;
 
+import lombok.RequiredArgsConstructor;
+
 import com.talabaty.backend.dto.response.KitchenDashboardSummaryResponse;
 import com.talabaty.backend.model.KitchenManager;
 import com.talabaty.backend.model.Order;
@@ -19,6 +21,7 @@ import java.util.List;
 import java.util.Set;
 
 @Service
+@RequiredArgsConstructor
 public class KitchenDashboardServiceImpl implements KitchenDashboardService {
 
     private static final long DELAY_THRESHOLD_MINUTES = 30;
@@ -31,13 +34,6 @@ public class KitchenDashboardServiceImpl implements KitchenDashboardService {
     private final KitchenManagerRepository kitchenManagerRepository;
     private final OrderRepository orderRepository;
 
-    public KitchenDashboardServiceImpl(
-            KitchenManagerRepository kitchenManagerRepository,
-            OrderRepository orderRepository
-    ) {
-        this.kitchenManagerRepository = kitchenManagerRepository;
-        this.orderRepository = orderRepository;
-    }
 
     @Override
     @Transactional(readOnly = true)

@@ -1,5 +1,8 @@
 package com.talabaty.backend.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -11,6 +14,8 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "kitchen_managers")
+@Getter
+@Setter
 public class KitchenManager {
 
     @Id
@@ -33,27 +38,9 @@ public class KitchenManager {
         this.restaurant = restaurant;
     }
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
-    public User getUser() {
-        return user;
-    }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
 
-    public Restaurant getRestaurant() {
-        return restaurant;
-    }
 
-    public void setRestaurant(Restaurant restaurant) {
-        this.restaurant = restaurant;
-    }
 }

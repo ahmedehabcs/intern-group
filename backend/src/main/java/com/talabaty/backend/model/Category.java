@@ -1,5 +1,10 @@
 package com.talabaty.backend.model;
 
+import lombok.Setter;
+
+import lombok.Getter;
+import lombok.experimental.Accessors;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -13,6 +18,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "categories")
+@Getter
+@Setter
 public class Category {
 
     @Id
@@ -26,6 +33,7 @@ public class Category {
     private String description;
 
     @Column(nullable = false, columnDefinition = "boolean default true")
+    @Accessors(prefix = "is")
     private Boolean isActive = true;
 
     @ManyToMany(mappedBy = "categories")
@@ -40,45 +48,15 @@ public class Category {
         this.isActive = isActive;
     }
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
-    public String getName() {
-        return name;
-    }
 
-    public void setName(String name) {
-        this.name = name;
-    }
 
-    public String getDescription() {
-        return description;
-    }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
 
-    public Boolean getActive() {
-        return isActive;
-    }
 
-    public void setActive(Boolean active) {
-        isActive = active;
-    }
 
-    public List<Restaurant> getRestaurants() {
-        return restaurants;
-    }
 
-    public void setRestaurants(List<Restaurant> restaurants) {
-        this.restaurants = restaurants;
-    }
 
     @Override
     public String toString() {

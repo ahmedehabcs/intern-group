@@ -1,7 +1,12 @@
 package com.talabaty.backend.dto.request;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import jakarta.validation.constraints.Size;
 
+@Getter
+@Setter
 public class CancelOrderRequest {
 
     @Size(
@@ -13,11 +18,5 @@ public class CancelOrderRequest {
     public CancelOrderRequest() {
     }
 
-    public String getReason() {
-        return reason;
-    }
 
-    public void setReason(String reason) {
-        this.reason = reason;
-    }
 }

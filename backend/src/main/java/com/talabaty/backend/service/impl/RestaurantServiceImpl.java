@@ -1,5 +1,7 @@
 package com.talabaty.backend.service.impl;
 
+import lombok.RequiredArgsConstructor;
+
 import com.talabaty.backend.dto.response.MenuItemResponse;
 import com.talabaty.backend.dto.response.MenuSectionResponse;
 import com.talabaty.backend.dto.response.RestaurantDetailsResponse;
@@ -22,21 +24,13 @@ import java.util.Collections;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class RestaurantServiceImpl implements RestaurantService {
 
     private final RestaurantRepository restaurantRepository;
     private final MenuSectionRepository menuSectionRepository;
     private final MenuItemRepository menuItemRepository;
 
-    public RestaurantServiceImpl(
-            RestaurantRepository restaurantRepository,
-            MenuSectionRepository menuSectionRepository,
-            MenuItemRepository menuItemRepository
-    ) {
-        this.restaurantRepository = restaurantRepository;
-        this.menuSectionRepository = menuSectionRepository;
-        this.menuItemRepository = menuItemRepository;
-    }
 
     @Override
     @Transactional(readOnly = true)

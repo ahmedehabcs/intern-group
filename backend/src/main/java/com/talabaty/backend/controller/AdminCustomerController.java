@@ -1,5 +1,7 @@
 package com.talabaty.backend.controller;
 
+import lombok.RequiredArgsConstructor;
+
 import com.talabaty.backend.dto.response.CustomerAdminResponse;
 import com.talabaty.backend.service.AdminCustomerService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -13,13 +15,11 @@ import java.util.List;
 @RequestMapping("/api/admin/customers")
 @PreAuthorize("hasRole('ADMIN')")
 @SecurityRequirement(name = "bearerAuth")
+@RequiredArgsConstructor
 public class AdminCustomerController {
 
     private final AdminCustomerService adminCustomerService;
 
-    public AdminCustomerController(AdminCustomerService adminCustomerService) {
-        this.adminCustomerService = adminCustomerService;
-    }
 
     @GetMapping
     public ResponseEntity<List<CustomerAdminResponse>> searchCustomers(

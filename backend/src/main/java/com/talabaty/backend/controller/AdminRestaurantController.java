@@ -1,5 +1,7 @@
 package com.talabaty.backend.controller;
 
+import lombok.RequiredArgsConstructor;
+
 import com.talabaty.backend.dto.request.AssignKitchenManagerRequest;
 import com.talabaty.backend.dto.request.CreateRestaurantRequest;
 import com.talabaty.backend.dto.request.UpdateRestaurantRequest;
@@ -17,13 +19,11 @@ import java.util.List;
 @RequestMapping("/api/admin/restaurants")
 @PreAuthorize("hasRole('ADMIN')")
 @SecurityRequirement(name = "bearerAuth")
+@RequiredArgsConstructor
 public class AdminRestaurantController {
 
     private final AdminRestaurantService adminRestaurantService;
 
-    public AdminRestaurantController(AdminRestaurantService adminRestaurantService) {
-        this.adminRestaurantService = adminRestaurantService;
-    }
 
     @PostMapping("/add")
     public ResponseEntity<RestaurantAdminResponse> createRestaurant(

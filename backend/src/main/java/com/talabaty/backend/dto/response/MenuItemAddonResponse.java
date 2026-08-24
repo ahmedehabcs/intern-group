@@ -1,5 +1,10 @@
 package com.talabaty.backend.dto.response;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class MenuItemAddonResponse {
 
     private Long id;
@@ -19,27 +24,9 @@ public class MenuItemAddonResponse {
         this.additionalPrice = additionalPrice;
     }
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
-    public String getName() {
-        return name;
-    }
 
-    public void setName(String name) {
-        this.name = name;
-    }
 
-    public Double getAdditionalPrice() {
-        return additionalPrice;
-    }
 
-    public void setAdditionalPrice(Double additionalPrice) {
-        this.additionalPrice = additionalPrice;
-    }
 }

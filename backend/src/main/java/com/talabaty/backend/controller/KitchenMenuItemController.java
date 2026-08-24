@@ -1,5 +1,7 @@
 package com.talabaty.backend.controller;
 
+import lombok.RequiredArgsConstructor;
+
 import com.talabaty.backend.dto.request.CreateAddonGroupRequest;
 import com.talabaty.backend.dto.request.CreateAddonRequest;
 import com.talabaty.backend.dto.request.CreateMenuItemRequest;
@@ -37,13 +39,11 @@ import java.util.List;
 @RequestMapping("/api/kitchen/menu-items")
 @Tag(name = "Kitchen Menu Items", description = "Manage restaurant menu items, sections, addon groups, and addons")
 @SecurityRequirement(name = "bearerAuth")
+@RequiredArgsConstructor
 public class KitchenMenuItemController {
 
     private final KitchenMenuItemService kitchenMenuItemService;
 
-    public KitchenMenuItemController(KitchenMenuItemService kitchenMenuItemService) {
-        this.kitchenMenuItemService = kitchenMenuItemService;
-    }
 
     // --- Menu Items ---
     @Operation(summary = "Get menu items for the kitchen manager's restaurant")

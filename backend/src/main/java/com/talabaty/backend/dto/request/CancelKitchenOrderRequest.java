@@ -1,8 +1,13 @@
 package com.talabaty.backend.dto.request;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+@Getter
+@Setter
 public class CancelKitchenOrderRequest {
 
     @NotBlank(message = "Cancellation reason is required")
@@ -12,11 +17,5 @@ public class CancelKitchenOrderRequest {
     public CancelKitchenOrderRequest() {
     }
 
-    public String getReason() {
-        return reason;
-    }
 
-    public void setReason(String reason) {
-        this.reason = reason;
-    }
 }

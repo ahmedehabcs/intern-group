@@ -1,8 +1,13 @@
 package com.talabaty.backend.dto.response;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.math.BigDecimal;
 import java.util.List;
 
+@Getter
+@Setter
 public class OrderItemResponse {
 
     private String productName;
@@ -23,43 +28,13 @@ public class OrderItemResponse {
         this.addons = addons;
     }
 
-    public String getProductName() {
-        return productName;
-    }
 
-    public void setProductName(String productName) {
-        this.productName = productName;
-    }
 
-    public BigDecimal getUnitPrice() {
-        return unitPrice;
-    }
 
-    public void setUnitPrice(BigDecimal unitPrice) {
-        this.unitPrice = unitPrice;
-    }
 
-    public Integer getQuantity() {
-        return quantity;
-    }
 
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-    }
 
-    public String getNotes() {
-        return notes;
-    }
 
-    public void setNotes(String notes) {
-        this.notes = notes;
-    }
 
-    public List<OrderAddonResponse> getAddons() {
-        return addons;
-    }
 
-    public void setAddons(List<OrderAddonResponse> addons) {
-        this.addons = addons;
-    }
 }

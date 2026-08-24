@@ -1,5 +1,7 @@
 package com.talabaty.backend.controller;
 
+import lombok.RequiredArgsConstructor;
+
 import com.talabaty.backend.dto.response.KitchenDashboardSummaryResponse;
 import com.talabaty.backend.service.KitchenDashboardService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,13 +17,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/kitchen/dashboard")
 @Tag(name = "Kitchen Dashboard", description = "View today's kitchen order summary")
 @SecurityRequirement(name = "bearerAuth")
+@RequiredArgsConstructor
 public class KitchenDashboardController {
 
     private final KitchenDashboardService kitchenDashboardService;
 
-    public KitchenDashboardController(KitchenDashboardService kitchenDashboardService) {
-        this.kitchenDashboardService = kitchenDashboardService;
-    }
 
     @Operation(summary = "Get today's summary for the kitchen manager's restaurant")
     @GetMapping("/summary")

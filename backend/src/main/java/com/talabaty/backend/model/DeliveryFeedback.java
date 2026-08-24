@@ -1,11 +1,16 @@
 package com.talabaty.backend.model;
 
+import lombok.Setter;
+
+import lombok.Getter;
+
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "delivery_feedback")
+@Getter
 public class DeliveryFeedback {
 
     @Id
@@ -13,9 +18,11 @@ public class DeliveryFeedback {
     private Long id;
 
     @Column(nullable = false)
+    @Setter
     private Integer rating;
 
     @Column(length = 500)
+    @Setter
     private String comment;
 
     @Column(name = "created_at", nullable = false)
@@ -23,14 +30,17 @@ public class DeliveryFeedback {
 
     @ManyToOne
     @JoinColumn(name = "customer_id", nullable = false)
+    @Setter
     private CustomerProfile customer;
 
     @ManyToOne
     @JoinColumn(name = "rider_id", nullable = false)
+    @Setter
     private DeliveryProfile rider;
 
     @OneToOne
     @JoinColumn(name = "order_id", nullable = false, unique = true)
+    @Setter
     private Order order;
 
     @PrePersist
@@ -38,51 +48,15 @@ public class DeliveryFeedback {
         this.createdAt = LocalDateTime.now();
     }
 
-    public Long getId() {
-        return id;
-    }
 
-    public Integer getRating() {
-        return rating;
-    }
 
-    public void setRating(Integer rating) {
-        this.rating = rating;
-    }
 
-    public String getComment() {
-        return comment;
-    }
 
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
 
-    public CustomerProfile getCustomer() {
-        return customer;
-    }
 
-    public void setCustomer(CustomerProfile customer) {
-        this.customer = customer;
-    }
 
-    public DeliveryProfile getRider() {
-        return rider;
-    }
 
-    public void setRider(DeliveryProfile rider) {
-        this.rider = rider;
-    }
 
-    public Order getOrder() {
-        return order;
-    }
 
-    public void setOrder(Order order) {
-        this.order = order;
-    }
 }

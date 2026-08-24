@@ -1,7 +1,12 @@
 package com.talabaty.backend.dto.response;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.math.BigDecimal;
 
+@Getter
+@Setter
 public class OrderAddonResponse {
 
     private String addonName;
@@ -17,27 +22,9 @@ public class OrderAddonResponse {
         this.quantity = quantity;
     }
 
-    public String getAddonName() {
-        return addonName;
-    }
 
-    public void setAddonName(String addonName) {
-        this.addonName = addonName;
-    }
 
-    public BigDecimal getAddonPrice() {
-        return addonPrice;
-    }
 
-    public void setAddonPrice(BigDecimal addonPrice) {
-        this.addonPrice = addonPrice;
-    }
 
-    public Integer getQuantity() {
-        return quantity;
-    }
 
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-    }
 }

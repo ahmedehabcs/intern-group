@@ -1,5 +1,7 @@
 package com.talabaty.backend.service;
 
+import lombok.RequiredArgsConstructor;
+
 import com.talabaty.backend.security.LoginRateLimitProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -10,15 +12,13 @@ import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
+@RequiredArgsConstructor
 public class LoginRateLimitService {
 
     private final LoginRateLimitProperties properties;
     private final ConcurrentHashMap<String, AttemptWindow> attempts =
             new ConcurrentHashMap<>();
 
-    public LoginRateLimitService(LoginRateLimitProperties properties) {
-        this.properties = properties;
-    }
 
     public void checkLoginAllowed(String email, String clientIp) {
         String key = createKey(email, clientIp);

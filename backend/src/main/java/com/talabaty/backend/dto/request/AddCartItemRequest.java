@@ -1,5 +1,8 @@
 package com.talabaty.backend.dto.request;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -7,6 +10,8 @@ import jakarta.validation.constraints.Size;
 
 import java.util.List;
 
+@Getter
+@Setter
 public class AddCartItemRequest {
 
     @NotNull(message = "Menu item ID is required")
@@ -45,35 +50,11 @@ public class AddCartItemRequest {
         this.addons = addons;
     }
 
-    public Long getMenuItemId() {
-        return menuItemId;
-    }
 
-    public void setMenuItemId(Long menuItemId) {
-        this.menuItemId = menuItemId;
-    }
 
-    public Integer getQuantity() {
-        return quantity;
-    }
 
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-    }
 
-    public String getSpecialInstructions() {
-        return specialInstructions;
-    }
 
-    public void setSpecialInstructions(String specialInstructions) {
-        this.specialInstructions = specialInstructions;
-    }
 
-    public List<CartItemAddonRequest> getAddons() {
-        return addons;
-    }
 
-    public void setAddons(List<CartItemAddonRequest> addons) {
-        this.addons = addons;
-    }
 }

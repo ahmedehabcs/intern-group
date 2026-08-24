@@ -1,5 +1,7 @@
 package com.talabaty.backend.service.impl;
 
+import lombok.RequiredArgsConstructor;
+
 import com.talabaty.backend.dto.request.CustomerSignupRequest;
 import com.talabaty.backend.dto.request.DriverSignupRequest;
 import com.talabaty.backend.service.LoginRateLimitService;
@@ -26,6 +28,7 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
@@ -37,25 +40,6 @@ public class AuthServiceImpl implements AuthService {
     private final EmailService emailService;
     private final LoginRateLimitService loginRateLimitService;
 
-    public AuthServiceImpl(
-            UserRepository userRepository,
-            CustomerProfileRepository customerProfileRepository,
-            DeliveryProfileRepository deliveryProfileRepository,
-            AdminRepository adminRepository,
-            PasswordEncoder passwordEncoder,
-            JwtService jwtService,
-            EmailService emailService,
-            LoginRateLimitService loginRateLimitService
-    ) {
-        this.userRepository = userRepository;
-        this.customerProfileRepository = customerProfileRepository;
-        this.deliveryProfileRepository = deliveryProfileRepository;
-        this.adminRepository = adminRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.jwtService = jwtService;
-        this.emailService = emailService;
-        this.loginRateLimitService = loginRateLimitService;
-    }
 
     @Override
     @Transactional

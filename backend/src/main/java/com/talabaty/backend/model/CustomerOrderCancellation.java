@@ -1,9 +1,14 @@
 package com.talabaty.backend.model;
+
+import lombok.Setter;
+
+import lombok.Getter;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "customer_order_cancellations")
+@Getter
 public class CustomerOrderCancellation {
 
     @Id
@@ -12,10 +17,12 @@ public class CustomerOrderCancellation {
 
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "order_id", nullable = false, unique = true)
+    @Setter
     private Order order;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "customer_id", nullable = false)
+    @Setter
     private CustomerProfile customer;
 
     @Column(length = 255)
@@ -48,35 +55,14 @@ public class CustomerOrderCancellation {
         return reason.trim();
     }
 
-    public Long getId() {
-        return id;
-    }
 
-    public Order getOrder() {
-        return order;
-    }
 
-    public void setOrder(Order order) {
-        this.order = order;
-    }
 
-    public CustomerProfile getCustomer() {
-        return customer;
-    }
 
-    public void setCustomer(CustomerProfile customer) {
-        this.customer = customer;
-    }
 
-    public String getReason() {
-        return reason;
-    }
 
     public void setReason(String reason) {
         this.reason = normalizeReason(reason);
     }
 
-    public LocalDateTime getCancelledAt() {
-        return cancelledAt;
-    }
 }

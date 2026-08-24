@@ -1,5 +1,7 @@
 package com.talabaty.backend.service.impl;
 
+import lombok.RequiredArgsConstructor;
+
 import com.talabaty.backend.dto.request.AddCartItemRequest;
 import com.talabaty.backend.dto.request.CartItemAddonRequest;
 import com.talabaty.backend.dto.request.ReplaceCartItemRequest;
@@ -38,6 +40,7 @@ import java.util.Map;
 import java.util.Set;
 
 @Service
+@RequiredArgsConstructor
 public class CartServiceImpl implements CartService {
 
     private final CartRepository cartRepository;
@@ -47,21 +50,6 @@ public class CartServiceImpl implements CartService {
     private final UserRepository userRepository;
     private final CartMapper cartMapper;
 
-    public CartServiceImpl(
-            CartRepository cartRepository,
-            CartItemRepository cartItemRepository,
-            MenuItemRepository menuItemRepository,
-            MenuItemAddonRepository menuItemAddonRepository,
-            UserRepository userRepository,
-            CartMapper cartMapper
-    ) {
-        this.cartRepository = cartRepository;
-        this.cartItemRepository = cartItemRepository;
-        this.menuItemRepository = menuItemRepository;
-        this.menuItemAddonRepository = menuItemAddonRepository;
-        this.userRepository = userRepository;
-        this.cartMapper = cartMapper;
-    }
 
     @Override
     @Transactional(readOnly = true)

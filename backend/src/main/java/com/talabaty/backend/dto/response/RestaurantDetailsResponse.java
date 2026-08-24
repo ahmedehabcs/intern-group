@@ -1,7 +1,12 @@
 package com.talabaty.backend.dto.response;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.List;
 
+@Getter
+@Setter
 public class RestaurantDetailsResponse {
 
     private Long id;
@@ -27,43 +32,13 @@ public class RestaurantDetailsResponse {
         this.menuSections = menuSections;
     }
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
-    public String getName() {
-        return name;
-    }
 
-    public void setName(String name) {
-        this.name = name;
-    }
 
-    public String getDescription() {
-        return description;
-    }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
 
-    public String getLogoUrl() {
-        return logoUrl;
-    }
 
-    public void setLogoUrl(String logoUrl) {
-        this.logoUrl = logoUrl;
-    }
 
-    public List<MenuSectionResponse> getMenuSections() {
-        return menuSections;
-    }
 
-    public void setMenuSections(List<MenuSectionResponse> menuSections) {
-        this.menuSections = menuSections;
-    }
 }

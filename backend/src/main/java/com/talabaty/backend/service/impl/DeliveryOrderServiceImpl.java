@@ -1,5 +1,7 @@
 package com.talabaty.backend.service.impl;
 
+import lombok.RequiredArgsConstructor;
+
 import com.talabaty.backend.dto.response.OrderHistoryResponse;
 import com.talabaty.backend.dto.response.OrderSummaryresponse;
 import com.talabaty.backend.model.DeliveryProfile;
@@ -19,19 +21,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class DeliveryOrderServiceImpl implements DeliveryOrderService {
 
     private final OrderRepository orderRepository;
     private final OrderCancellationLogRepository cancellationLogRepository;
     private final DeliveryProfileRepository deliveryProfileRepository;
 
-    public DeliveryOrderServiceImpl(OrderRepository orderRepository,
-                                    OrderCancellationLogRepository cancellationLogRepository,
-                                    DeliveryProfileRepository deliveryProfileRepository) {
-        this.orderRepository = orderRepository;
-        this.cancellationLogRepository = cancellationLogRepository;
-        this.deliveryProfileRepository = deliveryProfileRepository;
-    }
 
     @Override
     @Transactional(readOnly = true)

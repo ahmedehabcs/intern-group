@@ -1,11 +1,16 @@
 package com.talabaty.backend.dto.request;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+@Getter
+@Setter
 public class CreateMenuItemRequest {
 
     @NotBlank(message = "Name is required")
@@ -33,59 +38,17 @@ public class CreateMenuItemRequest {
     public CreateMenuItemRequest() {
     }
 
-    public String getName() {
-        return name;
-    }
 
-    public void setName(String name) {
-        this.name = name;
-    }
 
-    public String getDescription() {
-        return description;
-    }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
 
-    public Double getBasePrice() {
-        return basePrice;
-    }
 
-    public void setBasePrice(Double basePrice) {
-        this.basePrice = basePrice;
-    }
 
-    public String getImageUrl() {
-        return imageUrl;
-    }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
 
-    public Long getMenuSectionId() {
-        return menuSectionId;
-    }
 
-    public void setMenuSectionId(Long menuSectionId) {
-        this.menuSectionId = menuSectionId;
-    }
 
-    public Boolean getAvailable() {
-        return available;
-    }
 
-    public void setAvailable(Boolean available) {
-        this.available = available;
-    }
 
-    public Long[] getAddonGroupIds() {
-        return addonGroupIds;
-    }
 
-    public void setAddonGroupIds(Long[] addonGroupIds) {
-        this.addonGroupIds = addonGroupIds;
-    }
 }

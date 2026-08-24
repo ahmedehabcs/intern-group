@@ -1,6 +1,10 @@
 package com.talabaty.backend.dto.response;
 
+import lombok.Getter;
+import lombok.experimental.Accessors;
 
+
+@Getter
 public class RiderAdminResponse {
     private Long id;
     private String name;
@@ -10,6 +14,7 @@ public class RiderAdminResponse {
     private String nationalId;
     private String approvalStatus;
     private Boolean online;
+    @Accessors(prefix = "is")
     private Boolean isActive;
 
     public RiderAdminResponse(Long id, String name, String phoneNumber, String vehicleType,
@@ -26,13 +31,4 @@ public class RiderAdminResponse {
         this.isActive = isActive;
     }
 
-    public Long getId() { return id; }
-    public String getName() { return name; }
-    public String getPhoneNumber() { return phoneNumber; }
-    public String getVehicleType() { return vehicleType; }
-    public String getLicenseNumber() { return licenseNumber; }
-    public String getNationalId() { return nationalId; }
-    public String getApprovalStatus() { return approvalStatus; }
-    public Boolean getOnline() { return online; }
-    public Boolean getIsActive() { return isActive; }
 }

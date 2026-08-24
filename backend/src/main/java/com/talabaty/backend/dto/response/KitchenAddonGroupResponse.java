@@ -1,7 +1,12 @@
 package com.talabaty.backend.dto.response;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.List;
 
+@Getter
+@Setter
 public class KitchenAddonGroupResponse {
 
     private Long id;
@@ -27,43 +32,13 @@ public class KitchenAddonGroupResponse {
         this.addons = addons;
     }
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
-    public String getName() {
-        return name;
-    }
 
-    public void setName(String name) {
-        this.name = name;
-    }
 
-    public Integer getMinSelections() {
-        return minSelections;
-    }
 
-    public void setMinSelections(Integer minSelections) {
-        this.minSelections = minSelections;
-    }
 
-    public Integer getMaxSelections() {
-        return maxSelections;
-    }
 
-    public void setMaxSelections(Integer maxSelections) {
-        this.maxSelections = maxSelections;
-    }
 
-    public List<KitchenAddonResponse> getAddons() {
-        return addons;
-    }
 
-    public void setAddons(List<KitchenAddonResponse> addons) {
-        this.addons = addons;
-    }
 }

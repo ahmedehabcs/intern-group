@@ -1,41 +1,59 @@
 package com.talabaty.backend.model;
 
+import lombok.Setter;
+
+import lombok.Getter;
+import lombok.experimental.Accessors;
+
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 @Entity
 @Table(name = "drivers")
+@Getter
 public class DeliveryProfile {
 
     @Id
     private Long id;
+    @Setter
     private String name;
+    @Setter
     private String vehicleType;
 
     @Column(name = "license_number", unique = true)
+    @Setter
     private String licenseNumber;
+    @Accessors(prefix = "is")
+    @Setter
     private Boolean isOnline;
 
     @Column(name = "is_active", nullable = false, columnDefinition = "boolean default true")
+    @Accessors(prefix = "is")
+    @Setter
     private Boolean isActive = true;
 
     @Column(name = "phone_number")
+    @Setter
     private String phoneNumber;
 
     @Column(name = "national_id", unique = true)
+    @Setter
     private String nationalId;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "approval_status", nullable = false)
+    @Setter
     private ApprovalStatus approvalStatus = ApprovalStatus.PENDING;
 
 
     @OneToOne(cascade = CascadeType.REMOVE)
     @MapsId
     @JoinColumn(name = "id", referencedColumnName = "id", nullable = false)
+    @Setter
     private User user;
 
     @OneToMany(mappedBy = "rider", cascade = CascadeType.ALL)
+    @Setter
     private List<Order> deliveryHistory = new ArrayList<>();
 
     public DeliveryProfile() {}
@@ -51,90 +69,27 @@ public class DeliveryProfile {
         this.deliveryHistory = deliveryHistory;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public Boolean getActive() {
-        return isActive;
-    }
-
-    public void setActive(Boolean active) {
-        isActive = active;
-    }
 
 
-    public String getName() {
-        return name;
-    }
 
-    public void setName(String name) {
-        this.name = name;
-    }
 
-    public String getVehicleType() {
-        return vehicleType;
-    }
 
-    public void setVehicleType(String vehicleType) {
-        this.vehicleType = vehicleType;
-    }
 
-    public String getLicenseNumber() {
-        return licenseNumber;
-    }
 
-    public void setLicenseNumber(String licenseNumber) {
-        this.licenseNumber = licenseNumber;
-    }
 
-    public Boolean getOnline() {
-        return isOnline;
-    }
 
-    public void setOnline(Boolean online) {
-        isOnline = online;
-    }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
 
-    public String getNationalId() {
-        return nationalId;
-    }
 
-    public void setNationalId(String nationalId) {
-        this.nationalId = nationalId;
-    }
 
-    public ApprovalStatus getApprovalStatus() {
-        return approvalStatus;
-    }
 
-    public void setApprovalStatus(ApprovalStatus approvalStatus) {
-        this.approvalStatus = approvalStatus;
-    }
 
-    public User getUser() {
-        return user;
-    }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
 
-    public List<Order> getDeliveryHistory() {
-        return deliveryHistory;
-    }
 
-    public void setDeliveryHistory(List<Order> deliveryHistory) {
-        this.deliveryHistory = deliveryHistory;
-    }
+
+
 
     @Override
     public String toString() {

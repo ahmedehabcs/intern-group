@@ -1,5 +1,9 @@
 package com.talabaty.backend.model;
 
+import lombok.Setter;
+
+import lombok.Getter;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -16,6 +20,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "kitchen_order_cancellations")
+@Getter
 public class KitchenOrderCancellation {
 
     @Id
@@ -24,10 +29,12 @@ public class KitchenOrderCancellation {
 
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "order_id", nullable = false, unique = true)
+    @Setter
     private Order order;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "kitchen_manager_id", nullable = false)
+    @Setter
     private KitchenManager kitchenManager;
 
     @Column(nullable = false, length = 255)
@@ -56,35 +63,14 @@ public class KitchenOrderCancellation {
         }
     }
 
-    public Long getId() {
-        return id;
-    }
 
-    public Order getOrder() {
-        return order;
-    }
 
-    public void setOrder(Order order) {
-        this.order = order;
-    }
 
-    public KitchenManager getKitchenManager() {
-        return kitchenManager;
-    }
 
-    public void setKitchenManager(KitchenManager kitchenManager) {
-        this.kitchenManager = kitchenManager;
-    }
 
-    public String getReason() {
-        return reason;
-    }
 
     public void setReason(String reason) {
         this.reason = reason == null ? null : reason.trim();
     }
 
-    public LocalDateTime getCancelledAt() {
-        return cancelledAt;
-    }
 }

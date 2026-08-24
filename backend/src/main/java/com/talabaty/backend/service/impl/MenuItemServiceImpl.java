@@ -1,5 +1,7 @@
 package com.talabaty.backend.service.impl;
 
+import lombok.RequiredArgsConstructor;
+
 import com.talabaty.backend.dto.response.AddonGroupResponse;
 import com.talabaty.backend.dto.response.MenuItemAddonResponse;
 import com.talabaty.backend.dto.response.MenuItemDetailsResponse;
@@ -23,21 +25,13 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class MenuItemServiceImpl implements MenuItemService {
 
     private final MenuItemRepository menuItemRepository;
     private final MenuItemAddonRepository menuItemAddonRepository;
     private final MenuMapper menuMapper;
 
-    public MenuItemServiceImpl(
-            MenuItemRepository menuItemRepository,
-            MenuItemAddonRepository menuItemAddonRepository,
-            MenuMapper menuMapper
-    ) {
-        this.menuItemRepository = menuItemRepository;
-        this.menuItemAddonRepository = menuItemAddonRepository;
-        this.menuMapper = menuMapper;
-    }
 
     @Override
     @Transactional(readOnly = true)

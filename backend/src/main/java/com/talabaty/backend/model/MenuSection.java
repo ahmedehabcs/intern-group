@@ -1,10 +1,17 @@
 package com.talabaty.backend.model;
+
+import lombok.Setter;
+
+import lombok.Getter;
+import lombok.experimental.Accessors;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "menu_sections")
+@Getter
+@Setter
 public class MenuSection {
 
     @Id
@@ -18,6 +25,7 @@ public class MenuSection {
     private String description;
 
     @Column(nullable = false, columnDefinition = "boolean default true")
+    @Accessors(prefix = "is")
     private Boolean isActive = true;
 
     // علاقة القسم بالمطعم (القسم يخص مطعم واحد)
@@ -39,53 +47,17 @@ public class MenuSection {
     }
     // Getters and Setters...
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
-    public String getName() {
-        return name;
-    }
 
-    public void setName(String name) {
-        this.name = name;
-    }
 
-    public String getDescription() {
-        return description;
-    }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
 
-    public Boolean getActive() {
-        return isActive;
-    }
 
-    public void setActive(Boolean active) {
-        isActive = active;
-    }
 
-    public Restaurant getRestaurant() {
-        return restaurant;
-    }
 
-    public void setRestaurant(Restaurant restaurant) {
-        this.restaurant = restaurant;
-    }
 
-    public List<MenuItem> getMenuItems() {
-        return menuItems;
-    }
 
-    public void setMenuItems(List<MenuItem> menuItems) {
-        this.menuItems = menuItems;
-    }
 
     @Override
     public String toString() {

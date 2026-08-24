@@ -1,5 +1,7 @@
 package com.talabaty.backend.controller;
 
+import lombok.RequiredArgsConstructor;
+
 import tools.jackson.databind.JsonNode;
 import com.talabaty.backend.dto.request.CustomerProfileUpdateRequest;
 import com.talabaty.backend.dto.request.DriverProfileUpdateRequest;
@@ -17,13 +19,11 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 @RestController
 @RequestMapping("/api/profile")
 @SecurityRequirement(name = "bearerAuth")
+@RequiredArgsConstructor
 public class ProfileController {
 
     private final ProfileService profileService;
 
-    public ProfileController(ProfileService profileService) {
-        this.profileService = profileService;
-    }
 
     @GetMapping
     public ResponseEntity<?> getProfile(Authentication authentication) {

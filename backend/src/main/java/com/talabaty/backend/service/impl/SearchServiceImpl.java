@@ -1,5 +1,7 @@
 package com.talabaty.backend.service.impl;
 
+import lombok.RequiredArgsConstructor;
+
 import com.talabaty.backend.dto.response.MenuItemSearchResponse;
 import com.talabaty.backend.dto.response.RestaurantResponse;
 import com.talabaty.backend.dto.response.SearchResponse;
@@ -19,18 +21,12 @@ import java.util.Comparator;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class SearchServiceImpl implements SearchService {
 
     private final RestaurantService restaurantService;
     private final MenuItemRepository menuItemRepository;
 
-    public SearchServiceImpl(
-            RestaurantService restaurantService,
-            MenuItemRepository menuItemRepository
-    ) {
-        this.restaurantService = restaurantService;
-        this.menuItemRepository = menuItemRepository;
-    }
 
     @Override
     @Transactional(readOnly = true)

@@ -1,5 +1,7 @@
 package com.talabaty.backend.controller;
 
+import lombok.RequiredArgsConstructor;
+
 import com.talabaty.backend.dto.request.PlaceOrderRequest;
 import com.talabaty.backend.dto.response.CustomerOrderDetailsResponse;
 import com.talabaty.backend.dto.response.PlaceOrderResponse;
@@ -24,13 +26,11 @@ import com.talabaty.backend.dto.request.CancelOrderRequest;
 @RestController
 @RequestMapping("/api/orders")
 @SecurityRequirement(name = "bearerAuth")
+@RequiredArgsConstructor
 public class OrderController {
 
     private final OrderService orderService;
 
-    public OrderController(OrderService orderService) {
-        this.orderService = orderService;
-    }
 
     @Operation(summary = "Place an order from the authenticated customer's cart")
     @ApiResponses({

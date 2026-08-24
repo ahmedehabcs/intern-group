@@ -1,5 +1,7 @@
 package com.talabaty.backend.service.impl;
 
+import lombok.RequiredArgsConstructor;
+
 import com.talabaty.backend.dto.request.PlaceOrderRequest;
 import com.talabaty.backend.dto.response.PlaceOrderResponse;
 import com.talabaty.backend.mapper.OrderMapper;
@@ -43,6 +45,7 @@ import org.springframework.data.domain.PageRequest;
 import com.talabaty.backend.model.CustomerOrderCancellation;
 import com.talabaty.backend.repository.CustomerOrderCancellationRepository;
 @Service
+@RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
 
     private final UserRepository userRepository;
@@ -53,25 +56,6 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
     private final CustomerOrderCancellationRepository customerOrderCancellationRepository;
-    public OrderServiceImpl(
-            UserRepository userRepository,
-            CartRepository cartRepository,
-            AddressRepository addressRepository,
-            MenuItemRepository menuItemRepository,
-            MenuItemAddonRepository menuItemAddonRepository,
-            OrderRepository orderRepository,
-            CustomerOrderCancellationRepository customerOrderCancellationRepository,
-            OrderMapper orderMapper
-    ) {
-        this.userRepository = userRepository;
-        this.cartRepository = cartRepository;
-        this.addressRepository = addressRepository;
-        this.menuItemRepository = menuItemRepository;
-        this.menuItemAddonRepository = menuItemAddonRepository;
-        this.orderRepository = orderRepository;
-        this.customerOrderCancellationRepository = customerOrderCancellationRepository;
-        this.orderMapper = orderMapper;
-    }
 
     @Override
     @Transactional

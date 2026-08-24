@@ -1,5 +1,7 @@
 package com.talabaty.backend.service.impl;
 
+import lombok.RequiredArgsConstructor;
+
 import com.talabaty.backend.dto.response.OrderAdminResponse;
 import com.talabaty.backend.model.Order;
 import com.talabaty.backend.model.OrderStatus;
@@ -17,13 +19,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class AdminOrderServiceImpl implements AdminOrderService {
 
     private final OrderRepository orderRepository;
 
-    public AdminOrderServiceImpl(OrderRepository orderRepository) {
-        this.orderRepository = orderRepository;
-    }
 
     @Override
     @Transactional(readOnly = true)

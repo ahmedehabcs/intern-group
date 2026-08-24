@@ -1,5 +1,7 @@
 package com.talabaty.backend.controller;
 
+import lombok.RequiredArgsConstructor;
+
 import com.talabaty.backend.dto.response.CategoryResponse;
 import com.talabaty.backend.service.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,13 +17,11 @@ import java.util.List;
 @Tag(name = "Categories", description = "Browse restaurant cuisines and categories")
 @RestController
 @RequestMapping("/api/categories")
+@RequiredArgsConstructor
 public class CategoryController {
 
     private final CategoryService categoryService;
 
-    public CategoryController(CategoryService categoryService) {
-        this.categoryService = categoryService;
-    }
 
     @Operation(
             summary = "Browse active restaurant categories",

@@ -1,5 +1,7 @@
 package com.talabaty.backend.controller;
 
+import lombok.RequiredArgsConstructor;
+
 import com.talabaty.backend.dto.request.*;
 import com.talabaty.backend.dto.response.LoginResponse;
 import com.talabaty.backend.dto.response.RegisterResponse;
@@ -21,13 +23,11 @@ import jakarta.servlet.http.HttpServletRequest;
 )
 @RestController
 @RequestMapping("/api/auth")
+@RequiredArgsConstructor
 public class AuthController {
 
     private final AuthService authService;
 
-    public AuthController(AuthService authService) {
-        this.authService = authService;
-    }
 
     @PostMapping("/signup/customer")
     public ResponseEntity<RegisterResponse> registerCustomer(@Valid @RequestBody CustomerSignupRequest request) {

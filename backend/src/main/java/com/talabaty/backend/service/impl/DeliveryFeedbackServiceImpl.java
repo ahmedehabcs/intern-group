@@ -1,5 +1,7 @@
 package com.talabaty.backend.service.impl;
 
+import lombok.RequiredArgsConstructor;
+
 import com.talabaty.backend.dto.request.CreateDeliveryFeedbackRequest;
 import com.talabaty.backend.dto.response.DeliveryFeedbackResponse;
 import com.talabaty.backend.model.DeliveryFeedback;
@@ -17,18 +19,12 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class DeliveryFeedbackServiceImpl implements DeliveryFeedbackService {
 
     private final DeliveryFeedbackRepository feedbackRepository;
     private final OrderRepository orderRepository;
 
-    public DeliveryFeedbackServiceImpl(
-            DeliveryFeedbackRepository feedbackRepository,
-            OrderRepository orderRepository
-    ) {
-        this.feedbackRepository = feedbackRepository;
-        this.orderRepository = orderRepository;
-    }
 
     @Override
     @Transactional

@@ -1,4 +1,8 @@
 package com.talabaty.backend.model;
+
+import lombok.Setter;
+
+import lombok.Getter;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -6,6 +10,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "order_items")
+@Getter
 public class OrderItem {
 
     @Id
@@ -14,25 +19,32 @@ public class OrderItem {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false)
+    @Setter
     private Order order;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "menu_item_id", nullable = false)
+    @Setter
     private MenuItem menuItem;
 
     @Column(name = "product_name", nullable = false)
+    @Setter
     private String productName;
 
     @Column(nullable = false)
+    @Setter
     private Integer quantity;
 
     @Column(nullable = false)
+    @Setter
     private Double unitPrice;
 
     @Column(columnDefinition = "TEXT")
+    @Setter
     private String notes;
 
     @OneToMany(mappedBy = "orderItem", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Setter
     private List<HistoricalOrderItemAddon> addons = new ArrayList<>();
 
     public OrderItem() {
@@ -49,64 +61,19 @@ public class OrderItem {
     }
 // Getters & Setters
 
-    public Long getId() {
-        return id;
-    }
 
-    public Order getOrder() {
-        return order;
-    }
 
-    public void setOrder(Order order) {
-        this.order = order;
-    }
 
-    public MenuItem getMenuItem() {
-        return menuItem;
-    }
 
-    public void setMenuItem(MenuItem menuItem) {
-        this.menuItem = menuItem;
-    }
 
-    public Integer getQuantity() {
-        return quantity;
-    }
 
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-    }
 
-    public Double getUnitPrice() {
-        return unitPrice;
-    }
 
-    public void setUnitPrice(Double unitPrice) {
-        this.unitPrice = unitPrice;
-    }
 
-    public String getNotes() {
-        return notes;
-    }
 
-    public void setNotes(String notes) {
-        this.notes = notes;
-    }
 
-    public List<HistoricalOrderItemAddon> getAddons() {
-        return addons;
-    }
 
-    public void setAddons(List<HistoricalOrderItemAddon> addons) {
-        this.addons = addons;
-    }
-    public String getProductName() {
-        return productName;
-    }
 
-    public void setProductName(String productName) {
-        this.productName = productName;
-    }
     @Override
     public String toString() {
         return "OrderItem{" +

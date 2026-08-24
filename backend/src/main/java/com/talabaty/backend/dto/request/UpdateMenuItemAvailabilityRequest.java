@@ -1,7 +1,12 @@
 package com.talabaty.backend.dto.request;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import jakarta.validation.constraints.NotNull;
 
+@Getter
+@Setter
 public class UpdateMenuItemAvailabilityRequest {
 
     @NotNull(message = "Availability is required")
@@ -10,11 +15,5 @@ public class UpdateMenuItemAvailabilityRequest {
     public UpdateMenuItemAvailabilityRequest() {
     }
 
-    public Boolean getAvailable() {
-        return available;
-    }
 
-    public void setAvailable(Boolean available) {
-        this.available = available;
-    }
 }

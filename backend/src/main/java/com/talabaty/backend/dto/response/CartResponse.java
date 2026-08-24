@@ -1,7 +1,12 @@
 package com.talabaty.backend.dto.response;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.List;
 
+@Getter
+@Setter
 public class CartResponse {
 
     private Long id;
@@ -27,43 +32,13 @@ public class CartResponse {
         this.items = items;
     }
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
-    public Long getRestaurantId() {
-        return restaurantId;
-    }
 
-    public void setRestaurantId(Long restaurantId) {
-        this.restaurantId = restaurantId;
-    }
 
-    public String getRestaurantName() {
-        return restaurantName;
-    }
 
-    public void setRestaurantName(String restaurantName) {
-        this.restaurantName = restaurantName;
-    }
 
-    public Double getSubtotal() {
-        return subtotal;
-    }
 
-    public void setSubtotal(Double subtotal) {
-        this.subtotal = subtotal;
-    }
 
-    public List<CartItemResponse> getItems() {
-        return items;
-    }
 
-    public void setItems(List<CartItemResponse> items) {
-        this.items = items;
-    }
 }

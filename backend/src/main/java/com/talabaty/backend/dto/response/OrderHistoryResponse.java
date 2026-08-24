@@ -1,9 +1,12 @@
 package com.talabaty.backend.dto.response;
 
+import lombok.Getter;
+
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+@Getter
 public class OrderHistoryResponse {
     private Long id;
     private String restaurantName;
@@ -20,9 +23,4 @@ public class OrderHistoryResponse {
         this.orderTotal = orderTotal;
     }
 
-    public Long getId() { return id; }
-    public String getRestaurantName() { return restaurantName; }
-    public LocalDateTime getDeliveredAt() { return deliveredAt; }
-    public BigDecimal getEarnings() { return earnings; }
-    public BigDecimal getOrderTotal() { return orderTotal; }
 }

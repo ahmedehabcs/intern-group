@@ -1,8 +1,13 @@
 package com.talabaty.backend.model;
+
+import lombok.Getter;
+import lombok.Setter;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "cart_addons")
+@Getter
+@Setter
 public class CartItemAddon {
 
     @Id
@@ -33,45 +38,12 @@ public class CartItemAddon {
         this.quantity = quantity;
     }
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
-    public Integer getQuantity() {
-        return quantity;
-    }
 
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-    }
 
-    public Double getPriceAtAddition() {
-        return priceAtAddition;
-    }
 
-    public void setPriceAtAddition(Double priceAtAddition) {
-        this.priceAtAddition = priceAtAddition;
-    }
 
-    public CartItem getCartItem() {
-        return cartItem;
-    }
-
-    public void setCartItem(CartItem cartItem) {
-        this.cartItem = cartItem;
-    }
-
-    public MenuItemAddon getMenuItemAddon() {
-        return menuItemAddon;
-    }
-
-    public void setMenuItemAddon(MenuItemAddon menuItemAddon) {
-        this.menuItemAddon = menuItemAddon;
-    }
 
     @Override
     public String toString() {

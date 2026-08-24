@@ -1,8 +1,12 @@
 package com.talabaty.backend.dto.response;
 
+import lombok.Getter;
+import lombok.experimental.Accessors;
+
 import java.math.BigDecimal;
 import java.util.List;
 
+@Getter
 public class RestaurantAdminResponse {
     private Long id;
     private String name;
@@ -12,6 +16,7 @@ public class RestaurantAdminResponse {
     private String governorateName;
     private String description;
     private String logoUrl;
+    @Accessors(prefix = "is")
     private Boolean isActive;
     private BigDecimal deliveryFee;
     private List<String> categoryNames;
@@ -32,15 +37,4 @@ public class RestaurantAdminResponse {
         this.categoryNames = categoryNames;
     }
 
-    public Long getId() { return id; }
-    public String getName() { return name; }
-    public String getPhone() { return phone; }
-    public String getEmail() { return email; }
-    public String getAddress() { return address; }
-    public String getGovernorateName() { return governorateName; }
-    public String getDescription() { return description; }
-    public String getLogoUrl() { return logoUrl; }
-    public Boolean getIsActive() { return isActive; }
-    public BigDecimal getDeliveryFee() { return deliveryFee; }
-    public List<String> getCategoryNames() { return categoryNames; }
 }

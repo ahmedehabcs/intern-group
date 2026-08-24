@@ -1,5 +1,7 @@
 package com.talabaty.backend.controller;
 
+import lombok.RequiredArgsConstructor;
+
 import com.talabaty.backend.dto.request.CategoryRequest;
 import com.talabaty.backend.dto.response.AdminCategoryResponse;
 import com.talabaty.backend.dto.response.CategoryResponse;
@@ -20,13 +22,11 @@ import java.util.List;
 @RequestMapping("/api/admin/categories")
 @PreAuthorize("hasRole('ADMIN')")
 @SecurityRequirement(name = "bearerAuth")
+@RequiredArgsConstructor
 public class AdminCategoryController {
 
     private final CategoryService categoryService;
 
-    public AdminCategoryController(CategoryService categoryService) {
-        this.categoryService = categoryService;
-    }
 
     @Operation(summary = "Get all categories")
     @GetMapping

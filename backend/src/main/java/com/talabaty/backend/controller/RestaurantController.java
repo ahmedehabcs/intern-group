@@ -1,5 +1,7 @@
 package com.talabaty.backend.controller;
 
+import lombok.RequiredArgsConstructor;
+
 import com.talabaty.backend.dto.response.RestaurantDetailsResponse;
 import com.talabaty.backend.dto.response.RestaurantResponse;
 import com.talabaty.backend.service.RestaurantService;
@@ -16,13 +18,11 @@ import java.util.List;
 )
 @RestController
 @RequestMapping("/api/restaurants")
+@RequiredArgsConstructor
 public class RestaurantController {
 
     private final RestaurantService restaurantService;
 
-    public RestaurantController(RestaurantService restaurantService) {
-        this.restaurantService = restaurantService;
-    }
 
     @Operation(
             summary = "Browse active restaurants",

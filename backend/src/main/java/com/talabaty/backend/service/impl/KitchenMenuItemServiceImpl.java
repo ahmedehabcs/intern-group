@@ -1,5 +1,7 @@
 package com.talabaty.backend.service.impl;
 
+import lombok.RequiredArgsConstructor;
+
 import com.talabaty.backend.dto.request.CreateAddonGroupRequest;
 import com.talabaty.backend.dto.request.CreateAddonRequest;
 import com.talabaty.backend.dto.request.CreateMenuItemRequest;
@@ -33,6 +35,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class KitchenMenuItemServiceImpl implements KitchenMenuItemService {
 
     private final KitchenManagerRepository kitchenManagerRepository;
@@ -42,21 +45,6 @@ public class KitchenMenuItemServiceImpl implements KitchenMenuItemService {
     private final MenuItemAddonRepository menuItemAddonRepository;
     private final MenuMapper menuMapper;
 
-    public KitchenMenuItemServiceImpl(
-            KitchenManagerRepository kitchenManagerRepository,
-            MenuItemRepository menuItemRepository,
-            MenuSectionRepository menuSectionRepository,
-            AddonGroupRepository addonGroupRepository,
-            MenuItemAddonRepository menuItemAddonRepository,
-            MenuMapper menuMapper
-    ) {
-        this.kitchenManagerRepository = kitchenManagerRepository;
-        this.menuItemRepository = menuItemRepository;
-        this.menuSectionRepository = menuSectionRepository;
-        this.addonGroupRepository = addonGroupRepository;
-        this.menuItemAddonRepository = menuItemAddonRepository;
-        this.menuMapper = menuMapper;
-    }
 
     @Override
     @Transactional(readOnly = true)

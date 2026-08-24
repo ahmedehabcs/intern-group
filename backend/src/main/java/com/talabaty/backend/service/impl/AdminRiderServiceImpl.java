@@ -1,5 +1,7 @@
 package com.talabaty.backend.service.impl;
 
+import lombok.RequiredArgsConstructor;
+
 
 import com.talabaty.backend.dto.response.RiderAdminResponse;
 import com.talabaty.backend.model.ApprovalStatus;
@@ -14,13 +16,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class AdminRiderServiceImpl implements AdminRiderService {
 
     private final DeliveryProfileRepository deliveryProfileRepository;
 
-    public AdminRiderServiceImpl(DeliveryProfileRepository deliveryProfileRepository) {
-        this.deliveryProfileRepository = deliveryProfileRepository;
-    }
 
     @Override
     @Transactional(readOnly = true)

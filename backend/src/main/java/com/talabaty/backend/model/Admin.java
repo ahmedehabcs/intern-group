@@ -1,19 +1,27 @@
 package com.talabaty.backend.model;
 
+import lombok.Setter;
+
+import lombok.Getter;
+
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "admins")
+@Getter
 public class Admin{
 
     @Id
     private Long id;
+    @Setter
     private String name;
+    @Setter
     private String phoneNumber;
 
     @OneToOne(cascade = CascadeType.REMOVE)
     @MapsId
     @JoinColumn(name = "id", referencedColumnName = "id", nullable = false)
+    @Setter
     private User user;
 
     public Admin() {
@@ -25,33 +33,12 @@ public class Admin{
         this.user = user;
     }
 
-    public Long getId() {
-        return id;
-    }
 
-    public String getName() {
-        return name;
-    }
 
-    public void setName(String name) {
-        this.name = name;
-    }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
 
-    public User getUser() {
-        return user;
-    }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
 
     @Override
     public String toString() {

@@ -1,5 +1,7 @@
 package com.talabaty.backend.service.impl;
 
+import lombok.RequiredArgsConstructor;
+
 import com.talabaty.backend.dto.request.CategoryRequest;
 import com.talabaty.backend.dto.response.AdminCategoryResponse;
 import com.talabaty.backend.dto.response.CategoryResponse;
@@ -15,18 +17,12 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
 
-    public CategoryServiceImpl(
-            CategoryRepository categoryRepository,
-            CategoryMapper categoryMapper
-    ) {
-        this.categoryRepository = categoryRepository;
-        this.categoryMapper = categoryMapper;
-    }
 
     @Override
     @Transactional(readOnly = true)

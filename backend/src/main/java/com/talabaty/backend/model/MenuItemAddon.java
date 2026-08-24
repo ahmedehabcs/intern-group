@@ -1,9 +1,16 @@
 package com.talabaty.backend.model;
 
+import lombok.Setter;
+
+import lombok.Getter;
+import lombok.experimental.Accessors;
+
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "menu_item_addons")
+@Getter
+@Setter
 public class MenuItemAddon {
 
     @Id
@@ -17,6 +24,7 @@ public class MenuItemAddon {
     private Double additionalPrice = 0.0;
 
     @Column(nullable = false, columnDefinition = "boolean default true")
+    @Accessors(prefix = "is")
     private Boolean isAvailable = true;
 
     // علاقة الإضافة بالمجموعة بتاعتها
@@ -34,45 +42,15 @@ public class MenuItemAddon {
         this.addonGroup = addonGroup;
     }
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
-    public String getName() {
-        return name;
-    }
 
-    public void setName(String name) {
-        this.name = name;
-    }
 
-    public Double getAdditionalPrice() {
-        return additionalPrice;
-    }
 
-    public void setAdditionalPrice(Double additionalPrice) {
-        this.additionalPrice = additionalPrice;
-    }
 
-    public Boolean getAvailable() {
-        return isAvailable;
-    }
 
-    public void setAvailable(Boolean available) {
-        isAvailable = available;
-    }
 
-    public AddonGroup getAddonGroup() {
-        return addonGroup;
-    }
 
-    public void setAddonGroup(AddonGroup addonGroup) {
-        this.addonGroup = addonGroup;
-    }
 
     @Override
     public String toString() {

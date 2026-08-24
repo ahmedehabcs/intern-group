@@ -1,7 +1,12 @@
 package com.talabaty.backend.dto.response;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.List;
 
+@Getter
+@Setter
 public class CartItemResponse {
 
     private Long id;
@@ -39,75 +44,21 @@ public class CartItemResponse {
         this.addons = addons;
     }
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
-    public Long getMenuItemId() {
-        return menuItemId;
-    }
 
-    public void setMenuItemId(Long menuItemId) {
-        this.menuItemId = menuItemId;
-    }
 
-    public String getMenuItemName() {
-        return menuItemName;
-    }
 
-    public void setMenuItemName(String menuItemName) {
-        this.menuItemName = menuItemName;
-    }
 
-    public String getImageUrl() {
-        return imageUrl;
-    }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
 
-    public Double getBasePrice() {
-        return basePrice;
-    }
 
-    public void setBasePrice(Double basePrice) {
-        this.basePrice = basePrice;
-    }
 
-    public Integer getQuantity() {
-        return quantity;
-    }
 
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-    }
 
-    public String getSpecialInstructions() {
-        return specialInstructions;
-    }
 
-    public void setSpecialInstructions(String specialInstructions) {
-        this.specialInstructions = specialInstructions;
-    }
 
-    public Double getItemTotalPrice() {
-        return itemTotalPrice;
-    }
 
-    public void setItemTotalPrice(Double itemTotalPrice) {
-        this.itemTotalPrice = itemTotalPrice;
-    }
 
-    public List<CartItemAddonResponse> getAddons() {
-        return addons;
-    }
 
-    public void setAddons(List<CartItemAddonResponse> addons) {
-        this.addons = addons;
-    }
 }

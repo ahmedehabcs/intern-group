@@ -1,5 +1,7 @@
 package com.talabaty.backend.controller;
 
+import lombok.RequiredArgsConstructor;
+
 import com.talabaty.backend.dto.request.CreateDeliveryFeedbackRequest;
 import com.talabaty.backend.dto.response.DeliveryFeedbackResponse;
 import com.talabaty.backend.service.DeliveryFeedbackService;
@@ -16,13 +18,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/delivery-feedback")
 @SecurityRequirement(name = "bearerAuth")
+@RequiredArgsConstructor
 public class DeliveryFeedbackController {
 
     private final DeliveryFeedbackService feedbackService;
 
-    public DeliveryFeedbackController(DeliveryFeedbackService feedbackService) {
-        this.feedbackService = feedbackService;
-    }
 
     @PostMapping("/orders/{orderId}")
     @PreAuthorize("hasRole('CUSTOMER')")

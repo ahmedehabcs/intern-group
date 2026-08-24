@@ -1,10 +1,15 @@
 package com.talabaty.backend.dto.response;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import com.talabaty.backend.model.OrderStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+@Getter
+@Setter
 public class CustomerOrderSummaryResponse {
 
     private Long id;
@@ -26,51 +31,15 @@ public class CustomerOrderSummaryResponse {
         this.createdAt = createdAt;
     }
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
-    public String getRestaurantName() {
-        return restaurantName;
-    }
 
-    public void setRestaurantName(String restaurantName) {
-        this.restaurantName = restaurantName;
-    }
 
-    public Integer getItemCount() {
-        return itemCount;
-    }
 
-    public void setItemCount(Integer itemCount) {
-        this.itemCount = itemCount;
-    }
 
-    public BigDecimal getTotalPrice() {
-        return totalPrice;
-    }
 
-    public void setTotalPrice(BigDecimal totalPrice) {
-        this.totalPrice = totalPrice;
-    }
 
-    public OrderStatus getStatus() {
-        return status;
-    }
 
-    public void setStatus(OrderStatus status) {
-        this.status = status;
-    }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
 }

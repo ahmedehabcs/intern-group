@@ -1,5 +1,8 @@
 package com.talabaty.backend.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -14,51 +17,25 @@ import java.time.LocalDateTime;
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Long id;
 
+        @Getter
+        @Setter
         private String email;
+
+        @Getter
+        @Setter
         private String otpHash;       // never store raw OTP
+
+        @Getter
+        @Setter
         private LocalDateTime expiresAt;
+
+        @Getter
+        @Setter
         private int attemptCount;
+
+        @Getter
+        @Setter
         private boolean verified;
-
-        public String getEmail() {
-            return email;
-        }
-
-        public void setEmail(String email) {
-            this.email = email;
-        }
-
-        public String getOtpHash() {
-            return otpHash;
-        }
-
-        public void setOtpHash(String otpHash) {
-            this.otpHash = otpHash;
-        }
-
-        public LocalDateTime getExpiresAt() {
-            return expiresAt;
-        }
-
-        public void setExpiresAt(LocalDateTime expiresAt) {
-            this.expiresAt = expiresAt;
-        }
-
-        public int getAttemptCount() {
-            return attemptCount;
-        }
-
-        public void setAttemptCount(int attemptCount) {
-            this.attemptCount = attemptCount;
-        }
-
-        public boolean isVerified() {
-            return verified;
-        }
-
-        public void setVerified(boolean verified) {
-            this.verified = verified;
-        }
 
         @Override
         public String toString() {

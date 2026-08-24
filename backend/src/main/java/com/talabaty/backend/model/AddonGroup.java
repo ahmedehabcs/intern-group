@@ -1,5 +1,8 @@
 package com.talabaty.backend.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 
 import jakarta.persistence.*;
 import java.util.ArrayList;
@@ -7,6 +10,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "addon_groups")
+@Getter
+@Setter
 public class AddonGroup {
 
     @Id
@@ -39,53 +44,17 @@ public class AddonGroup {
     }
     // Getters and Setters...
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
-    public String getName() {
-        return name;
-    }
 
-    public void setName(String name) {
-        this.name = name;
-    }
 
-    public Integer getMinSelections() {
-        return minSelections;
-    }
 
-    public void setMinSelections(Integer minSelections) {
-        this.minSelections = minSelections;
-    }
 
-    public Integer getMaxSelections() {
-        return maxSelections;
-    }
 
-    public void setMaxSelections(Integer maxSelections) {
-        this.maxSelections = maxSelections;
-    }
 
-    public List<MenuItemAddon> getAddons() {
-        return addons;
-    }
 
-    public void setAddons(List<MenuItemAddon> addons) {
-        this.addons = addons;
-    }
 
-    public List<MenuItem> getMenuItems() {
-        return menuItems;
-    }
 
-    public void setMenuItems(List<MenuItem> menuItems) {
-        this.menuItems = menuItems;
-    }
 
     @Override
     public String toString() {

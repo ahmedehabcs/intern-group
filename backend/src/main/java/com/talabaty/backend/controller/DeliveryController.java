@@ -1,5 +1,7 @@
 package com.talabaty.backend.controller;
 
+import lombok.RequiredArgsConstructor;
+
 import com.talabaty.backend.dto.request.CancelOrderRequest;
 import com.talabaty.backend.dto.response.OrderHistoryResponse;
 import com.talabaty.backend.dto.response.OrderSummaryresponse;
@@ -15,13 +17,11 @@ import java.util.List;
 @RequestMapping("/api/delivery/orders")
 @PreAuthorize("hasRole('DRIVER')")
 @SecurityRequirement(name = "bearerAuth")
+@RequiredArgsConstructor
 public class DeliveryController {
 
     private final DeliveryOrderService deliveryOrderService;
 
-    public DeliveryController(DeliveryOrderService deliveryOrderService) {
-        this.deliveryOrderService = deliveryOrderService;
-    }
 
     @GetMapping("/available")
     public ResponseEntity<List<OrderSummaryresponse>> getAvailableOrders(Authentication authentication) {

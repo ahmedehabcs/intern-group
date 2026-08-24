@@ -1,8 +1,13 @@
 package com.talabaty.backend.dto.request;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
+@Getter
+@Setter
 public class CartItemAddonRequest {
 
     @NotNull(message = "Add-on ID is required")
@@ -24,19 +29,7 @@ public class CartItemAddonRequest {
         this.quantity = quantity;
     }
 
-    public Long getMenuItemAddonId() {
-        return menuItemAddonId;
-    }
 
-    public void setMenuItemAddonId(Long menuItemAddonId) {
-        this.menuItemAddonId = menuItemAddonId;
-    }
 
-    public Integer getQuantity() {
-        return quantity;
-    }
 
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-    }
 }

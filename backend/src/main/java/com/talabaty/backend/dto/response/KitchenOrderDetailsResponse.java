@@ -1,5 +1,8 @@
 package com.talabaty.backend.dto.response;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import com.talabaty.backend.model.OrderStatus;
 import com.talabaty.backend.model.PaymentMethod;
 
@@ -7,6 +10,8 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Getter
+@Setter
 public class KitchenOrderDetailsResponse {
 
     private Long id;
@@ -40,83 +45,23 @@ public class KitchenOrderDetailsResponse {
         this.orderItems = orderItems;
     }
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
-    public String getDeliveryAddress() {
-        return deliveryAddress;
-    }
 
-    public void setDeliveryAddress(String deliveryAddress) {
-        this.deliveryAddress = deliveryAddress;
-    }
 
-    public BigDecimal getSubtotal() {
-        return subtotal;
-    }
 
-    public void setSubtotal(BigDecimal subtotal) {
-        this.subtotal = subtotal;
-    }
 
-    public BigDecimal getDeliveryFee() {
-        return deliveryFee;
-    }
 
-    public void setDeliveryFee(BigDecimal deliveryFee) {
-        this.deliveryFee = deliveryFee;
-    }
 
-    public BigDecimal getTotalPrice() {
-        return totalPrice;
-    }
 
-    public void setTotalPrice(BigDecimal totalPrice) {
-        this.totalPrice = totalPrice;
-    }
 
-    public OrderStatus getStatus() {
-        return status;
-    }
 
-    public void setStatus(OrderStatus status) {
-        this.status = status;
-    }
 
-    public PaymentMethod getPaymentMethod() {
-        return paymentMethod;
-    }
 
-    public void setPaymentMethod(PaymentMethod paymentMethod) {
-        this.paymentMethod = paymentMethod;
-    }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
 
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
 
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
 
-    public List<OrderItemResponse> getOrderItems() {
-        return orderItems;
-    }
 
-    public void setOrderItems(List<OrderItemResponse> orderItems) {
-        this.orderItems = orderItems;
-    }
 }

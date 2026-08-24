@@ -1,5 +1,7 @@
 package com.talabaty.backend.controller;
 
+import lombok.RequiredArgsConstructor;
+
 import com.talabaty.backend.dto.response.MenuItemDetailsResponse;
 import com.talabaty.backend.service.MenuItemService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,13 +18,11 @@ import org.springframework.web.bind.annotation.RestController;
 )
 @RestController
 @RequestMapping("/api/menu-items")
+@RequiredArgsConstructor
 public class MenuItemController {
 
     private final MenuItemService menuItemService;
 
-    public MenuItemController(MenuItemService menuItemService) {
-        this.menuItemService = menuItemService;
-    }
 
     @Operation(
             summary = "Get menu item details",

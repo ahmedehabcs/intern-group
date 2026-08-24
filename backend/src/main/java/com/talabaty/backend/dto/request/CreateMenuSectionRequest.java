@@ -1,8 +1,13 @@
 package com.talabaty.backend.dto.request;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+@Getter
+@Setter
 public class CreateMenuSectionRequest {
 
     @NotBlank(message = "Name is required")
@@ -17,27 +22,9 @@ public class CreateMenuSectionRequest {
     public CreateMenuSectionRequest() {
     }
 
-    public String getName() {
-        return name;
-    }
 
-    public void setName(String name) {
-        this.name = name;
-    }
 
-    public String getDescription() {
-        return description;
-    }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
 
-    public Boolean getActive() {
-        return active;
-    }
 
-    public void setActive(Boolean active) {
-        this.active = active;
-    }
 }

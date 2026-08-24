@@ -1,10 +1,15 @@
 package com.talabaty.backend.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "governorates")
+@Getter
+@Setter
 public class Governorate {
 
     @Id
@@ -19,21 +24,9 @@ public class Governorate {
     }
 
     // Getters and Setters
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
-    public String getName() {
-        return name;
-    }
 
-    public void setName(String name) {
-        this.name = name;
-    }
 
     @Override
     public String toString() {

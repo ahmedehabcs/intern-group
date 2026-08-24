@@ -1,5 +1,10 @@
 package com.talabaty.backend.dto.response;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class KitchenAddonResponse {
 
     private Long id;
@@ -22,35 +27,11 @@ public class KitchenAddonResponse {
         this.available = available;
     }
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
-    public String getName() {
-        return name;
-    }
 
-    public void setName(String name) {
-        this.name = name;
-    }
 
-    public Double getAdditionalPrice() {
-        return additionalPrice;
-    }
 
-    public void setAdditionalPrice(Double additionalPrice) {
-        this.additionalPrice = additionalPrice;
-    }
 
-    public Boolean getAvailable() {
-        return available;
-    }
 
-    public void setAvailable(Boolean available) {
-        this.available = available;
-    }
 }

@@ -1,9 +1,14 @@
 package com.talabaty.backend.dto.request;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import com.talabaty.backend.model.PaymentMethod;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
+@Getter
+@Setter
 public class PlaceOrderRequest {
 
     @NotNull(message = "Delivery address ID is required")
@@ -21,19 +26,7 @@ public class PlaceOrderRequest {
         this.paymentMethod = paymentMethod;
     }
 
-    public Long getAddressId() {
-        return addressId;
-    }
 
-    public void setAddressId(Long addressId) {
-        this.addressId = addressId;
-    }
 
-    public PaymentMethod getPaymentMethod() {
-        return paymentMethod;
-    }
 
-    public void setPaymentMethod(PaymentMethod paymentMethod) {
-        this.paymentMethod = paymentMethod;
-    }
 }

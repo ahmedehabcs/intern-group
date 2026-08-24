@@ -1,8 +1,11 @@
 package com.talabaty.backend.dto.response;
 
+import lombok.Getter;
+
 
 import java.math.BigDecimal;
 
+@Getter
 public class OrderSummaryresponse {
     private Long id;
     private String restaurantName;
@@ -21,10 +24,4 @@ public class OrderSummaryresponse {
         this.deliveryFee = deliveryFee;
     }
 
-    public Long getId() { return id; }
-    public String getRestaurantName() { return restaurantName; }
-    public String getDeliveryAddress() { return deliveryAddress; }
-    public int getItemCount() { return itemCount; }
-    public BigDecimal getTotalPrice() { return totalPrice; }
-    public BigDecimal getDeliveryFee() { return deliveryFee; }
 }

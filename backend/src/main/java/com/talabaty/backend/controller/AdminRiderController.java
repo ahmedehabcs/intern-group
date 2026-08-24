@@ -1,5 +1,7 @@
 package com.talabaty.backend.controller;
 
+import lombok.RequiredArgsConstructor;
+
 import com.talabaty.backend.dto.response.RiderAdminResponse;
 import com.talabaty.backend.service.AdminRiderService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -13,13 +15,11 @@ import java.util.List;
 @RequestMapping("/api/admin/riders")
 @PreAuthorize("hasRole('ADMIN')")
 @SecurityRequirement(name = "bearerAuth")
+@RequiredArgsConstructor
 public class AdminRiderController {
 
     private final AdminRiderService adminRiderService;
 
-    public AdminRiderController(AdminRiderService adminRiderService) {
-        this.adminRiderService = adminRiderService;
-    }
 
     @GetMapping
     public ResponseEntity<List<RiderAdminResponse>> searchRiders(

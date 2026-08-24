@@ -1,10 +1,15 @@
 package com.talabaty.backend.model;
+
+import lombok.Getter;
+import lombok.Setter;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "cart_items")
+@Getter
+@Setter
 public class CartItem {
 
     @Id
@@ -40,62 +45,6 @@ public class CartItem {
         this.itemTotalPrice = itemTotalPrice;
         this.specialInstructions = specialInstructions;
         this.quantity = quantity;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Integer getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-    }
-
-    public String getSpecialInstructions() {
-        return specialInstructions;
-    }
-
-    public void setSpecialInstructions(String specialInstructions) {
-        this.specialInstructions = specialInstructions;
-    }
-
-    public Double getItemTotalPrice() {
-        return itemTotalPrice;
-    }
-
-    public void setItemTotalPrice(Double itemTotalPrice) {
-        this.itemTotalPrice = itemTotalPrice;
-    }
-
-    public Cart getCart() {
-        return cart;
-    }
-
-    public void setCart(Cart cart) {
-        this.cart = cart;
-    }
-
-    public MenuItem getMenuItem() {
-        return menuItem;
-    }
-
-    public void setMenuItem(MenuItem menuItem) {
-        this.menuItem = menuItem;
-    }
-
-    public List<CartItemAddon> getSelectedAddons() {
-        return selectedAddons;
-    }
-
-    public void setSelectedAddons(List<CartItemAddon> selectedAddons) {
-        this.selectedAddons = selectedAddons;
     }
 
     @Override

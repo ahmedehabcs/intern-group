@@ -1,9 +1,14 @@
 package com.talabaty.backend.model;
+
+import lombok.Setter;
+
+import lombok.Getter;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "users")
+@Getter
 public class User {
 
     @Id
@@ -11,36 +16,50 @@ public class User {
     private Long id;
 
     @Column(nullable = false, unique = true)
+    @Setter
     private String email;
 
     @Column(nullable = false)
+    @Setter
     private String password;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    @Setter
     private Role role;
 
     @Column(nullable = false)
+    @Setter
     private boolean emailVerified;
 
+    @Setter
     private String otp;
+    @Setter
     private LocalDateTime otpExpiration;
+    @Setter
     private int otpAttemptCount;
 
+    @Setter
     private String passwordResetToken;
+    @Setter
     private LocalDateTime passwordResetTokenExpiration;
+    @Setter
     private int passwordResetAttemptCount;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @Setter
     private CustomerProfile customerProfile;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @Setter
     private DeliveryProfile deliveryProfile;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @Setter
     private Admin adminProfile;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @Setter
     private KitchenManager kitchenManagerProfile;
 
     public User() {}
@@ -53,117 +72,32 @@ public class User {
 
 // Getters and Setters...
 
-    public Long getId() {
-        return id;
-    }
 
-    public String getEmail() {
-        return email;
-    }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
 
-    public String getPassword() {return password;}
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
 
-    public Role getRole() {
-        return role;
-    }
 
-    public void setRole(Role role) {
-        this.role = role;
-    }
 
-    public boolean isEmailVerified() {
-        return emailVerified;
-    }
 
-    public void setEmailVerified(boolean emailVerified) {
-        this.emailVerified = emailVerified;
-    }
 
-    public String getOtp() {
-        return otp;
-    }
 
-    public void setOtp(String otp) {
-        this.otp = otp;
-    }
 
-    public LocalDateTime getOtpExpiration() {
-        return otpExpiration;
-    }
 
-    public void setOtpExpiration(LocalDateTime otpExpiration) {
-        this.otpExpiration = otpExpiration;
-    }
 
-    public int getOtpAttemptCount() {
-        return otpAttemptCount;
-    }
 
-    public void setOtpAttemptCount(int otpAttemptCount) {
-        this.otpAttemptCount = otpAttemptCount;
-    }
 
-    public String getPasswordResetToken() {
-        return passwordResetToken;
-    }
 
-    public void setPasswordResetToken(String passwordResetToken) {
-        this.passwordResetToken = passwordResetToken;
-    }
 
-    public LocalDateTime getPasswordResetTokenExpiration() {
-        return passwordResetTokenExpiration;
-    }
 
-    public void setPasswordResetTokenExpiration(LocalDateTime passwordResetTokenExpiration) {
-        this.passwordResetTokenExpiration = passwordResetTokenExpiration;
-    }
 
-    public int getPasswordResetAttemptCount() {
-        return passwordResetAttemptCount;
-    }
 
-    public void setPasswordResetAttemptCount(int passwordResetAttemptCount) {
-        this.passwordResetAttemptCount = passwordResetAttemptCount;
-    }
 
-    public CustomerProfile getCustomerProfile() {
-        return customerProfile;
-    }
 
-    public void setCustomerProfile(CustomerProfile customerProfile) {
-        this.customerProfile = customerProfile;
-    }
 
-    public DeliveryProfile getDeliveryProfile() {
-        return deliveryProfile;
-    }
 
-    public void setDeliveryProfile(DeliveryProfile deliveryProfile) {
-        this.deliveryProfile = deliveryProfile;
-    }
 
-    public Admin getAdminProfile() {
-        return adminProfile;
-    }
 
-    public void setAdminProfile(Admin adminProfile) {
-        this.adminProfile = adminProfile;
-    }
 
-    public KitchenManager getKitchenManagerProfile() {
-        return kitchenManagerProfile;
-    }
 
-    public void setKitchenManagerProfile(KitchenManager kitchenManagerProfile) {
-        this.kitchenManagerProfile = kitchenManagerProfile;
-    }
 }

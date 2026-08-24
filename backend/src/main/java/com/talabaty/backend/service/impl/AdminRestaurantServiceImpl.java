@@ -1,5 +1,7 @@
 package com.talabaty.backend.service.impl;
 
+import lombok.RequiredArgsConstructor;
+
 import com.talabaty.backend.dto.request.AssignKitchenManagerRequest;
 import com.talabaty.backend.dto.request.CreateRestaurantRequest;
 import com.talabaty.backend.dto.request.UpdateRestaurantRequest;
@@ -29,6 +31,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class AdminRestaurantServiceImpl implements AdminRestaurantService {
 
     private final RestaurantRepository restaurantRepository;
@@ -38,19 +41,6 @@ public class AdminRestaurantServiceImpl implements AdminRestaurantService {
     private final KitchenManagerRepository kitchenManagerRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public AdminRestaurantServiceImpl(RestaurantRepository restaurantRepository,
-                                      GovernorateRepository governorateRepository,
-                                      CategoryRepository categoryRepository,
-                                      UserRepository userRepository,
-                                      KitchenManagerRepository kitchenManagerRepository,
-                                      PasswordEncoder passwordEncoder) {
-        this.restaurantRepository = restaurantRepository;
-        this.governorateRepository = governorateRepository;
-        this.categoryRepository = categoryRepository;
-        this.userRepository = userRepository;
-        this.kitchenManagerRepository = kitchenManagerRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
 
     @Override
     @Transactional

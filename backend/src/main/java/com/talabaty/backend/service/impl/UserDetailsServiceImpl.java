@@ -1,5 +1,7 @@
 package com.talabaty.backend.service.impl;
 
+import lombok.RequiredArgsConstructor;
+
 import com.talabaty.backend.model.User;
 import com.talabaty.backend.repository.UserRepository;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -11,13 +13,11 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 
 @Service
+@RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final UserRepository userRepository;
 
-    public UserDetailsServiceImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
 @Override
 public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
