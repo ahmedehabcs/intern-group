@@ -240,11 +240,14 @@
           @for (item of restaurants(); track item.id) {
             <article class="flex justify-between rounded-xl border p-4">
               <span>{{ item.name }} · {{ item.isActive ? 'Active' : 'Inactive' }}</span>
-              @if (item.isActive) {
-                <button (click)="deactivateRestaurant(item.id)" class="text-red-600">
-                  Deactivate
-                </button>
-              }
+              <button
+                type="button"
+                (click)="updateRestaurantStatus(item)"
+                [disabled]="processingId() === item.id"
+                class="rounded-(--radius) border border-(--line) bg-(--surface) px-3 py-2 text-sm text-(--text-soft) disabled:opacity-50"
+              >
+                {{ item.isActive ? 'Deactivate' : 'Activate' }}
+              </button>
             </article>
           } @empty {
             <p>No restaurants.</p>

@@ -79,10 +79,12 @@ export class AdminApiService {
       ? this.mock.adminRestaurant(id)
       : this.http.put<RestaurantAdminResponse>(`${this.api}/restaurants/${id}/edit`, null);
   } // TODO(api-contract): endpoint documents no body despite an update DTO.
-  deactivateRestaurant(id: number): Observable<RestaurantAdminResponse> {
+  updateRestaurantStatus(id: number, active: boolean): Observable<RestaurantAdminResponse> {
     return environment.mock.enabled
-      ? this.mock.deactivateAdminRestaurant(id)
-      : this.http.put<RestaurantAdminResponse>(`${this.api}/restaurants/${id}/deactivate`, null);
+      ? this.mock.updateAdminRestaurantStatus(id, active)
+      : this.http.put<RestaurantAdminResponse>(this.api + '/restaurants/' + id + '/status', null, {
+          params: new HttpParams().set('active', String(active)),
+        });
   }
   assignManager(id: number, b: AssignKitchenManagerRequest): Observable<void> {
     return environment.mock.enabled

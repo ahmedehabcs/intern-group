@@ -389,16 +389,14 @@ export class MockDataStore {
     return mockResponse(() => {
       const all = this.ordersState();
       const start = page * size;
-      const orders = all
-        .slice(start, start + size)
-        .map((order) => ({
-          id: order.id,
-          restaurantName: order.restaurantName,
-          itemCount: order.orderItems.reduce((sum, item) => sum + item.quantity, 0),
-          totalPrice: order.totalPrice,
-          status: order.status,
-          createdAt: order.createdAt,
-        }));
+      const orders = all.slice(start, start + size).map((order) => ({
+        id: order.id,
+        restaurantName: order.restaurantName,
+        itemCount: order.orderItems.reduce((sum, item) => sum + item.quantity, 0),
+        totalPrice: order.totalPrice,
+        status: order.status,
+        createdAt: order.createdAt,
+      }));
       const totalPages = Math.ceil(all.length / size);
       return {
         orders,
@@ -1004,17 +1002,31 @@ export class MockDataStore {
       ),
     );
   }
-  deactivateAdminRestaurant(id: number): Observable<RestaurantAdminResponse> {
+  updateAdminRestaurantStatus(id: number, active: boolean): Observable<RestaurantAdminResponse> {
     return mockResponse(() => {
       const current = this.require(
         this.adminRestaurantsState().find((item) => item.id === id),
         'Restaurant',
       );
-      const updated = { ...current, isActive: false };
+      const updated = { ...current, isActive: active };
       this.adminRestaurantsState.update((items) =>
         items.map((item) => (item.id === id ? updated : item)),
       );
-      this.restaurantsState.update((items) => items.filter((item) => item.id !== id));
+      this.restaurantsState.update((items) => {
+        const withoutRestaurant = items.filter((item) => item.id !== id);
+        return active
+          ? [
+              ...withoutRestaurant,
+              {
+                id: updated.id,
+                name: updated.name,
+                description: updated.description,
+                logoUrl: updated.logoUrl,
+                categories: updated.categoryNames,
+              },
+            ]
+          : withoutRestaurant;
+      });
       return updated;
     });
   }
