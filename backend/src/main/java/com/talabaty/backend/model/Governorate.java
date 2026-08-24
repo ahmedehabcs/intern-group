@@ -1,6 +1,5 @@
 package com.talabaty.backend.model;
 
-
 import jakarta.persistence.*;
 
 @Entity
@@ -14,11 +13,9 @@ public class Governorate {
     @Column(nullable = false, unique = true)
     private String name;
 
-
     public Governorate() {
     }
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }
