@@ -11,6 +11,7 @@ import com.talabaty.backend.dto.response.CustomerOrderDetailsResponse;
 import com.talabaty.backend.dto.response.CustomerOrderSummaryResponse;
 import com.talabaty.backend.dto.response.KitchenOrderDetailsResponse;
 import com.talabaty.backend.dto.response.KitchenOrderSummaryResponse;
+import com.talabaty.backend.dto.response.KitchenOrderPageResponse;
 import org.mapstruct.Mapping;
 import java.math.BigDecimal;
 import java.util.List;
@@ -74,6 +75,22 @@ public interface OrderMapper {
         return new CustomerOrderPageResponse(toCustomerOrderSummaryResponseList(orderPage.getContent()), orderPage.getNumber(),
                 orderPage.getSize(), orderPage.getTotalElements(), orderPage.getTotalPages(),
                 orderPage.isFirst(), orderPage.isLast()
+        );
+    }
+
+    default KitchenOrderPageResponse toKitchenOrderPageResponse(Page<Order> orderPage) {
+        if (orderPage == null) {
+            return null;
+        }
+
+        return new KitchenOrderPageResponse(
+                toKitchenOrderSummaryResponseList(orderPage.getContent()),
+                orderPage.getNumber(),
+                orderPage.getSize(),
+                orderPage.getTotalElements(),
+                orderPage.getTotalPages(),
+                orderPage.isFirst(),
+                orderPage.isLast()
         );
     }
 }

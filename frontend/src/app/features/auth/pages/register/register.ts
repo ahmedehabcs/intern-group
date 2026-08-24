@@ -1,116 +1,86 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { email, FormField, form, minLength, pattern, required, submit, validate } from '@angular/forms/signals';
-import { RegisterFormModel, RegisterRequest } from '../../models/register.model';
-import { firstValueFrom } from 'rxjs';
-import { AuthService } from '../../services/auth.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { RouterLink, Router } from '@angular/router';
-
+import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
+import { finalize } from 'rxjs';
+import { AuthService } from '../../services/auth.service';
+type SignupRole = 'CUSTOMER' | 'DRIVER';
 @Component({
   selector: 'app-register',
-  imports: [RouterLink, FormField],
+  imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './register.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Register {
-  private readonly AuthService = inject(AuthService);
-  private readonly router = inject(Router);
-  protected readonly requestError = signal<string | null>(null);
-
-  protected readonly RegisterModel = signal<RegisterFormModel>({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    isDelivery: false,
+  private api = inject(AuthService);
+  private router = inject(Router);
+  private destroy = inject(DestroyRef);
+  readonly submitting = signal(false);
+  readonly error = signal<string | null>(null);
+  readonly form = new FormGroup({
+    role: new FormControl<SignupRole>('CUSTOMER', { nonNullable: true }),
+    name: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required, Validators.minLength(2), Validators.maxLength(50)],
+    }),
+    email: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required, Validators.email],
+    }),
+    phoneNumber: new FormControl('', { nonNullable: true, validators: [Validators.maxLength(20)] }),
+    password: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required, Validators.minLength(8), Validators.maxLength(100)],
+    }),
+    vehicleType: new FormControl('', { nonNullable: true }),
+    licenseNumber: new FormControl('', { nonNullable: true }),
+    nationalId: new FormControl('', { nonNullable: true }),
   });
-
-  protected readonly registerForm = form(this.RegisterModel, (field) => {
-    required(field.name, { message: 'Name is required.' });
-    minLength(field.name, 3, { message: 'Name must contain at least 3 characters.' });
-    pattern(field.name, /^[a-zA-Z\s]+$/, { message: 'Use only letters and spaces.' });
-
-    required(field.email, { message: 'Email is required.' });
-    email(field.email, { message: 'Enter a valid email address.' });
-
-    required(field.password, { message: 'Password is required.' });
-    minLength(field.password, 8, { message: 'Password must contain at least 8 characters.' });
-    // at least Uppercase letter, lowercase letter and a number (8 Chars) 
-    pattern(field.password, /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/, { message: 'Password must include an uppercase letter, lowercase letter, and number.' });
-
-    required(field.confirmPassword, { message: 'Please confirm your password.' });
-    validate(field.confirmPassword,
-      ({ value, valueOf }) => {
-        if (value() !== valueOf(field.password)) {
-          return { kind: 'passwordMismatch', message: 'Passwords do not match.' };
-        }
-        return null;
-      },
-    );
-  })
-
-  protected onDeliveryCheckboxChange(event: Event): void {
-    const isChecked = (event.target as HTMLInputElement).checked;
-    this.RegisterModel.update(model => ({
-      ...model,
-      isDelivery: isChecked
-    }));
+  submit(): void {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+    const v = this.form.getRawValue();
+    if (v.role === 'DRIVER' && (!v.vehicleType || !v.licenseNumber || v.nationalId.length < 10)) {
+      this.error.set('Vehicle type, license number, and a valid national ID are required.');
+      return;
+    }
+    this.submitting.set(true);
+    this.error.set(null);
+    const request =
+      v.role === 'DRIVER'
+        ? this.api.signupDriver({
+            name: v.name,
+            email: v.email,
+            password: v.password,
+            phoneNumber: v.phoneNumber || undefined,
+            vehicleType: v.vehicleType,
+            licenseNumber: v.licenseNumber,
+            nationalId: v.nationalId,
+          })
+        : this.api.signupCustomer({
+            name: v.name,
+            email: v.email,
+            password: v.password,
+            phoneNumber: v.phoneNumber || undefined,
+          });
+    request
+      .pipe(
+        finalize(() => this.submitting.set(false)),
+        takeUntilDestroyed(this.destroy),
+      )
+      .subscribe({
+        next: () =>
+          void this.router.navigate(['/auth/otp-verification'], {
+            queryParams: { email: v.email },
+          }),
+        error: (e) =>
+          this.error.set(
+            e instanceof HttpErrorResponse
+              ? (e.error?.message ?? 'Registration failed.')
+              : 'Registration failed.',
+          ),
+      });
   }
-
-  protected async onSubmit(even: Event): Promise<void> {
-    even.preventDefault();
-
-    this.requestError.set(null);
-
-    await submit(this.registerForm, async () => {
-      const formValue = this.RegisterModel();
-
-      const request: RegisterRequest = {
-        name: formValue.name,
-        email: formValue.email,
-        password: formValue.password,
-        role: formValue.isDelivery ? 'DRIVER' : 'CUSTOMER'
-      }
-
-      try {
-        const response = await firstValueFrom(
-          this.AuthService.register(request)
-        )
-        console.log('Registration request:', response);
-        this.router.navigate(['/auth/otp-verification'], {
-          queryParams: {
-            email: request.email
-          }
-        });
-        this.resetForm();
-      } catch (error: unknown) {
-        if (error instanceof HttpErrorResponse) {
-          this.requestError.set(
-            error.error?.message ?? 'Registration failed.',
-          );
-        } else {
-          this.requestError.set('Registration failed.');
-        }
-
-      }
-    })
-  }
-
-  continueWithGoogle(): void {
-
-  }
-
-
-
-
-  private resetForm(): void {
-    this.RegisterModel.set({
-      name: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
-      isDelivery: false,
-    })
-  }
-
 }

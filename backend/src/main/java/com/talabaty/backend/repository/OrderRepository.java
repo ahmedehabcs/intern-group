@@ -79,6 +79,19 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     // Kitchen: active orders for a restaurant
     List<Order> findByRestaurantIdAndStatusInOrderByCreatedAtAsc(Long restaurantId, List<OrderStatus> statuses);
     List<Order> findByRestaurantIdAndCreatedAtBetweenOrderByCreatedAtAsc(Long restaurantId, LocalDateTime start, LocalDateTime end);
+    Page<Order> findByRestaurantIdAndCreatedAtBetween(
+            Long restaurantId,
+            LocalDateTime start,
+            LocalDateTime end,
+            Pageable pageable
+    );
+    Page<Order> findByRestaurantIdAndStatusAndCreatedAtBetween(
+            Long restaurantId,
+            OrderStatus status,
+            LocalDateTime start,
+            LocalDateTime end,
+            Pageable pageable
+    );
     Optional<Order> findByIdAndRestaurantId(Long orderId, Long restaurantId);
 
     // Admin filter: status, restaurant, and date range are all optional (pass null to skip a filter)

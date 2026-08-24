@@ -1,0 +1,15 @@
+<div class="inline-flex items-center rounded-(--radius) border border-(--line) bg-(--surface)">
+    <button type="button" class="grid h-9 w-9 place-items-center text-lg text-(--text-soft) hover:bg-(--surface-2)"
+        (click)="decrease()" aria-label="Decrease quantity">
+        −
+    </button>
+
+    <span class="min-w-8 text-center text-sm text-(--text)">
+        {{ value() }}
+    </span>
+
+    <button type="button" class="grid h-9 w-9 place-items-center text-lg text-(--text-soft) hover:bg-(--surface-2)"
+        (click)="change.emit(value() + 1)" aria-label="Increase quantity">
+        +
+    </button>
+</div>

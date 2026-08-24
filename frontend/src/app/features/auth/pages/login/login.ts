@@ -1,61 +1,57 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { FormField, form, required, submit, email, minLength } from '@angular/forms/signals';
-import { firstValueFrom } from 'rxjs';
-import { LoginForm } from '../../models/login.model';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { finalize } from 'rxjs';
+import { roleHome } from '../../../../core/auth/guards/role.guard';
 import { AuthService } from '../../services/auth.service';
-import { RouterLink } from "@angular/router";
-
 @Component({
   selector: 'app-login',
-  imports: [FormField, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './login.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Login {
-  private readonly authService = inject(AuthService);
-  protected readonly requestError = signal<string | null>(null);
-
-  protected readonly LoginModel = signal<LoginForm>({
-    email: '',
-    password: '',
+  private api = inject(AuthService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private destroy = inject(DestroyRef);
+  readonly submitting = signal(false);
+  readonly error = signal<string | null>(null);
+  readonly form = new FormGroup({
+    email: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required, Validators.email],
+    }),
+    password: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required, Validators.minLength(8)],
+    }),
   });
-
-  protected readonly loginForm = form(this.LoginModel, (field) => {
-    required(field.email, { message: 'Email is required.' });
-    email(field.email, { message: 'Enter a valid email address.' });
-
-    required(field.password, { message: 'Password is required.' });
-    minLength(field.password, 8, {
-      message: 'Password must contain at least 8 characters.',
-    });
-  });
-
-  protected async onSubmit(event: Event): Promise<void> {
-    event.preventDefault();
-    this.requestError.set(null);
-
-    await submit(this.loginForm, async () => {
-      const request: LoginForm = this.LoginModel();
-
-      try {
-        const response = await firstValueFrom(this.authService.login(request));
-        console.log('Login request:', response);
-        this.resetForm();
-      } catch (error: unknown) {
-        if (error instanceof HttpErrorResponse) {
-          this.requestError.set(error.error?.message ?? 'Login failed.');
-        } else {
-          this.requestError.set('Login failed.');
-        }
-      }
-    });
-  }
-
-  private resetForm(): void {
-    this.LoginModel.set({
-      email: '',
-      password: '',
-    });
+  submit(): void {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+    this.submitting.set(true);
+    this.error.set(null);
+    this.api
+      .login(this.form.getRawValue())
+      .pipe(
+        finalize(() => this.submitting.set(false)),
+        takeUntilDestroyed(this.destroy),
+      )
+      .subscribe({
+        next: (r) =>
+          void this.router.navigateByUrl(
+            this.route.snapshot.queryParamMap.get('returnUrl') || roleHome(r.role),
+          ),
+        error: (e) =>
+          this.error.set(
+            e instanceof HttpErrorResponse
+              ? (e.error?.message ?? e.error?.error ?? 'Login failed.')
+              : 'Login failed.',
+          ),
+      });
   }
 }

@@ -1,211 +1,129 @@
-    <div class="min-h-dvh w-full bg-(--surface)">
-      <div class="grid min-h-dvh w-full lg:grid-cols-[45%_55%]">
-        <aside
-          class="relative hidden min-h-dvh flex-col justify-between overflow-hidden bg-[linear-gradient(180deg,rgba(20,10,4,0.2),rgba(20,10,4,0.88)),url('/assets/images/talabaty-food-table.png')] bg-cover bg-center p-[clamp(2.5rem,5vw,6rem)] text-white lg:flex">
-          <div class="absolute -right-24 -top-24 h-72 w-72 rounded-full bg-white/10"></div>
+<main class="flex min-h-screen items-center justify-center bg-(--bg) px-6 py-12">
+  <section class="w-full max-w-140">
 
-          <div class="absolute -bottom-24 -left-24 h-80 w-80 rounded-full bg-black/10"></div>
+    <!-- Header -->
+    <header class="mb-8">
+      <h1 class="text-3xl font-semibold tracking-tight text-(--text)">
+        Create an account
+      </h1>
 
-          <div class="relative z-10 flex items-center gap-3 text-2xl font-bold">
-            <span
-              class="flex h-11 w-11 items-center justify-center rounded-xl bg-(--surface) text-(--brand) shadow-(--shadow-sm)">
-              T
-            </span>
+      <p class="mt-2 text-sm text-(--text-soft)">
+        Create your account to get started.
+      </p>
+    </header>
 
-            <span>Talabaty</span>
-          </div>
+    <!-- Form Card -->
+    <div class="rounded-(--radius) border border-(--line) bg-(--surface) p-7 shadow-(--shadow-sm) sm:p-8">
+      <form [formGroup]="form" (ngSubmit)="submit()" class="grid gap-6 sm:grid-cols-2">
 
-          <div class="relative z-10 max-w-xl">
-            <p class="mb-4 text-sm font-semibold uppercase tracking-[0.25em] text-white/70">
-              Welcome
-            </p>
+        <!-- Account Type -->
+        <div class="sm:col-span-2">
+          <label for="role" class="mb-2 block text-sm font-medium text-(--text)">
+            Account type
+          </label>
 
-            <h2
-              class="font-['Playfair_Display'] text-[clamp(2.75rem,4.5vw,5.5rem)] font-bold leading-[1.02] tracking-[-0.04em]">
-              Good food starts here.
-            </h2>
+          <select id="role" formControlName="role"
+            class="h-12 w-full rounded-(--radius) border border-(--line) bg-(--surface) px-4 text-sm text-(--text) outline-none transition focus:border-(--brand) focus:ring-1 focus:ring-(--brand)">
+            <option value="CUSTOMER">Customer</option>
+            <option value="DRIVER">Delivery driver</option>
+          </select>
+        </div>
 
-            <p class="mt-6 max-w-lg text-lg leading-8 text-white/85">
-              Create an account, pick a restaurant, and place your order.
-            </p>
-          </div>
+        <!-- Name -->
+        <div>
+          <label for="name" class="mb-2 block text-sm font-medium text-(--text)">
+            Name
+          </label>
 
-          <span class="relative z-10 text-sm font-medium text-white/70">
-            Simple. Fast. Delivered.
-          </span>
-        </aside>
+          <input id="name" formControlName="name" placeholder="Your name"
+            class="h-12 w-full rounded-(--radius) border border-(--line) bg-(--surface) px-4 text-sm text-(--text) outline-none transition placeholder:text-(--muted) focus:border-(--brand) focus:ring-1 focus:ring-(--brand)" />
+        </div>
 
-        <section
-          class="flex min-h-dvh w-full items-center bg-(--surface) px-5 py-10 sm:px-10 lg:justify-start lg:px-[clamp(3rem,6vw,7rem)] lg:py-12">
-          <div class="w-full">
-            <span
-              class="inline-flex rounded-full bg-(--brand-soft) px-4 py-2 text-xs font-bold uppercase tracking-[0.2em] text-(--brand)">
-              Create account
-            </span>
+        <!-- Email -->
+        <div>
+          <label for="email" class="mb-2 block text-sm font-medium text-(--text)">
+            Email
+          </label>
 
-            <h1 class="mt-5 font-['Playfair_Display'] text-3xl font-bold tracking-tight text-(--text) sm:text-4xl">
-              Create your account
-            </h1>
+          <input id="email" formControlName="email" type="email" placeholder="you@example.com"
+            class="h-12 w-full rounded-(--radius) border border-(--line) bg-(--surface) px-4 text-sm text-(--text) outline-none transition placeholder:text-(--muted) focus:border-(--brand) focus:ring-1 focus:ring-(--brand)" />
+        </div>
 
-            <p class="mt-3 text-base text-(--text-soft)">
-              Enter your details to get started.
-            </p>
+        <!-- Phone -->
+        <div>
+          <label for="phoneNumber" class="mb-2 block text-sm font-medium text-(--text)">
+            Phone
+          </label>
 
-            <form class="mt-8 space-y-5" (submit)="onSubmit($event)" novalidate>
-              <!-- Name -->
-              <div>
-                <label for="name" class="mb-2 block text-sm font-semibold text-(--text)">
-                  Full Name
-                </label>
+          <input id="phoneNumber" formControlName="phoneNumber" placeholder="Phone number"
+            class="h-12 w-full rounded-(--radius) border border-(--line) bg-(--surface) px-4 text-sm text-(--text) outline-none transition placeholder:text-(--muted) focus:border-(--brand) focus:ring-1 focus:ring-(--brand)" />
+        </div>
 
-                <input id="name" type="text" placeholder="Enter your full name" autocomplete="name"
-                  [formField]="registerForm.name" [class.!border-red-500]="
-                    registerForm.name().touched() &&
-                    registerForm.name().invalid()
-                  " [class.!ring-red-100]="
-                    registerForm.name().touched() &&
-                    registerForm.name().invalid()
-                  "
-                  class="w-full rounded-xl border border-(--border) bg-(--surface) px-4 py-3.5 text-sm text-(--text) outline-none transition placeholder:text-(--muted) focus:border-(--brand) focus:ring-4 focus:ring-(--brand-soft)" />
+        <!-- Password -->
+        <div>
+          <label for="password" class="mb-2 block text-sm font-medium text-(--text)">
+            Password
+          </label>
 
-                @if (
-                registerForm.name().touched() &&
-                registerForm.name().invalid()
-                ) {
-                <p class="mt-2 text-sm font-medium text-red-600" role="alert">
-                  {{ registerForm.name().errors()[0]?.message }}
-                </p>
-                }
-              </div>
+          <input id="password" formControlName="password" type="password" placeholder="Create a password"
+            class="h-12 w-full rounded-(--radius) border border-(--line) bg-(--surface) px-4 text-sm text-(--text) outline-none transition placeholder:text-(--muted) focus:border-(--brand) focus:ring-1 focus:ring-(--brand)" />
+        </div>
 
-              <!-- Email -->
-              <div>
-                <label for="email" class="mb-2 block text-sm font-semibold text-(--text)">
-                  Email address
-                </label>
+        <!-- Driver Fields -->
+        @if (form.controls.role.value === 'DRIVER') {
 
-                <input id="email" type="email" placeholder="you@example.com" autocomplete="email"
-                  [formField]="registerForm.email" [class.!border-red-500]="
-                    registerForm.email().touched() &&
-                    registerForm.email().invalid()
-                  " [class.!ring-red-100]="
-                    registerForm.email().touched() &&
-                    registerForm.email().invalid()
-                  "
-                  class="w-full rounded-xl border border-(--border) bg-(--surface) px-4 py-3.5 text-sm text-(--text) outline-none transition placeholder:text-(--muted) focus:border-(--brand) focus:ring-4 focus:ring-(--brand-soft)" />
+        <!-- Vehicle Type -->
+        <div>
+          <label for="vehicleType" class="mb-2 block text-sm font-medium text-(--text)">
+            Vehicle type
+          </label>
 
-                @if (
-                registerForm.email().touched() &&
-                registerForm.email().invalid()
-                ) {
-                <p class="mt-2 text-sm font-medium text-red-600" role="alert">
-                  {{ registerForm.email().errors()[0]?.message }}
-                </p>
-                }
-              </div>
+          <input id="vehicleType" formControlName="vehicleType" placeholder="e.g. Motorcycle"
+            class="h-12 w-full rounded-(--radius) border border-(--line) bg-(--surface) px-4 text-sm text-(--text) outline-none transition placeholder:text-(--muted) focus:border-(--brand) focus:ring-1 focus:ring-(--brand)" />
+        </div>
 
-              <!-- Password fields -->
-              <div class="grid gap-5 sm:grid-cols-2">
-                <!-- Password -->
-                <div>
-                  <label for="password" class="mb-2 block text-sm font-semibold text-(--text)">
-                    Password
-                  </label>
+        <!-- License Number -->
+        <div>
+          <label for="licenseNumber" class="mb-2 block text-sm font-medium text-(--text)">
+            License number
+          </label>
 
-                  <input id="password" type="password" placeholder="Enter password" autocomplete="new-password"
-                    [formField]="registerForm.password" [class.!border-red-500]="
-                      registerForm.password().touched() &&
-                      registerForm.password().invalid()
-                    " [class.!ring-red-100]="
-                      registerForm.password().touched() &&
-                      registerForm.password().invalid()
-                    "
-                    class="w-full rounded-xl border border-(--border) bg-(--surface) px-4 py-3.5 text-sm text-(--text) outline-none transition placeholder:text-(--muted) focus:border-(--brand) focus:ring-4 focus:ring-(--brand-soft)" />
+          <input id="licenseNumber" formControlName="licenseNumber" placeholder="License number"
+            class="h-12 w-full rounded-(--radius) border border-(--line) bg-(--surface) px-4 text-sm text-(--text) outline-none transition placeholder:text-(--muted) focus:border-(--brand) focus:ring-1 focus:ring-(--brand)" />
+        </div>
 
-                  @if (
-                  registerForm.password().touched() &&
-                  registerForm.password().invalid()
-                  ) {
-                  <p class="mt-2 text-sm font-medium text-red-600" role="alert">
-                    {{ registerForm.password().errors()[0]?.message }}
-                  </p>
-                  }
-                </div>
+        <!-- National ID -->
+        <div class="sm:col-span-2">
+          <label for="nationalId" class="mb-2 block text-sm font-medium text-(--text)">
+            National ID
+          </label>
 
-                <!-- Confirm password -->
-                <div>
-                  <label for="confirmPassword" class="mb-2 block text-sm font-semibold text-(--text)">
-                    Confirm password
-                  </label>
+          <input id="nationalId" formControlName="nationalId" placeholder="National ID"
+            class="h-12 w-full rounded-(--radius) border border-(--line) bg-(--surface) px-4 text-sm text-(--text) outline-none transition placeholder:text-(--muted) focus:border-(--brand) focus:ring-1 focus:ring-(--brand)" />
+        </div>
+        }
 
-                  <input id="confirmPassword" type="password" placeholder="Confirm password" autocomplete="new-password"
-                    [formField]="registerForm.confirmPassword" [class.!border-red-500]="
-                      registerForm.confirmPassword().touched() &&
-                      registerForm.confirmPassword().invalid()
-                    " [class.!ring-red-100]="
-                      registerForm.confirmPassword().touched() &&
-                      registerForm.confirmPassword().invalid()
-                    "
-                    class="w-full rounded-xl border border-(--border) bg-(--surface) px-4 py-3.5 text-sm text-(--text) outline-none transition placeholder:text-(--muted) focus:border-(--brand) focus:ring-4 focus:ring-(--brand-soft)" />
+        <!-- Error -->
+        @if (error()) {
+        <p
+          class="sm:col-span-2 rounded-(--radius) border border-(--line) bg-(--brand-soft) px-4 py-3 text-sm text-(--brand)">
+          {{ error() }}
+        </p>
+        }
 
-                  @if (
-                  registerForm.confirmPassword().touched() &&
-                  registerForm.confirmPassword().invalid()
-                  ) {
-                  <p class="mt-2 text-sm font-medium text-red-600" role="alert">
-                    {{ registerForm.confirmPassword().errors()[0]?.message }}
-                  </p>
-                  }
-                </div>
-              </div>
+        <!-- Submit -->
+        <button [disabled]="form.invalid || submitting()"
+          class="sm:col-span-2 h-12 rounded-(--radius) bg-(--brand) px-4 text-sm font-semibold text-white transition hover:bg-(--brand-hover) disabled:cursor-not-allowed disabled:opacity-50">
+          {{ submitting() ? 'Creating…' : 'Create account' }}
+        </button>
+      </form>
 
-              <!-- Delivery Role Checkbox -->
-              <div class="flex items-center gap-3">
-                <input id="isDelivery" type="checkbox" 
-                  [checked]="RegisterModel().isDelivery"
-                  (change)="onDeliveryCheckboxChange($event)"
-                  class="h-5 w-5 rounded border-gray-300 text-(--brand) shadow-sm focus:border-(--brand) focus:ring-2 focus:ring-(--brand-soft) cursor-pointer" />
-                <label for="isDelivery" class="text-sm font-medium text-(--text) cursor-pointer">
-                  Register as a delivery partner
-                </label>
-              </div>
-
-              <!-- Backend request error -->
-              @if (requestError()) {
-              <div
-                class="rounded-xl border border-red-300 bg-red-50 px-4 py-3 text-sm font-medium text-red-700 dark:border-red-900 dark:bg-red-950/40 dark:text-red-300"
-                role="alert">
-                {{ requestError() }}
-              </div>
-              }
-
-              <!-- Submit button -->
-              <button type="submit" [disabled]="registerForm().submitting()"
-                class="flex w-full items-center justify-center gap-2 rounded-xl bg-(--brand) px-5 py-3.5 text-sm font-bold text-white shadow-(--shadow-sm) transition hover:bg-(--brand-hover) focus:outline-none focus:ring-4 focus:ring-(--brand-soft) disabled:cursor-not-allowed disabled:opacity-60">
-                @if (registerForm().submitting()) {
-                <svg class="h-5 w-5 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-
-                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 0 1 8-8v4a4 4 0 0 0-4 4H4z"></path>
-                </svg>
-
-                <span>Creating account...</span>
-                } @else {
-                <span>Create Account</span>
-                <span aria-hidden="true">→</span>
-                }
-              </button>
-            </form>
-
-            <p class="mt-7 text-center text-sm text-(--text-soft)">
-              Already have an account?
-
-              <span routerLink="/auth/login"
-                class="cursor-pointer font-bold text-(--brand) transition hover:text-(--brand-hover)">
-                Login
-              </span>
-            </p>
-          </div>
-        </section>
+      <!-- Login Link -->
+      <div class="mt-6 border-t border-(--line) pt-6 text-center text-sm">
+        <a routerLink="/auth/login" class="font-medium text-(--brand) transition hover:text-(--brand-hover)">
+          Already registered? Sign in
+        </a>
       </div>
     </div>
+  </section>
+</main>

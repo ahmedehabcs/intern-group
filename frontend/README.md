@@ -1,5 +1,24 @@
 # TalabatFrontend
 
+## Development mock mode
+
+Mock mode is controlled only by `src/environments/environment*.ts`:
+
+```ts
+mock: { enabled: true, delayMs: 200, forceError: false }
+```
+
+Set `enabled` to `true` to use the typed in-memory storefront, customer, driver, kitchen, and admin data without backend requests. Set it to `false` to use the existing real HTTP APIs. `delayMs` makes loading states visible, while `forceError: true` exercises error states before any mock mutation is applied. Mock runtime changes reset on browser refresh and are not persisted. Production explicitly sets `enabled: false`.
+
+All mock accounts use password `password123`:
+
+- `customer@talabaty.local` — CUSTOMER
+- `driver@talabaty.local` — DRIVER
+- `kitchen@talabaty.local` — KITCHEN_MANAGER
+- `admin@talabaty.local` — ADMIN
+
+The mock-only OTP is `123456`.
+
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.0.5.
 
 ## Development server
