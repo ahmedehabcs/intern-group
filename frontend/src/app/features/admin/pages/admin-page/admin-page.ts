@@ -235,25 +235,27 @@ export class AdminPage {
         error: () => this.error.set('Order could not be cancelled.'),
       });
   }
-  async deactivateRestaurant(id: number): Promise<void> {
+  async updateRestaurantStatus(item: RestaurantAdminResponse): Promise<void> {
+    const active = !item.isActive;
+    const action = active ? 'Activate' : 'Deactivate';
     if (
       !(await this.confirmation.confirm(
-        'Deactivate this restaurant?',
-        'Deactivate restaurant',
-        'Deactivate',
+        action + ' this restaurant?',
+        action + ' restaurant',
+        action,
       ))
     )
       return;
-    this.processingId.set(id);
+    this.processingId.set(item.id);
     this.api
-      .deactivateRestaurant(id)
+      .updateRestaurantStatus(item.id, active)
       .pipe(
         finalize(() => this.processingId.set(null)),
         takeUntilDestroyed(this.destroy),
       )
       .subscribe({
         next: (v) => this.restaurants.update((rows) => rows.map((r) => (r.id === v.id ? v : r))),
-        error: () => this.error.set('Restaurant could not be deactivated.'),
+        error: () => this.error.set('Restaurant status could not be updated.'),
       });
   }
 }
